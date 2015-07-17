@@ -77,36 +77,37 @@ get_administration_data <- function(filter_age = TRUE, mode = "prod") {
   common_tables <- get_common_tables()
   
   mom_ed <- as.data.frame(common_tables$momed) %>%
-    rename(momed_id = id, momed_level = level, momed_order = order) %>%
-    arrange(momed_order) %>%
-    transmute(momed_id = as.numeric(momed_id),
-              momed = factor(momed_level, levels = momed_level))
+    rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
+    arrange_("momed_order") %>%
+    transmute_(momed_id = ~as.numeric(momed_id),
+               momed = ~factor(momed_level, levels = momed_level))
   
   children <- as.data.frame(common_tables$child) %>%
-    select(id, birth_order, ethnicity, sex, momed_id) %>%
-    rename(child_id = id) %>%
-    mutate(child_id = as.numeric(child_id),
-           momed_id = as.numeric(momed_id)) %>%
+    select_("id", "birth_order", "ethnicity", "sex", "momed_id") %>%
+    rename_(child_id = "id") %>%
+    mutate_(child_id = ~as.numeric(child_id),
+            momed_id = ~as.numeric(momed_id)) %>%
     left_join(mom_ed) %>%
-    select(-momed_id)
+    select_("-momed_id")
   
   instruments <- as.data.frame(common_tables$instrument) %>%
-    rename(instrument_id = id) %>%
-    mutate(instrument_id = as.numeric(instrument_id)) %>%
-    select(-has_grammar)
+    rename_(instrument_id = "id") %>%
+    mutate_(instrument_id = ~as.numeric(instrument_id))
   
   admins <- as.data.frame(common_tables$administration) %>%
-    select(data_id, child_id, age, instrument_id, comprehension, production) %>%
-    mutate(data_id = as.numeric(data_id),
-           child_id = as.numeric(child_id)) %>%
+    select_("data_id", "child_id", "age", "instrument_id", "comprehension",
+            "production") %>%
+    mutate_(data_id = ~as.numeric(data_id),
+            child_id = ~as.numeric(child_id)) %>%
     left_join(instruments) %>%
-    select(-instrument_id) %>%
+    select_("-instrument_id") %>%
     left_join(children) %>%
-    select(-child_id)
+    select_("-child_id")
   
-  if(filter_age) admins <- filter(admins, age >= age_min, age <= age_max)
+  if(filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
+                                                        ~age <= age_max))
   admins %>%
-    select(-age_min, -age_max)
+    select_(.dots = list("-age_min", "-age_max"))
   
 }
 
@@ -126,29 +127,28 @@ get_item_data <- function(mode = "prod") {
   common_tables <- get_common_tables()
   
   instruments <- common_tables$instrument %>%
-    rename(instrument_id = id) %>%
-    select(instrument_id, language, form)
+    rename_(instrument_id = "id") %>%
+    select_("instrument_id", "language", "form")
   
   categories <- common_tables$category %>%
-    rename(category_id = id,
-           category = name)
+    rename_(category_id = "id", category = "name")
   
   maps <- common_tables$itemmap
   
   iteminfo <- common_tables$iteminfo %>%
-    select(-id) %>%
-    rename(uni_lemma = map_id) %>%
+    select_("-id") %>%
+    rename_(uni_lemma = "map_id") %>%
     left_join(instruments) %>%
-    select(-instrument_id) %>%
+    select_("-instrument_id") %>%
     left_join(categories) %>%
-    select(-category_id) %>%
+    select_("-category_id") %>%
     left_join(maps)
 
   iteminfo %>%
     as.data.frame() %>%
-    mutate(num_item_id = as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select(item_id, language, form, type, lexical_category, category, uni_lemma,
-           item, definition, num_item_id)
+    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
+    select_("item_id", "language", "form", "type", "lexical_category", "category",
+            "uni_lemma", "item", "definition", "num_item_id")
   
 }
 
@@ -190,12 +190,12 @@ get_instrument_data <- function(instrument_table, items,
   }
   
   instrument_data <- instrument_table %>%
-    select(data_id, one_of(items)) %>%
+    select_(.dots = as.list(c("data_id", items))) %>%
     as.data.frame %>%
-    mutate(data_id = as.numeric(data_id)) %>%
+    mutate_(data_id = ~as.numeric(data_id)) %>%
     tidyr::gather_("item_id", "value", items, convert = TRUE) %>%
-    mutate(num_item_id = as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select(-item_id) #%>%
+    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
+    select_("-item_id") #%>%
     #mutate(value = ifelse(is.na(value), "", value))
   
   if(class(administrations) == "data.frame") {
