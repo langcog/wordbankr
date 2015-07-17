@@ -125,17 +125,16 @@ get_item_data <- function(mode = "prod") {
   
   common_tables <- get_common_tables()
   
-  instruments <- common_tables$instrument %>% #as.data.frame(common_tables$instrument) %>%
+  instruments <- common_tables$instrument %>%
     rename(instrument_id = id) %>%
     select(instrument_id, language, form)
   
-  categories <- common_tables$category %>% #as.data.frame(common_tables$category) %>%
+  categories <- common_tables$category %>%
     rename(category_id = id,
            category = name)
   
-  maps <- common_tables$itemmap #as.data.frame(common_tables$itemmap)
+  maps <- common_tables$itemmap
   
-  #as.data.frame(common_tables$iteminfo) %>%
   iteminfo <- common_tables$iteminfo %>%
     select(-id) %>%
     rename(uni_lemma = map_id) %>%
@@ -161,13 +160,19 @@ get_item_data <- function(mode = "prod") {
 #' @param items A character vector of column names of \code{instrument_table} of
 #'   items to extract. If not supplied, defaults to all the columns of 
 #'   \code{instrument_table}
-#' @return A data frame where each row is the result (\code{value}) of a given item
-#'   (\code{num_item_id}) for a given administration (\code{data_id})
+#' @param administrations Either a logical indicating whether to include
+#'   administration data or a data frame of administration data (from \code{get_administration_data})
+#' @param iteminfo Either a logical indicating whether to include
+#'   item data or a data frame of item data (from \code{get_item_data})
+#' @return A data frame where each row is the result (\code{value}) of a given
+#'   item (\code{num_item_id}) for a given administration (\code{data_id})
 #'   
 #' @examples
 #' eng_ws <- get_instrument_table("English", "WS")
 #' eng_ws_data <- get_instrument_data(eng_ws, c("item_1", "item_42"))
-get_instrument_data <- function(instrument_table, items) {
+get_instrument_data <- function(instrument_table, items,
+                                administrations = FALSE,
+                                iteminfo = FALSE) {
   
   if(is.null(items)) {
     columns <- instrument_table$select
@@ -176,15 +181,31 @@ get_instrument_data <- function(instrument_table, items) {
     assertthat::assert_that(all(items %in% instrument_table$select))
   }
   
-  instrument_table %>%
+  if(class(administrations) == "logical" && administrations) {
+    administrations <- get_administration_data()
+  }
+
+  if(class(iteminfo) == "logical" && iteminfo) {
+    iteminfo <- get_item_data()
+  }
+  
+  instrument_data <- instrument_table %>%
     select(data_id, one_of(items)) %>%
     as.data.frame %>%
     mutate(data_id = as.numeric(data_id)) %>%
-    #select(-basetable_ptr_id) %>%
     tidyr::gather_("item_id", "value", items, convert = TRUE) %>%
     mutate(num_item_id = as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select(-item_id) #%>%
-    #mutate(value = ifelse(is.na(value), "", value)) #%>%
-    #arrange(data_id)
+    #mutate(value = ifelse(is.na(value), "", value))
+  
+  if(class(administrations) == "data.frame") {
+    instrument_data <- left_join(instrument_data, administrations)
+  }
+
+  if(class(iteminfo) == "data.frame") {
+    instrument_data <- left_join(instrument_data, iteminfo)
+  }
+  
+  instrument_data
   
 }

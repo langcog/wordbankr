@@ -4,7 +4,8 @@
 \alias{get_instrument_data}
 \title{Get the Wordbank administration-by-item data}
 \usage{
-get_instrument_data(instrument_table, items)
+get_instrument_data(instrument_table, items, administrations = FALSE,
+  iteminfo = FALSE)
 }
 \arguments{
 \item{instrument_table}{A Wordbank instrument table as returned by
@@ -13,10 +14,16 @@ get_instrument_data(instrument_table, items)
 \item{items}{A character vector of column names of \code{instrument_table} of
 items to extract. If not supplied, defaults to all the columns of
 \code{instrument_table}}
+
+\item{administrations}{Either a logical indicating whether to include
+administration data or a data frame of administration data (from \code{get_administration_data})}
+
+\item{iteminfo}{Either a logical indicating whether to include
+item data or a data frame of item data (from \code{get_item_data})}
 }
 \value{
-A data frame where each row is the result (\code{value}) of a given item
-  (\code{num_item_id}) for a given administration (\code{data_id})
+A data frame where each row is the result (\code{value}) of a given
+  item (\code{num_item_id}) for a given administration (\code{data_id})
 }
 \description{
 Get the Wordbank administration-by-item data
