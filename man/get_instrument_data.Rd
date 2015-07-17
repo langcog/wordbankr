@@ -29,7 +29,7 @@ A data frame where each row is the result (\code{value}) of a given
 Get the Wordbank administration-by-item data
 }
 \examples{
-eng_ws <- get_instrument_table("English", "WS")
-eng_ws_data <- get_instrument_data(eng_ws, c("item_1", "item_42"))
+eng_ws_table <- get_instrument_table("English", "WS")
+eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
 }
 

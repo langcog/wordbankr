@@ -1,0 +1,82 @@
+---
+title: "Accessing the Wordbank database"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+library(wordbankr)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+opts_chunk$set(message=FALSE, warning=FALSE)
+theme_set(theme_bw())
+```
+
+The `wordbankr` package allows you to access data in the [Wordbank database](http://wordbank.stanford.edu/) from R. This vignette shows some examples of how to use the data loading functions and what the resulting data looks like.
+
+
+## Common tables
+
+Wordbank's `common` tables store data that's in common between all of the CDI instruments -- information about children, administrations, sources, items (questions), item categories, etc.
+
+The `get_common_tables` function loads connections to all them:
+```{r}
+common_tables <- get_common_tables()
+names(common_tables <- get_common_tables())
+```
+
+You generally don't need to access them directly, though, because there are helper functions that load sensible groups of tables, process them, and join them together, to give you information about each administration and about each item.
+
+The `get_administration_data` function gives per-administration data:
+```{r}
+admins <- get_administration_data()
+head(admins)
+```
+
+And the `get_item_data` function gives per-item data:
+```{r}
+items <- get_item_data()
+head(items)
+```
+
+If you're only looking at total vocabulary size, `admins` is all you need, since it has both productive and receptive vocabulary sizes cached. If you're looking at specific items or subsets of items, you need to load instrument data.
+
+
+## Instrument tables
+
+Wordbank's `instrument` tables store each instrument's actual data of the response of every administration to every item.
+
+To connect to an instrument's table, use `get_instrument_table`, passing it the instrument's language and form. You can then pass the instrument's table to `get_instrument_data`, along with a list of items you want to extract (by `item_id`).
+```{r}
+eng_ws_table <- get_instrument_table("english", "ws")
+eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
+head(eng_ws_data)
+```
+
+By default `get_instrument_table` just gets the `data_id` of the administration, the `num_item_id` (numerical `item_id`) of the item, and the corresponding value. To include administration data, you can set the `administrations` argument to `TRUE`, or pass the result of `get_administration_data` as `administrations` (that way you can prevent the administration data from being loaded multiple times). Similarly, you can set the `iteminfo` argument to `TRUE`, or pass it result of `get_item_data`.
+
+Loading the data is really fast if you need only a handful of items, but the time it takes scales about linearly with the number of items, and can get quite slow if you need all or many of them. So it's a good idea to filter down to only the items you need before calling `get_instrument_data`.
+
+As an example, let's say we want to look at the production of animal word on English Words & Sentences over age. First we filter the items down to the ones we want:
+```{r, fig.width=6, fig.height=4}
+animals <- filter(items, language == "English", form == "WS", category == "animals")
+
+animal_data <- get_instrument_data(instrument_table = eng_ws_table,
+                                   items = animals$item_id,
+                                   administrations = admins)
+
+animal_summary <- animal_data %>%
+  mutate(produces = value == "produces") %>%
+  group_by(age, data_id) %>%
+  summarise(num_animals = sum(produces, na.rm = TRUE)) %>%
+  group_by(age) %>%
+  summarise(median_num_animals = median(num_animals, na.rm = TRUE))
+  
+ggplot(animal_summary, aes(x = age, y = median_num_animals)) +
+  geom_point()
+```

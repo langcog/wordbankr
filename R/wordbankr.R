@@ -168,8 +168,8 @@ get_item_data <- function(mode = "prod") {
 #'   item (\code{num_item_id}) for a given administration (\code{data_id})
 #'   
 #' @examples
-#' eng_ws <- get_instrument_table("English", "WS")
-#' eng_ws_data <- get_instrument_data(eng_ws, c("item_1", "item_42"))
+#' eng_ws_table <- get_instrument_table("English", "WS")
+#' eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
 get_instrument_data <- function(instrument_table, items,
                                 administrations = FALSE,
                                 iteminfo = FALSE) {

@@ -10,7 +10,9 @@ Depends: R (>= 3.1.2)
 License: GPL-3
 URL: http://wordbank.stanford.edu/
 BugReports: http://github.com/langcog/wordbank/issues
-Imports:
+Imports: 
   assertthat,
   dplyr,
   tidyr
+Suggests: knitr
+VignetteBuilder: knitr
