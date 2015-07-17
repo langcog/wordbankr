@@ -1,0 +1,16 @@
+Package: wordbankr
+Type: Package
+Title: Wordbank: An open database of children's vocabulary development
+Version: 0.1
+Date: 2015-07-16
+Author: Mika Braginsky
+Maintainer: Mika Braginsky <mika.br@gmail.com>
+Description: More about what it does (maybe more than one line)
+Depends: R (>= 3.1.2)
+License: GPL-3
+URL: http://wordbank.stanford.edu/
+BugReports: http://github.com/langcog/wordbank/issues
+Imports:
+  assertthat,
+  dplyr,
+  tidyr
