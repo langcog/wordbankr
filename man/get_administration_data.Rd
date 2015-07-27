@@ -4,14 +4,14 @@
 \alias{get_administration_data}
 \title{Get the Wordbank by-administration data}
 \usage{
-get_administration_data(filter_age = TRUE, mode = "prod")
+get_administration_data(filter_age = TRUE, mode = "remote")
 }
 \arguments{
 \item{filter_age}{A logical indicating whether to filter the administrations
 to ones in the valid age range for their instrument}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})}
+or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
 A data frame where each row is a CDI administration and each column
@@ -24,6 +24,6 @@ A data frame where each row is a CDI administration and each column
 Get the Wordbank by-administration data
 }
 \examples{
-admins <- get_administration_data()
+admins <- get_administration_data(mode = "local")
 }
 

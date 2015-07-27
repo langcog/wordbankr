@@ -26,8 +26,9 @@ Wordbank's `common` tables store data that's in common between all of the CDI in
 
 The `get_common_tables` function loads connections to all them:
 ```{r}
-common_tables <- get_common_tables()
-names(common_tables <- get_common_tables())
+src <- connect_to_wordbank()
+common_tables <- get_common_tables(src)
+names(common_tables)
 ```
 
 You generally don't need to access them directly, though, because there are helper functions that load sensible groups of tables, process them, and join them together, to give you information about each administration and about each item.
@@ -53,8 +54,9 @@ Wordbank's `instrument` tables store each instrument's actual data of the respon
 
 To connect to an instrument's table, use `get_instrument_table`, passing it the instrument's language and form. You can then pass the instrument's table to `get_instrument_data`, along with a list of items you want to extract (by `item_id`).
 ```{r}
-eng_ws_table <- get_instrument_table("english", "ws")
-eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
+eng_ws_data <- get_instrument_data(instrument_language = "English",
+                                   instrument_form = "WS",
+                                   items = c("item_1", "item_42"))
 head(eng_ws_data)
 ```
 
@@ -66,7 +68,8 @@ As an example, let's say we want to look at the production of animal word on Eng
 ```{r, fig.width=6, fig.height=4}
 animals <- filter(items, language == "English", form == "WS", category == "animals")
 
-animal_data <- get_instrument_data(instrument_table = eng_ws_table,
+animal_data <- get_instrument_data(instrument_language = "English",
+                                   instrument_form = "WS",
                                    items = animals$item_id,
                                    administrations = admins)
 

@@ -4,11 +4,10 @@
 \alias{get_common_tables}
 \title{Connect to all the Wordbank common tables}
 \usage{
-get_common_tables(mode = "prod")
+get_common_tables(src)
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})}
+\item{src}{A connection to the Wordbank database}
 }
 \value{
 A list whose names are common table names and whose values
@@ -18,6 +17,8 @@ are \code{tbl} objects
 Connect to all the Wordbank common tables
 }
 \examples{
-common_tables <- get_common_tables()
+src <- connect_to_wordbank(mode = "local")
+common_tables <- get_common_tables(src)
+RMySQL::dbDisconnect(src$con)
 }
 

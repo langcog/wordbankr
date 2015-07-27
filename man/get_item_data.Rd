@@ -4,11 +4,11 @@
 \alias{get_item_data}
 \title{Get the Wordbank by-item data}
 \usage{
-get_item_data(mode = "prod")
+get_item_data(mode = "remote")
 }
 \arguments{
 \item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})}
+or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
 A data frame where each row is a CDI item and each column is a
@@ -20,6 +20,6 @@ A data frame where each row is a CDI item and each column is a
 Get the Wordbank by-item data
 }
 \examples{
-items <- get_item_data()
+items <- get_item_data(mode = "local")
 }
 

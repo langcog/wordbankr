@@ -1,61 +1,79 @@
 #' Connect to the Wordbank database
 #' 
 #' @param mode A string indicating connection mode: one of \code{"local"},
-#'   \code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})
+#'   or \code{"remote"} (defaults to \code{"remote"})
 #' @return A \code{src} object which is connection to the Wordbank database
 #'   
 #' @examples
-#' wordbank <- connect_to_wordbank()
-connect_to_wordbank <- function(mode = "prod") {
+#' wordbank <- connect_to_wordbank(mode = "local")
+connect_to_wordbank <- function(mode = "remote") {
   
-  assertthat::assert_that(is.element(mode, c("local", "prod", "dev")))
+  assertthat::assert_that(is.element(mode, c("local", "remote")))
   address <- switch(mode,
                     local = "",
-                    prod = "54.200.225.86",
-                    dev = "54.149.39.46")
+                    remote = "54.200.225.86")
   
-  dplyr::src_mysql(host = address, dbname = "wordbank",
-                   user = "wordbank", password = "wordbank")
+  src <- dplyr::src_mysql(host = address, dbname = "wordbank",
+                          user = "wordbank", password = "wordbank")
+  return(src)
 }
 
 #' Connect to an instrument's Wordbank table
 #' 
+#' @param src A connection to the Wordbank database
 #' @param language A string of the instrument's language (insensitive to case
 #'   and whitespace)
 #' @param form A string of the instrument's form (insensitive to case and
 #'   whitespace)
-#' @inheritParams connect_to_wordbank
 #'   
 #' @return A \code{tbl} object containing the instrument's data
 #'   
 #' @examples
-#' eng_ws <- get_instrument_table("english", "ws")
-get_instrument_table <- function(language, form, mode = "prod") {
-  src <- connect_to_wordbank(mode = mode)
+#' src <- connect_to_wordbank(mode = "local")
+#' eng_ws <- get_instrument_table(src, "english", "ws")
+#' RMySQL::dbDisconnect(src$con)
+get_instrument_table <- function(src, language, form) {
   table_name <- paste(unlist(c("instruments",
                                strsplit(tolower(language), " "),
                                strsplit(tolower(form), " "))),
                       collapse = "_")
-  instrument_table <- tbl(src, table_name)
-  rm(src)
-  instrument_table %>%
+  instrument_table <- tbl(src, table_name) %>%
     rename_(data_id = "basetable_ptr_id")
+  return(instrument_table)
 }
 
 
 #' Connect to all the Wordbank common tables
 #' 
-#' @inheritParams connect_to_wordbank
+#' @param src A connection to the Wordbank database
 #' @return A list whose names are common table names and whose values
 #' are \code{tbl} objects
 #'
 #' @examples
-#' common_tables <- get_common_tables()
-get_common_tables <- function(mode = "prod") {
-  src <- connect_to_wordbank(mode = mode)
+#' src <- connect_to_wordbank(mode = "local")
+#' common_tables <- get_common_tables(src)
+#' RMySQL::dbDisconnect(src$con)
+get_common_tables <- function(src) {
   names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_", dplyr::src_tbls(src))
   names(names) <- lapply(names, function(name) substr(name, 8, nchar(name)))  
-  lapply(names, function(name) dplyr::tbl(src, name))
+  common_tables <- lapply(names, function(name) dplyr::tbl(src, name))
+  return(common_tables)
+}
+
+
+#' Connect to a single Wordbank common tables
+#' 
+#' @param src A connection to the Wordbank database
+#' @param name A string indicating the name of a common table
+#' @return A \code{tbl} object
+#'
+#' @examples
+#' src <- connect_to_wordbank(mode = "local")
+#' instruments <- get_common_table(src, "instrument")
+#' RMySQL::dbDisconnect(src$con)
+get_common_table <- function(src, name) {
+  common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
+  return(common_table)
 }
 
 
@@ -71,18 +89,20 @@ get_common_tables <- function(mode = "prod") {
 #'   \code{sex}, \code{momed}).
 #'   
 #' @examples
-#' admins <- get_administration_data()
-get_administration_data <- function(filter_age = TRUE, mode = "prod") {
+#' admins <- get_administration_data(mode = "local")
+get_administration_data <- function(filter_age = TRUE, mode = "remote") {
   
-  common_tables <- get_common_tables()
+  src <- connect_to_wordbank(mode = mode)
   
-  mom_ed <- as.data.frame(common_tables$momed) %>%
+  mom_ed <- get_common_table(src, "momed") %>%
+    as.data.frame() %>%
     rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
     arrange_("momed_order") %>%
     transmute_(momed_id = ~as.numeric(momed_id),
                momed = ~factor(momed_level, levels = momed_level))
   
-  children <- as.data.frame(common_tables$child) %>%
+  children <- get_common_table(src, "child") %>%
+    as.data.frame() %>%
     select_("id", "birth_order", "ethnicity", "sex", "momed_id") %>%
     rename_(child_id = "id") %>%
     mutate_(child_id = ~as.numeric(child_id),
@@ -90,11 +110,13 @@ get_administration_data <- function(filter_age = TRUE, mode = "prod") {
     left_join(mom_ed) %>%
     select_("-momed_id")
   
-  instruments <- as.data.frame(common_tables$instrument) %>%
+  instruments <- get_common_table(src, "instrument") %>%
+    as.data.frame() %>%
     rename_(instrument_id = "id") %>%
     mutate_(instrument_id = ~as.numeric(instrument_id))
   
-  admins <- as.data.frame(common_tables$administration) %>%
+  admins <- get_common_table(src, "administration") %>%
+    as.data.frame() %>%
     select_("data_id", "child_id", "age", "instrument_id", "comprehension",
             "production") %>%
     mutate_(data_id = ~as.numeric(data_id),
@@ -104,10 +126,13 @@ get_administration_data <- function(filter_age = TRUE, mode = "prod") {
     left_join(children) %>%
     select_("-child_id")
   
+  RMySQL::dbDisconnect(src$con)
+  
   if(filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
                                                         ~age <= age_max))
-  admins %>%
+  admins <- admins %>%
     select_(.dots = list("-age_min", "-age_max"))
+  return(admins)
   
 }
 
@@ -121,70 +146,81 @@ get_administration_data <- function(filter_age = TRUE, mode = "prod") {
 #'   \code{definition}, \code{num_item_id}).
 #'   
 #' @examples
-#' items <- get_item_data()
-get_item_data <- function(mode = "prod") {
+#' items <- get_item_data(mode = "local")
+get_item_data <- function(mode = "remote") {
   
-  common_tables <- get_common_tables()
+  src <- connect_to_wordbank(mode = mode)
   
-  instruments <- common_tables$instrument %>%
+  instruments <- get_common_table(src, "instrument") %>%
     rename_(instrument_id = "id") %>%
     select_("instrument_id", "language", "form")
   
-  categories <- common_tables$category %>%
+  categories <- get_common_table(src, "category") %>%
     rename_(category_id = "id", category = "name")
   
-  maps <- common_tables$itemmap
+  maps <- get_common_table(src, "itemmap")
   
-  iteminfo <- common_tables$iteminfo %>%
+  iteminfo <- get_common_table(src, "iteminfo") %>%
     select_("-id") %>%
     rename_(uni_lemma = "map_id") %>%
     left_join(instruments) %>%
-    select_("-instrument_id") %>%
+    #    select_("-instrument_id") %>%
     left_join(categories) %>%
     select_("-category_id") %>%
-    left_join(maps)
-
-  iteminfo %>%
+    left_join(maps) %>%
     as.data.frame() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select_("item_id", "language", "form", "type", "lexical_category", "category",
+    select_("item_id", "instrument_id", "language", "form", "type", "lexical_category", "category",
             "uni_lemma", "item", "definition", "num_item_id")
+  
+  RMySQL::dbDisconnect(src$con)
+  return(iteminfo)
   
 }
 
 
 #' Get the Wordbank administration-by-item data
 #' 
-#' @param instrument_table A Wordbank instrument table as returned by 
-#'   \code{get_instrument_table}
+#' @param instrument_language A string of the instrument's language (insensitive
+#'   to case and whitespace)
+#' @param instrument_form A string of the instrument's form (insensitive to case
+#'   and whitespace)
 #' @param items A character vector of column names of \code{instrument_table} of
 #'   items to extract. If not supplied, defaults to all the columns of 
 #'   \code{instrument_table}
-#' @param administrations Either a logical indicating whether to include
-#'   administration data or a data frame of administration data (from \code{get_administration_data})
-#' @param iteminfo Either a logical indicating whether to include
-#'   item data or a data frame of item data (from \code{get_item_data})
-#' @return A data frame where each row is the result (\code{value}) of a given
+#' @param administrations Either a logical indicating whether to include 
+#'   administration data or a data frame of administration data (from 
+#'   \code{get_administration_data})
+#' @param iteminfo Either a logical indicating whether to include item data or a
+#'   data frame of item data (from \code{get_item_data})
+#' @inheritParams connect_to_wordbank
+#' @return A data frame where each row is the result (\code{value}) of a given 
 #'   item (\code{num_item_id}) for a given administration (\code{data_id})
 #'   
 #' @examples
-#' eng_ws_table <- get_instrument_table("English", "WS")
-#' eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
-get_instrument_data <- function(instrument_table, items,
-                                administrations = FALSE,
-                                iteminfo = FALSE) {
+#' eng_ws_data <- get_instrument_data(instrument_language = "English",
+#'                                    instrument_form = "WS",
+#'                                    items = c("item_1", "item_42"),
+#'                                    mode = "local")
+get_instrument_data <- function(instrument_language, instrument_form, items,
+                                administrations = FALSE, iteminfo = FALSE,
+                                mode = "remote") {
+  
+  src <- connect_to_wordbank(mode = mode)
+  instrument_table <- get_instrument_table(src, instrument_language, instrument_form)
   
   if(is.null(items)) {
     columns <- instrument_table$select
     items <- as.character(columns)[2:length(columns)]
   } else {
     assertthat::assert_that(all(items %in% instrument_table$select))
+    names(items) <- NULL
   }
   
   if(class(administrations) == "logical" && administrations) {
     administrations <- get_administration_data()
   }
-
+  
   if(class(iteminfo) == "logical" && iteminfo) {
     iteminfo <- get_item_data()
   }
@@ -196,16 +232,17 @@ get_instrument_data <- function(instrument_table, items,
     tidyr::gather_("item_id", "value", items, convert = TRUE) %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select_("-item_id") #%>%
-    #mutate(value = ifelse(is.na(value), "", value))
+  #mutate(value = ifelse(is.na(value), "", value))
   
   if(class(administrations) == "data.frame") {
     instrument_data <- left_join(instrument_data, administrations)
   }
-
+  
   if(class(iteminfo) == "data.frame") {
     instrument_data <- left_join(instrument_data, iteminfo)
   }
   
-  instrument_data
+  RMySQL::dbDisconnect(src$con)
+  return(instrument_data)
   
 }

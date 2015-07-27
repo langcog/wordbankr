@@ -13,6 +13,7 @@ BugReports: http://github.com/langcog/wordbank/issues
 Imports: 
   assertthat,
   dplyr,
-  tidyr
-Suggests: knitr
+  tidyr,
+  RMySQL
+Suggests: knitr, ggplot2
 VignetteBuilder: knitr

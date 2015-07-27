@@ -4,17 +4,16 @@
 \alias{get_instrument_table}
 \title{Connect to an instrument's Wordbank table}
 \usage{
-get_instrument_table(language, form, mode = "prod")
+get_instrument_table(src, language, form)
 }
 \arguments{
+\item{src}{A connection to the Wordbank database}
+
 \item{language}{A string of the instrument's language (insensitive to case
 and whitespace)}
 
 \item{form}{A string of the instrument's form (insensitive to case and
-whitespace)}
-
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})}
+  whitespace)}
 }
 \value{
 A \code{tbl} object containing the instrument's data
@@ -23,6 +22,8 @@ A \code{tbl} object containing the instrument's data
 Connect to an instrument's Wordbank table
 }
 \examples{
-eng_ws <- get_instrument_table("english", "ws")
+src <- connect_to_wordbank(mode = "local")
+eng_ws <- get_instrument_table(src, "english", "ws")
+RMySQL::dbDisconnect(src$con)
 }
 

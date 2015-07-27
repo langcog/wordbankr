@@ -4,11 +4,11 @@
 \alias{connect_to_wordbank}
 \title{Connect to the Wordbank database}
 \usage{
-connect_to_wordbank(mode = "prod")
+connect_to_wordbank(mode = "remote")
 }
 \arguments{
 \item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"prod"}, or \code{"dev"} (defaults to \code{"prod"})}
+or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
 A \code{src} object which is connection to the Wordbank database
@@ -17,6 +17,6 @@ A \code{src} object which is connection to the Wordbank database
 Connect to the Wordbank database
 }
 \examples{
-wordbank <- connect_to_wordbank()
+wordbank <- connect_to_wordbank(mode = "local")
 }
 

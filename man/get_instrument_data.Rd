@@ -4,22 +4,29 @@
 \alias{get_instrument_data}
 \title{Get the Wordbank administration-by-item data}
 \usage{
-get_instrument_data(instrument_table, items, administrations = FALSE,
-  iteminfo = FALSE)
+get_instrument_data(instrument_language, instrument_form, items,
+  administrations = FALSE, iteminfo = FALSE, mode = "remote")
 }
 \arguments{
-\item{instrument_table}{A Wordbank instrument table as returned by
-\code{get_instrument_table}}
+\item{instrument_language}{A string of the instrument's language (insensitive
+to case and whitespace)}
+
+\item{instrument_form}{A string of the instrument's form (insensitive to case
+and whitespace)}
 
 \item{items}{A character vector of column names of \code{instrument_table} of
 items to extract. If not supplied, defaults to all the columns of
 \code{instrument_table}}
 
 \item{administrations}{Either a logical indicating whether to include
-administration data or a data frame of administration data (from \code{get_administration_data})}
+administration data or a data frame of administration data (from
+\code{get_administration_data})}
 
-\item{iteminfo}{Either a logical indicating whether to include
-item data or a data frame of item data (from \code{get_item_data})}
+\item{iteminfo}{Either a logical indicating whether to include item data or a
+data frame of item data (from \code{get_item_data})}
+
+\item{mode}{A string indicating connection mode: one of \code{"local"},
+or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
 A data frame where each row is the result (\code{value}) of a given
@@ -29,7 +36,9 @@ A data frame where each row is the result (\code{value}) of a given
 Get the Wordbank administration-by-item data
 }
 \examples{
-eng_ws_table <- get_instrument_table("English", "WS")
-eng_ws_data <- get_instrument_data(eng_ws_table, c("item_1", "item_42"))
+eng_ws_data <- get_instrument_data(instrument_language = "English",
+                                   instrument_form = "WS",
+                                   items = c("item_1", "item_42"),
+                                   mode = "local")
 }
 
