@@ -1,19 +1,24 @@
 Package: wordbankr
 Type: Package
-Title: Wordbank: An open database of children's vocabulary development
+Title: Accessing the Wordbank Database
+Description: Wordbank is an open database of children's vocabulary development.
+  Use wordbankr to access its data.
 Version: 0.1
-Date: 2015-07-16
-Author: Mika Braginsky
-Maintainer: Mika Braginsky <mika.br@gmail.com>
-Description: More about what it does (maybe more than one line)
+Authors@R: c(
+    person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
+    person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
+    person("Michael", "Frank", email = "mcfrank@stanford.edu", role = "ctb")
+    )
 Depends: R (>= 3.1.2)
 License: GPL-3
-URL: http://wordbank.stanford.edu/
-BugReports: http://github.com/langcog/wordbank/issues
+URL: https://github.com/langcog/wordbankr
+BugReports: http://github.com/langcog/wordbankr/issues
 Imports: 
   assertthat,
   dplyr,
   tidyr,
   RMySQL
-Suggests: knitr, ggplot2
+Suggests:
+  knitr,
+  ggplot2
 VignetteBuilder: knitr
