@@ -17,8 +17,10 @@ are \code{tbl} objects
 Connect to all the Wordbank common tables
 }
 \examples{
-src <- connect_to_wordbank(mode = "local")
+\dontrun{
+src <- connect_to_wordbank()
 common_tables <- get_common_tables(src)
 RMySQL::dbDisconnect(src$con)
+}
 }
 

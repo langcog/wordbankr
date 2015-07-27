@@ -36,9 +36,10 @@ A data frame where each row is the result (\code{value}) of a given
 Get the Wordbank administration-by-item data
 }
 \examples{
+\dontrun{
 eng_ws_data <- get_instrument_data(instrument_language = "English",
                                    instrument_form = "WS",
-                                   items = c("item_1", "item_42"),
-                                   mode = "local")
+                                   items = c("item_1", "item_42"))
+}
 }
 

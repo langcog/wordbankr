@@ -20,6 +20,8 @@ A data frame where each row is a CDI item and each column is a
 Get the Wordbank by-item data
 }
 \examples{
-items <- get_item_data(mode = "local")
+\dontrun{
+items <- get_item_data()
+}
 }
 

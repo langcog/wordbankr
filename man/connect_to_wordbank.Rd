@@ -17,6 +17,8 @@ A \code{src} object which is connection to the Wordbank database
 Connect to the Wordbank database
 }
 \examples{
-wordbank <- connect_to_wordbank(mode = "local")
+\dontrun{
+wordbank <- connect_to_wordbank()
+}
 }
 

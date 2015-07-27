@@ -24,6 +24,8 @@ A data frame where each row is a CDI administration and each column
 Get the Wordbank by-administration data
 }
 \examples{
-admins <- get_administration_data(mode = "local")
+\dontrun{
+admins <- get_administration_data()
+}
 }
 

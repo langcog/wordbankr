@@ -22,8 +22,10 @@ A \code{tbl} object containing the instrument's data
 Connect to an instrument's Wordbank table
 }
 \examples{
-src <- connect_to_wordbank(mode = "local")
+\dontrun{
+src <- connect_to_wordbank()
 eng_ws <- get_instrument_table(src, "english", "ws")
 RMySQL::dbDisconnect(src$con)
+}
 }
 

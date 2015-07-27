@@ -5,7 +5,9 @@
 #' @return A \code{src} object which is connection to the Wordbank database
 #'   
 #' @examples
-#' wordbank <- connect_to_wordbank(mode = "local")
+#' \dontrun{
+#' wordbank <- connect_to_wordbank()
+#' }
 connect_to_wordbank <- function(mode = "remote") {
   
   assertthat::assert_that(is.element(mode, c("local", "remote")))
@@ -29,9 +31,11 @@ connect_to_wordbank <- function(mode = "remote") {
 #' @return A \code{tbl} object containing the instrument's data
 #'   
 #' @examples
-#' src <- connect_to_wordbank(mode = "local")
+#' \dontrun{
+#' src <- connect_to_wordbank()
 #' eng_ws <- get_instrument_table(src, "english", "ws")
 #' RMySQL::dbDisconnect(src$con)
+#' }
 get_instrument_table <- function(src, language, form) {
   table_name <- paste(unlist(c("instruments",
                                strsplit(tolower(language), " "),
@@ -50,9 +54,11 @@ get_instrument_table <- function(src, language, form) {
 #' are \code{tbl} objects
 #'
 #' @examples
-#' src <- connect_to_wordbank(mode = "local")
+#' \dontrun{
+#' src <- connect_to_wordbank()
 #' common_tables <- get_common_tables(src)
 #' RMySQL::dbDisconnect(src$con)
+#' }
 get_common_tables <- function(src) {
   names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_", dplyr::src_tbls(src))
   names(names) <- lapply(names, function(name) substr(name, 8, nchar(name)))  
@@ -68,9 +74,11 @@ get_common_tables <- function(src) {
 #' @return A \code{tbl} object
 #'
 #' @examples
-#' src <- connect_to_wordbank(mode = "local")
+#' \dontrun{
+#' src <- connect_to_wordbank()
 #' instruments <- get_common_table(src, "instrument")
 #' RMySQL::dbDisconnect(src$con)
+#' }
 get_common_table <- function(src, name) {
   common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
   return(common_table)
@@ -89,7 +97,9 @@ get_common_table <- function(src, name) {
 #'   \code{sex}, \code{momed}).
 #'   
 #' @examples
-#' admins <- get_administration_data(mode = "local")
+#' \dontrun{
+#' admins <- get_administration_data()
+#' }
 get_administration_data <- function(filter_age = TRUE, mode = "remote") {
   
   src <- connect_to_wordbank(mode = mode)
@@ -146,7 +156,9 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
 #'   \code{definition}, \code{num_item_id}).
 #'   
 #' @examples
-#' items <- get_item_data(mode = "local")
+#' \dontrun{
+#' items <- get_item_data()
+#' }
 get_item_data <- function(mode = "remote") {
   
   src <- connect_to_wordbank(mode = mode)
@@ -198,10 +210,11 @@ get_item_data <- function(mode = "remote") {
 #'   item (\code{num_item_id}) for a given administration (\code{data_id})
 #'   
 #' @examples
+#' \dontrun{
 #' eng_ws_data <- get_instrument_data(instrument_language = "English",
 #'                                    instrument_form = "WS",
-#'                                    items = c("item_1", "item_42"),
-#'                                    mode = "local")
+#'                                    items = c("item_1", "item_42"))
+#' }
 get_instrument_data <- function(instrument_language, instrument_form, items,
                                 administrations = FALSE, iteminfo = FALSE,
                                 mode = "remote") {

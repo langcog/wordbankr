@@ -18,8 +18,10 @@ A \code{tbl} object
 Connect to a single Wordbank common tables
 }
 \examples{
-src <- connect_to_wordbank(mode = "local")
+\dontrun{
+src <- connect_to_wordbank()
 instruments <- get_common_table(src, "instrument")
 RMySQL::dbDisconnect(src$con)
+}
 }
 
