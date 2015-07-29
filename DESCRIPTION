@@ -1,8 +1,7 @@
 Package: wordbankr
 Type: Package
 Title: Accessing the Wordbank Database
-Description: Wordbank is an open database of children's vocabulary development.
-  Use wordbankr to access its data.
+Description: Tools for connecting to Wordbank, an open repository for developmental vocabulary data.
 Version: 0.1
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
