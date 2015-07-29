@@ -19,6 +19,8 @@ Connect to the Wordbank database
 \examples{
 \dontrun{
 wordbank <- connect_to_wordbank()
+rm(wordbank)
 }
 }
+\keyword{internal}
 

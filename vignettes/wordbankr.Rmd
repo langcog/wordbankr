@@ -13,7 +13,7 @@ library(wordbankr)
 library(knitr)
 library(dplyr)
 library(ggplot2)
-opts_chunk$set(message=FALSE, warning=FALSE)
+opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE)
 theme_set(theme_bw())
 ```
 
@@ -22,7 +22,7 @@ The `wordbankr` package allows you to access data in the [Wordbank database](htt
 
 ## Common tables
 
-Wordbank's `common` tables store data that's in common between all of the CDI instruments -- information about children, administrations, sources, items (questions), item categories, etc.
+Wordbank's `common` tables store data that's shared between all of the CDI instruments -- information about children, administrations, sources, items (questions), item categories, etc.
 
 The `get_common_tables` function loads connections to all them:
 ```{r}

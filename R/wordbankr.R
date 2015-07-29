@@ -3,10 +3,12 @@
 #' @param mode A string indicating connection mode: one of \code{"local"},
 #'   or \code{"remote"} (defaults to \code{"remote"})
 #' @return A \code{src} object which is connection to the Wordbank database
+#' @keywords internal
 #'   
 #' @examples
 #' \dontrun{
 #' wordbank <- connect_to_wordbank()
+#' rm(wordbank)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
   
@@ -20,6 +22,7 @@ connect_to_wordbank <- function(mode = "remote") {
   return(src)
 }
 
+
 #' Connect to an instrument's Wordbank table
 #' 
 #' @param src A connection to the Wordbank database
@@ -27,14 +30,14 @@ connect_to_wordbank <- function(mode = "remote") {
 #'   and whitespace)
 #' @param form A string of the instrument's form (insensitive to case and
 #'   whitespace)
-#'   
 #' @return A \code{tbl} object containing the instrument's data
+#' @keywords internal
 #'   
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
 #' eng_ws <- get_instrument_table(src, "english", "ws")
-#' RMySQL::dbDisconnect(src$con)
+#' rm(src, eng_ws)
 #' }
 get_instrument_table <- function(src, language, form) {
   table_name <- paste(unlist(c("instruments",
@@ -52,12 +55,13 @@ get_instrument_table <- function(src, language, form) {
 #' @param src A connection to the Wordbank database
 #' @return A list whose names are common table names and whose values
 #' are \code{tbl} objects
-#'
+#' @keywords internal
+#' 
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
 #' common_tables <- get_common_tables(src)
-#' RMySQL::dbDisconnect(src$con)
+#' rm(src, common_tables)
 #' }
 get_common_tables <- function(src) {
   names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_", dplyr::src_tbls(src))
@@ -72,12 +76,13 @@ get_common_tables <- function(src) {
 #' @param src A connection to the Wordbank database
 #' @param name A string indicating the name of a common table
 #' @return A \code{tbl} object
-#'
+#' @keywords internal
+#' 
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
 #' instruments <- get_common_table(src, "instrument")
-#' RMySQL::dbDisconnect(src$con)
+#' rm(src, instruments)
 #' }
 get_common_table <- function(src, name) {
   common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
@@ -136,7 +141,8 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
     left_join(children) %>%
     select_("-child_id")
   
-  RMySQL::dbDisconnect(src$con)
+  rm(src)
+  gc()
   
   if(filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
                                                         ~age <= age_max))
@@ -165,27 +171,32 @@ get_item_data <- function(mode = "remote") {
   
   instruments <- get_common_table(src, "instrument") %>%
     rename_(instrument_id = "id") %>%
-    select_("instrument_id", "language", "form")
+    select_("instrument_id", "language", "form") %>%
+    as.data.frame()
   
   categories <- get_common_table(src, "category") %>%
-    rename_(category_id = "id", category = "name")
+    rename_(category_id = "id", category = "name") %>%
+    as.data.frame()
   
-  maps <- get_common_table(src, "itemmap")
+  maps <- get_common_table(src, "itemmap") %>%
+    as.data.frame()
   
   iteminfo <- get_common_table(src, "iteminfo") %>%
     select_("-id") %>%
     rename_(uni_lemma = "map_id") %>%
+    as.data.frame() %>%
     left_join(instruments) %>%
     #    select_("-instrument_id") %>%
     left_join(categories) %>%
     select_("-category_id") %>%
     left_join(maps) %>%
-    as.data.frame() %>%
+    #as.data.frame() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select_("item_id", "instrument_id", "language", "form", "type", "lexical_category", "category",
             "uni_lemma", "item", "definition", "num_item_id")
   
-  RMySQL::dbDisconnect(src$con)
+  rm(src)
+  gc()
   return(iteminfo)
   
 }
@@ -255,7 +266,8 @@ get_instrument_data <- function(instrument_language, instrument_form, items,
     instrument_data <- left_join(instrument_data, iteminfo)
   }
   
-  RMySQL::dbDisconnect(src$con)
+  rm(src, instrument_table)
+  gc()
   return(instrument_data)
   
 }

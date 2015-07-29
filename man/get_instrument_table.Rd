@@ -13,7 +13,7 @@ get_instrument_table(src, language, form)
 and whitespace)}
 
 \item{form}{A string of the instrument's form (insensitive to case and
-  whitespace)}
+whitespace)}
 }
 \value{
 A \code{tbl} object containing the instrument's data
@@ -25,7 +25,8 @@ Connect to an instrument's Wordbank table
 \dontrun{
 src <- connect_to_wordbank()
 eng_ws <- get_instrument_table(src, "english", "ws")
-RMySQL::dbDisconnect(src$con)
+rm(src, eng_ws)
 }
 }
+\keyword{internal}
 

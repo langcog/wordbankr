@@ -21,7 +21,8 @@ Connect to a single Wordbank common tables
 \dontrun{
 src <- connect_to_wordbank()
 instruments <- get_common_table(src, "instrument")
-RMySQL::dbDisconnect(src$con)
+rm(src, instruments)
 }
 }
+\keyword{internal}
 

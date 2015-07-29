@@ -16,8 +16,7 @@ BugReports: http://github.com/langcog/wordbankr/issues
 Imports: 
   assertthat,
   dplyr,
-  tidyr,
-  RMySQL
+  tidyr
 Suggests:
   knitr,
   ggplot2

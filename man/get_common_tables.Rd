@@ -20,7 +20,8 @@ Connect to all the Wordbank common tables
 \dontrun{
 src <- connect_to_wordbank()
 common_tables <- get_common_tables(src)
-RMySQL::dbDisconnect(src$con)
+rm(src, common_tables)
 }
 }
+\keyword{internal}
 
