@@ -12,4 +12,5 @@ before_install: echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.R
 notifications:
   email:
     on_success: change
-    on_failure: change
+    on_failure: always
+  slack: langcog:NOgyVdCqRrN5T7VCzmEy5pZT
