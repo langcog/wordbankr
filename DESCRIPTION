@@ -17,6 +17,8 @@ Imports:
   dplyr,
   tidyr
 Suggests:
+  ggplot2,
   knitr,
-  ggplot2
+  rmarkdown,
+  RMySQL
 VignetteBuilder: knitr
