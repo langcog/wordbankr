@@ -13,7 +13,7 @@ library(wordbankr)
 library(knitr)
 library(dplyr)
 library(ggplot2)
-opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE)
+opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
 theme_set(theme_bw())
 ```
 
@@ -65,7 +65,8 @@ Loading the data is fast if you need only a handful of items, but the time scale
 
 As an example, let's say we want to look at the production of animal words on English Words & Sentences over age. First we filter the items down to the ones we want:
 ```{r, fig.width=6, fig.height=4}
-animals <- filter(items, language == "English", form == "WS", category == "animals")
+animals <- filter(items, language == "English", form == "WS",
+                  category == "animals")
 
 animal_data <- get_instrument_data(instrument_language = "English",
                                    instrument_form = "WS",

@@ -11,12 +11,12 @@
 #' rm(wordbank)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
-  
+
   assertthat::assert_that(is.element(mode, c("local", "remote")))
   address <- switch(mode,
                     local = "",
                     remote = "54.200.225.86")
-  
+
   src <- dplyr::src_mysql(host = address, dbname = "wordbank",
                           user = "wordbank", password = "wordbank")
   return(src)
@@ -64,8 +64,9 @@ get_instrument_table <- function(src, language, form) {
 #' rm(src, common_tables)
 #' }
 get_common_tables <- function(src) {
-  names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_", dplyr::src_tbls(src))
-  names(names) <- lapply(names, function(name) substr(name, 8, nchar(name)))  
+  names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_",
+                  dplyr::src_tbls(src))
+  names(names) <- lapply(names, function(name) substr(name, 8, nchar(name)))
   common_tables <- lapply(names, function(name) dplyr::tbl(src, name))
   return(common_tables)
 }
@@ -106,16 +107,16 @@ get_common_table <- function(src, name) {
 #' admins <- get_administration_data()
 #' }
 get_administration_data <- function(filter_age = TRUE, mode = "remote") {
-  
+
   src <- connect_to_wordbank(mode = mode)
-  
+
   mom_ed <- get_common_table(src, "momed") %>%
     as.data.frame() %>%
     rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
     arrange_("momed_order") %>%
     transmute_(momed_id = ~as.numeric(momed_id),
                momed = ~factor(momed_level, levels = momed_level))
-  
+
   children <- get_common_table(src, "child") %>%
     as.data.frame() %>%
     select_("id", "birth_order", "ethnicity", "sex", "momed_id") %>%
@@ -124,12 +125,12 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
             momed_id = ~as.numeric(momed_id)) %>%
     left_join(mom_ed) %>%
     select_("-momed_id")
-  
+
   instruments <- get_common_table(src, "instrument") %>%
     as.data.frame() %>%
     rename_(instrument_id = "id") %>%
     mutate_(instrument_id = ~as.numeric(instrument_id))
-  
+
   admins <- get_common_table(src, "administration") %>%
     as.data.frame() %>%
     select_("data_id", "child_id", "age", "instrument_id", "comprehension",
@@ -140,16 +141,16 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
     select_("-instrument_id") %>%
     left_join(children) %>%
     select_("-child_id")
-  
+
   rm(src)
   gc()
-  
-  if(filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
+
+  if (filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
                                                         ~age <= age_max))
   admins <- admins %>%
     select_(.dots = list("-age_min", "-age_max"))
   return(admins)
-  
+
 }
 
 
@@ -166,21 +167,21 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
 #' items <- get_item_data()
 #' }
 get_item_data <- function(mode = "remote") {
-  
+
   src <- connect_to_wordbank(mode = mode)
-  
+
   instruments <- get_common_table(src, "instrument") %>%
     rename_(instrument_id = "id") %>%
     select_("instrument_id", "language", "form") %>%
     as.data.frame()
-  
+
   categories <- get_common_table(src, "category") %>%
     rename_(category_id = "id", category = "name") %>%
     as.data.frame()
-  
+
   maps <- get_common_table(src, "itemmap") %>%
     as.data.frame()
-  
+
   iteminfo <- get_common_table(src, "iteminfo") %>%
     select_("-id") %>%
     rename_(uni_lemma = "map_id") %>%
@@ -192,13 +193,14 @@ get_item_data <- function(mode = "remote") {
     left_join(maps) %>%
     #as.data.frame() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select_("item_id", "instrument_id", "language", "form", "type", "lexical_category", "category",
-            "uni_lemma", "item", "definition", "num_item_id")
-  
+    select_("item_id", "instrument_id", "language", "form", "type",
+            "lexical_category", "category", "uni_lemma", "item", "definition",
+            "num_item_id")
+
   rm(src)
   gc()
   return(iteminfo)
-  
+
 }
 
 
@@ -229,26 +231,27 @@ get_item_data <- function(mode = "remote") {
 get_instrument_data <- function(instrument_language, instrument_form, items,
                                 administrations = FALSE, iteminfo = FALSE,
                                 mode = "remote") {
-  
+
   src <- connect_to_wordbank(mode = mode)
-  instrument_table <- get_instrument_table(src, instrument_language, instrument_form)
-  
-  if(is.null(items)) {
+  instrument_table <- get_instrument_table(src, instrument_language,
+                                           instrument_form)
+
+  if (is.null(items)) {
     columns <- instrument_table$select
     items <- as.character(columns)[2:length(columns)]
   } else {
     assertthat::assert_that(all(items %in% instrument_table$select))
     names(items) <- NULL
   }
-  
-  if(class(administrations) == "logical" && administrations) {
+
+  if (class(administrations) == "logical" && administrations) {
     administrations <- get_administration_data()
   }
-  
-  if(class(iteminfo) == "logical" && iteminfo) {
+
+  if (class(iteminfo) == "logical" && iteminfo) {
     iteminfo <- get_item_data()
   }
-  
+
   instrument_data <- instrument_table %>%
     select_(.dots = as.list(c("data_id", items))) %>%
     as.data.frame %>%
@@ -257,17 +260,17 @@ get_instrument_data <- function(instrument_language, instrument_form, items,
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select_("-item_id") #%>%
   #mutate(value = ifelse(is.na(value), "", value))
-  
-  if(class(administrations) == "data.frame") {
+
+  if (class(administrations) == "data.frame") {
     instrument_data <- left_join(instrument_data, administrations)
   }
-  
-  if(class(iteminfo) == "data.frame") {
+
+  if (class(iteminfo) == "data.frame") {
     instrument_data <- left_join(instrument_data, iteminfo)
   }
-  
+
   rm(src, instrument_table)
   gc()
   return(instrument_data)
-  
+
 }
