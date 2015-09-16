@@ -1,10 +1,10 @@
 #' Connect to the Wordbank database
-#' 
+#'
 #' @param mode A string indicating connection mode: one of \code{"local"},
 #'   or \code{"remote"} (defaults to \code{"remote"})
 #' @return A \code{src} object which is connection to the Wordbank database
 #' @keywords internal
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' wordbank <- connect_to_wordbank()
@@ -24,7 +24,7 @@ connect_to_wordbank <- function(mode = "remote") {
 
 
 #' Connect to an instrument's Wordbank table
-#' 
+#'
 #' @param src A connection to the Wordbank database
 #' @param language A string of the instrument's language (insensitive to case
 #'   and whitespace)
@@ -32,7 +32,7 @@ connect_to_wordbank <- function(mode = "remote") {
 #'   whitespace)
 #' @return A \code{tbl} object containing the instrument's data
 #' @keywords internal
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
@@ -51,12 +51,12 @@ get_instrument_table <- function(src, language, form) {
 
 
 #' Connect to all the Wordbank common tables
-#' 
+#'
 #' @param src A connection to the Wordbank database
 #' @return A list whose names are common table names and whose values
 #' are \code{tbl} objects
 #' @keywords internal
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
@@ -73,12 +73,12 @@ get_common_tables <- function(src) {
 
 
 #' Connect to a single Wordbank common tables
-#' 
+#'
 #' @param src A connection to the Wordbank database
 #' @param name A string indicating the name of a common table
 #' @return A \code{tbl} object
 #' @keywords internal
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
@@ -92,16 +92,16 @@ get_common_table <- function(src, name) {
 
 
 #' Get the Wordbank by-administration data
-#' 
-#' @param filter_age A logical indicating whether to filter the administrations 
+#'
+#' @param filter_age A logical indicating whether to filter the administrations
 #'   to ones in the valid age range for their instrument
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI administration and each column 
-#'   is a variable about the administration (\code{data_id}, \code{age}, 
-#'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
+#' @return A data frame where each row is a CDI administration and each column
+#'   is a variable about the administration (\code{data_id}, \code{age},
+#'   \code{comprehension}, \code{production}), its instrument (\code{language},
 #'   \code{form}), or its child (\code{birth_order}, \code{ethnicity},
 #'   \code{sex}, \code{momed}).
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' admins <- get_administration_data()
@@ -155,13 +155,13 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
 
 
 #' Get the Wordbank by-item data
-#' 
+#'
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI item and each column is a 
-#'   variable about it (\code{language}, \code{form}, \code{type}, 
+#' @return A data frame where each row is a CDI item and each column is a
+#'   variable about it (\code{language}, \code{form}, \code{type},
 #'   \code{lexical_category}, \code{category}, \code{uni_lemma}, \code{item},
 #'   \code{definition}, \code{num_item_id}).
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' items <- get_item_data()
@@ -194,8 +194,8 @@ get_item_data <- function(mode = "remote") {
     #as.data.frame() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select_("item_id", "instrument_id", "language", "form", "type",
-            "lexical_category", "category", "uni_lemma", "item", "definition",
-            "num_item_id")
+            "lexical_category", "lexical_class", "category", "uni_lemma", "item",
+            "definition", "num_item_id")
 
   rm(src)
   gc()
@@ -205,23 +205,23 @@ get_item_data <- function(mode = "remote") {
 
 
 #' Get the Wordbank administration-by-item data
-#' 
+#'
 #' @param instrument_language A string of the instrument's language (insensitive
 #'   to case and whitespace)
 #' @param instrument_form A string of the instrument's form (insensitive to case
 #'   and whitespace)
 #' @param items A character vector of column names of \code{instrument_table} of
-#'   items to extract. If not supplied, defaults to all the columns of 
+#'   items to extract. If not supplied, defaults to all the columns of
 #'   \code{instrument_table}
-#' @param administrations Either a logical indicating whether to include 
-#'   administration data or a data frame of administration data (from 
+#' @param administrations Either a logical indicating whether to include
+#'   administration data or a data frame of administration data (from
 #'   \code{get_administration_data})
 #' @param iteminfo Either a logical indicating whether to include item data or a
 #'   data frame of item data (from \code{get_item_data})
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is the result (\code{value}) of a given 
+#' @return A data frame where each row is the result (\code{value}) of a given
 #'   item (\code{num_item_id}) for a given administration (\code{data_id})
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' eng_ws_data <- get_instrument_data(instrument_language = "English",
