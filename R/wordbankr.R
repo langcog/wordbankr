@@ -194,8 +194,8 @@ get_item_data <- function(mode = "remote") {
     #as.data.frame() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
     select_("item_id", "instrument_id", "language", "form", "type",
-            "lexical_category", "category", "uni_lemma", "item", "definition",
-            "num_item_id")
+            "lexical_category", "lexical_class", "category", "uni_lemma", "item",
+            "definition", "num_item_id")
 
   rm(src)
   gc()
