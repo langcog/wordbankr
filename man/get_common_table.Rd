@@ -2,7 +2,7 @@
 % Please edit documentation in R/wordbankr.R
 \name{get_common_table}
 \alias{get_common_table}
-\title{Connect to a single Wordbank common tables}
+\title{Connect to a single Wordbank common table}
 \usage{
 get_common_table(src, name)
 }
@@ -15,7 +15,7 @@ get_common_table(src, name)
 A \code{tbl} object
 }
 \description{
-Connect to a single Wordbank common tables
+Connect to a single Wordbank common table
 }
 \examples{
 \dontrun{

@@ -4,9 +4,14 @@
 \alias{get_item_data}
 \title{Get the Wordbank by-item data}
 \usage{
-get_item_data(mode = "remote")
+get_item_data(language = NULL, form = NULL, mode = "remote")
 }
 \arguments{
+\item{language}{An optional string specifying which language's items to
+retrieve.}
+
+\item{form}{An optional string specifying which form's items to retrieve.}
+
 \item{mode}{A string indicating connection mode: one of \code{"local"},
 or \code{"remote"} (defaults to \code{"remote"})}
 }
@@ -21,7 +26,8 @@ Get the Wordbank by-item data
 }
 \examples{
 \dontrun{
-items <- get_item_data()
+english_ws_items <- get_item_data("English", "WS")
+all_items <- get_item_data()
 }
 }
 

@@ -4,9 +4,16 @@
 \alias{get_administration_data}
 \title{Get the Wordbank by-administration data}
 \usage{
-get_administration_data(filter_age = TRUE, mode = "remote")
+get_administration_data(language = NULL, form = NULL, filter_age = TRUE,
+  mode = "remote")
 }
 \arguments{
+\item{language}{An optional string specifying which language's
+administrations to retrieve.}
+
+\item{form}{An optional string specifying which form's administrations to
+retrieve.}
+
 \item{filter_age}{A logical indicating whether to filter the administrations
 to ones in the valid age range for their instrument}
 
@@ -18,14 +25,15 @@ A data frame where each row is a CDI administration and each column
   is a variable about the administration (\code{data_id}, \code{age},
   \code{comprehension}, \code{production}), its instrument (\code{language},
   \code{form}), or its child (\code{birth_order}, \code{ethnicity},
-  \code{sex}, \code{momed}).
+  \code{sex}, \code{mom_ed}).
 }
 \description{
 Get the Wordbank by-administration data
 }
 \examples{
 \dontrun{
-admins <- get_administration_data()
+english_ws_admins <- get_administration_data("English", "WS")
+all_admins <- get_administration_data()
 }
 }
 

@@ -4,7 +4,7 @@
 \alias{get_instrument_data}
 \title{Get the Wordbank administration-by-item data}
 \usage{
-get_instrument_data(instrument_language, instrument_form, items,
+get_instrument_data(instrument_language, instrument_form, items = NULL,
   administrations = FALSE, iteminfo = FALSE, mode = "remote")
 }
 \arguments{

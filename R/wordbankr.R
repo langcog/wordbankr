@@ -50,29 +50,7 @@ get_instrument_table <- function(src, language, form) {
 }
 
 
-#' Connect to all the Wordbank common tables
-#'
-#' @param src A connection to the Wordbank database
-#' @return A list whose names are common table names and whose values
-#' are \code{tbl} objects
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' src <- connect_to_wordbank()
-#' common_tables <- get_common_tables(src)
-#' rm(src, common_tables)
-#' }
-get_common_tables <- function(src) {
-  names <- Filter(function(tbl) substr(tbl, 1, 7) == "common_",
-                  dplyr::src_tbls(src))
-  names(names) <- lapply(names, function(name) substr(name, 8, nchar(name)))
-  common_tables <- lapply(names, function(name) dplyr::tbl(src, name))
-  return(common_tables)
-}
-
-
-#' Connect to a single Wordbank common tables
+#' Connect to a single Wordbank common table
 #'
 #' @param src A connection to the Wordbank database
 #' @param name A string indicating the name of a common table
@@ -91,22 +69,73 @@ get_common_table <- function(src, name) {
 }
 
 
-#' Get the Wordbank by-administration data
+#' Get the Wordbank instruments
 #'
-#' @param filter_age A logical indicating whether to filter the administrations
-#'   to ones in the valid age range for their instrument
+#' @return A data frame
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI administration and each column
-#'   is a variable about the administration (\code{data_id}, \code{age},
-#'   \code{comprehension}, \code{production}), its instrument (\code{language},
-#'   \code{form}), or its child (\code{birth_order}, \code{ethnicity},
-#'   \code{sex}, \code{momed}).
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
-#' admins <- get_administration_data()
+#' instruments <- get_instruments()
 #' }
-get_administration_data <- function(filter_age = TRUE, mode = "remote") {
+#' @export
+get_instruments <- function(mode = "remote") {
+  
+  src <- connect_to_wordbank(mode = mode)
+  
+  instruments <- get_common_table(src, name = "instrument") %>%
+    rename_(instrument_id = "id") %>%
+    as.data.frame()
+  
+  rm(src)
+  gc()
+  
+  return(instruments)
+  
+}
+
+
+filter_query <- function(filter_language, filter_form) {
+  conditions <- c()
+  if (!is.null(filter_language)) {
+    conditions <- c(conditions, sprintf("language = '%s'", filter_language))
+  }
+  if (!is.null(filter_form)) {
+    conditions <- c(conditions, sprintf("form = '%s'", filter_form))
+  }
+  if (length(conditions) == 2) {
+    return(sprintf("WHERE %s AND %s", conditions[1], conditions[2]))
+  } else if (length(conditions) == 1) {
+    return(sprintf("WHERE %s", conditions))
+  }
+  return("")
+}
+
+
+#' Get the Wordbank by-administration data
+#' 
+#' @param language An optional string specifying which language's
+#'   administrations to retrieve.
+#' @param form An optional string specifying which form's administrations to
+#'   retrieve.
+#' @param filter_age A logical indicating whether to filter the administrations 
+#'   to ones in the valid age range for their instrument
+#' @inheritParams connect_to_wordbank
+#' @return A data frame where each row is a CDI administration and each column 
+#'   is a variable about the administration (\code{data_id}, \code{age}, 
+#'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
+#'   \code{form}), or its child (\code{birth_order}, \code{ethnicity}, 
+#'   \code{sex}, \code{mom_ed}).
+#'   
+#' @examples
+#' \dontrun{
+#' english_ws_admins <- get_administration_data("English", "WS")
+#' all_admins <- get_administration_data()
+#' }
+#' @export
+get_administration_data <- function(language = NULL, form = NULL,
+                                    filter_age = TRUE, mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
 
@@ -115,38 +144,41 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
     rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
     arrange_("momed_order") %>%
     transmute_(momed_id = ~as.numeric(momed_id),
-               momed = ~factor(momed_level, levels = momed_level))
+               mom_ed = ~factor(momed_level, levels = momed_level))
 
-  children <- get_common_table(src, "child") %>%
+  admin_query <- paste(
+    "SELECT data_id, age, comprehension, production, language, form,
+    birth_order, ethnicity, sex, momed_id, age_min, age_max
+    FROM common_administration
+    LEFT JOIN common_instrument
+    ON common_administration.instrument_id = common_instrument.id
+    LEFT JOIN common_child
+    ON common_administration.child_id = common_child.id",
+    filter_query(language, form),
+    sep = "\n")
+
+  admins <- tbl(src, sql(admin_query)) %>%
     as.data.frame() %>%
-    select_("id", "birth_order", "ethnicity", "sex", "momed_id") %>%
-    rename_(child_id = "id") %>%
-    mutate_(child_id = ~as.numeric(child_id),
-            momed_id = ~as.numeric(momed_id)) %>%
+    mutate_(data_id = ~as.numeric(data_id)) %>%
     left_join(mom_ed) %>%
-    select_("-momed_id")
-
-  instruments <- get_common_table(src, "instrument") %>%
-    as.data.frame() %>%
-    rename_(instrument_id = "id") %>%
-    mutate_(instrument_id = ~as.numeric(instrument_id))
-
-  admins <- get_common_table(src, "administration") %>%
-    as.data.frame() %>%
-    select_("data_id", "child_id", "age", "instrument_id", "comprehension",
-            "production") %>%
-    mutate_(data_id = ~as.numeric(data_id),
-            child_id = ~as.numeric(child_id)) %>%
-    left_join(instruments) %>%
-    select_("-instrument_id") %>%
-    left_join(children) %>%
-    select_("-child_id")
+    select_("-momed_id") %>%
+    mutate_(sex = ~factor(sex, levels = c("F", "M", "O"),
+                          labels = c("Female", "Male", "Other")),
+            ethnicity = ~factor(ethnicity, levels = c("A", "B", "O", "W", "H"),
+                                labels = c("Asian", "Black", "Other",
+                                           "White", "Hispanic")),
+            birth_order = ~factor(birth_order,
+                                  levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                                  labels = c("First", "Second", "Third",
+                                             "Fourth", "Fifth", "Sixth",
+                                             "Seventh", "Eighth")))
 
   rm(src)
   gc()
 
-  if (filter_age) admins <- filter_(admins, .dots = list(~age >= age_min,
-                                                        ~age <= age_max))
+  if (filter_age) admins <- admins %>%
+    filter_(.dots = list(~age >= age_min, ~age <= age_max))
+
   admins <- admins %>%
     select_(.dots = list("-age_min", "-age_max"))
   return(admins)
@@ -155,52 +187,47 @@ get_administration_data <- function(filter_age = TRUE, mode = "remote") {
 
 
 #' Get the Wordbank by-item data
-#'
+#' 
+#' @param language An optional string specifying which language's items to
+#'   retrieve.
+#' @param form An optional string specifying which form's items to retrieve.
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI item and each column is a
-#'   variable about it (\code{language}, \code{form}, \code{type},
-#'   \code{lexical_category}, \code{category}, \code{uni_lemma}, \code{item},
+#' @return A data frame where each row is a CDI item and each column is a 
+#'   variable about it (\code{language}, \code{form}, \code{type}, 
+#'   \code{lexical_category}, \code{category}, \code{uni_lemma}, \code{item}, 
 #'   \code{definition}, \code{num_item_id}).
-#'
+#'   
 #' @examples
 #' \dontrun{
-#' items <- get_item_data()
+#' english_ws_items <- get_item_data("English", "WS")
+#' all_items <- get_item_data()
 #' }
-get_item_data <- function(mode = "remote") {
+#' @export
+get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
 
-  instruments <- get_common_table(src, "instrument") %>%
-    rename_(instrument_id = "id") %>%
-    select_("instrument_id", "language", "form") %>%
-    as.data.frame()
+  item_query <- paste(
+    "SELECT item_id, definition, language, form, type, name AS category,
+    lexical_category, lexical_class, uni_lemma, complexity_category
+    FROM common_iteminfo
+    LEFT JOIN common_instrument
+    ON common_iteminfo.instrument_id = common_instrument.id
+    LEFT JOIN common_category
+    ON common_iteminfo.category_id = common_category.id
+    LEFT JOIN common_itemmap
+    ON common_iteminfo.map_id = common_itemmap.uni_lemma",
+    filter_query(language, form),
+    sep = "\n")
 
-  categories <- get_common_table(src, "category") %>%
-    rename_(category_id = "id", category = "name") %>%
-    as.data.frame()
-
-  maps <- get_common_table(src, "itemmap") %>%
-    as.data.frame()
-
-  iteminfo <- get_common_table(src, "iteminfo") %>%
-    select_("-id") %>%
-    rename_(uni_lemma = "map_id") %>%
+  items <- tbl(src, sql(item_query)) %>%
     as.data.frame() %>%
-    left_join(instruments) %>%
-    #    select_("-instrument_id") %>%
-    left_join(categories) %>%
-    select_("-category_id") %>%
-    left_join(maps) %>%
-    #as.data.frame() %>%
-    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select_("item_id", "instrument_id", "language", "form", "type",
-            "lexical_category", "lexical_class", "category", "complexity_category",
-            "uni_lemma", "item",
-            "definition", "num_item_id")
+    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id))))
 
   rm(src)
   gc()
-  return(iteminfo)
+
+  return(items)
 
 }
 
@@ -229,9 +256,10 @@ get_item_data <- function(mode = "remote") {
 #'                                    instrument_form = "WS",
 #'                                    items = c("item_1", "item_42"))
 #' }
-get_instrument_data <- function(instrument_language, instrument_form, items,
-                                administrations = FALSE, iteminfo = FALSE,
-                                mode = "remote") {
+#' @export
+get_instrument_data <- function(instrument_language, instrument_form,
+                                items = NULL, administrations = FALSE,
+                                iteminfo = FALSE, mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
   instrument_table <- get_instrument_table(src, instrument_language,
@@ -246,11 +274,12 @@ get_instrument_data <- function(instrument_language, instrument_form, items,
   }
 
   if (class(administrations) == "logical" && administrations) {
-    administrations <- get_administration_data()
+    administrations <- get_administration_data(instrument_language,
+                                               instrument_form)
   }
 
   if (class(iteminfo) == "logical" && iteminfo) {
-    iteminfo <- get_item_data()
+    iteminfo <- get_item_data(instrument_language, instrument_form)
   }
 
   instrument_data <- instrument_table %>%
@@ -259,8 +288,7 @@ get_instrument_data <- function(instrument_language, instrument_form, items,
     mutate_(data_id = ~as.numeric(data_id)) %>%
     tidyr::gather_("item_id", "value", items, convert = TRUE) %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
-    select_("-item_id") #%>%
-  #mutate(value = ifelse(is.na(value), "", value))
+    select_("-item_id")
 
   if (class(administrations) == "data.frame") {
     instrument_data <- left_join(instrument_data, administrations)
@@ -272,6 +300,7 @@ get_instrument_data <- function(instrument_language, instrument_form, items,
 
   rm(src, instrument_table)
   gc()
+
   return(instrument_data)
 
 }
