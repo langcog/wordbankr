@@ -11,12 +11,12 @@
 #' rm(wordbank)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
-
+  
   assertthat::assert_that(is.element(mode, c("local", "remote")))
   address <- switch(mode,
                     local = "",
                     remote = "54.200.225.86")
-
+  
   src <- dplyr::src_mysql(host = address, dbname = "wordbank",
                           user = "wordbank", password = "wordbank")
   return(src)
@@ -41,10 +41,10 @@ connect_to_wordbank <- function(mode = "remote") {
 #' }
 get_instrument_table <- function(src, language, form) {
   table_name <- paste(unlist(c("instruments",
-                               strsplit(tolower(language), " "),
-                               strsplit(tolower(form), " "))),
+                               stringr::str_split(tolower(language), " "),
+                               stringr::str_split(tolower(form), " "))),
                       collapse = "_")
-  instrument_table <- tbl(src, table_name) %>%
+  instrument_table <- dplyr::tbl(src, table_name) %>%
     rename_(data_id = "basetable_ptr_id")
   return(instrument_table)
 }
@@ -86,7 +86,7 @@ get_instruments <- function(mode = "remote") {
   
   instruments <- get_common_table(src, name = "instrument") %>%
     rename_(instrument_id = "id") %>%
-    as.data.frame()
+    collect()
   
   rm(src)
   gc()
@@ -136,16 +136,16 @@ filter_query <- function(filter_language, filter_form) {
 #' @export
 get_administration_data <- function(language = NULL, form = NULL,
                                     filter_age = TRUE, mode = "remote") {
-
+  
   src <- connect_to_wordbank(mode = mode)
-
+  
   mom_ed <- get_common_table(src, "momed") %>%
-    as.data.frame() %>%
+    collect() %>%
     rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
     arrange_("momed_order") %>%
     transmute_(momed_id = ~as.numeric(momed_id),
                mom_ed = ~factor(momed_level, levels = momed_level))
-
+  
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
     birth_order, ethnicity, sex, momed_id, age_min, age_max
@@ -156,9 +156,9 @@ get_administration_data <- function(language = NULL, form = NULL,
     ON common_administration.child_id = common_child.id",
     filter_query(language, form),
     sep = "\n")
-
+  
   admins <- tbl(src, sql(admin_query)) %>%
-    as.data.frame() %>%
+    collect() %>%
     mutate_(data_id = ~as.numeric(data_id)) %>%
     left_join(mom_ed) %>%
     select_("-momed_id") %>%
@@ -172,17 +172,17 @@ get_administration_data <- function(language = NULL, form = NULL,
                                   labels = c("First", "Second", "Third",
                                              "Fourth", "Fifth", "Sixth",
                                              "Seventh", "Eighth")))
-
+  
   rm(src)
   gc()
-
+  
   if (filter_age) admins <- admins %>%
     filter_(.dots = list(~age >= age_min, ~age <= age_max))
-
+  
   admins <- admins %>%
     select_(.dots = list("-age_min", "-age_max"))
   return(admins)
-
+  
 }
 
 
@@ -204,9 +204,9 @@ get_administration_data <- function(language = NULL, form = NULL,
 #' }
 #' @export
 get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
-
+  
   src <- connect_to_wordbank(mode = mode)
-
+  
   item_query <- paste(
     "SELECT item_id, definition, language, form, type, name AS category,
     lexical_category, lexical_class, uni_lemma, complexity_category
@@ -219,16 +219,16 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
     ON common_iteminfo.map_id = common_itemmap.uni_lemma",
     filter_query(language, form),
     sep = "\n")
-
+  
   items <- tbl(src, sql(item_query)) %>%
-    as.data.frame() %>%
+    collect() %>%
     mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id))))
-
+  
   rm(src)
   gc()
-
+  
   return(items)
-
+  
 }
 
 
@@ -260,11 +260,11 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 get_instrument_data <- function(instrument_language, instrument_form,
                                 items = NULL, administrations = FALSE,
                                 iteminfo = FALSE, mode = "remote") {
-
+  
   src <- connect_to_wordbank(mode = mode)
   instrument_table <- get_instrument_table(src, instrument_language,
                                            instrument_form)
-
+  
   if (is.null(items)) {
     columns <- instrument_table$select
     items <- as.character(columns)[2:length(columns)]
@@ -272,35 +272,41 @@ get_instrument_data <- function(instrument_language, instrument_form,
     assertthat::assert_that(all(items %in% instrument_table$select))
     names(items) <- NULL
   }
-
+  
   if (class(administrations) == "logical" && administrations) {
     administrations <- get_administration_data(instrument_language,
-                                               instrument_form)
+                                               instrument_form,
+                                               mode = mode)
   }
-
+  
   if (class(iteminfo) == "logical" && iteminfo) {
-    iteminfo <- get_item_data(instrument_language, instrument_form)
+    iteminfo <- get_item_data(instrument_language, instrument_form,
+                              mode = mode)
   }
-
+  
+  strip_item_id <- function(item_id) {
+    as.numeric(stringr::str_sub(item_id, 6, stringr::str_length(item_id)))
+  }
+  
   instrument_data <- instrument_table %>%
     select_(.dots = as.list(c("data_id", items))) %>%
-    as.data.frame %>%
+    collect() %>%
     mutate_(data_id = ~as.numeric(data_id)) %>%
-    tidyr::gather_("item_id", "value", items, convert = TRUE) %>%
-    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id)))) %>%
+    tidyr::gather_("item_id", "value", items) %>%
+    mutate_(num_item_id = ~strip_item_id(item_id)) %>%
     select_("-item_id")
-
-  if (class(administrations) == "data.frame") {
+  
+  if ("data.frame" %in% class(administrations)) {
     instrument_data <- left_join(instrument_data, administrations)
   }
-
-  if (class(iteminfo) == "data.frame") {
+  
+  if ("data.frame" %in% class(iteminfo)) {
     instrument_data <- left_join(instrument_data, iteminfo)
   }
-
+  
   rm(src, instrument_table)
   gc()
-
+  
   return(instrument_data)
-
+  
 }
