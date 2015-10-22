@@ -95,9 +95,10 @@ get_instruments <- function(mode = "remote") {
 }
 
 
-filter_query <- function(filter_language = NULL, filter_form = NULL) {
+filter_query <- function(filter_language = NULL, filter_form = NULL,
+                         mode = "remote") {
   if (!is.null(filter_language) | !is.null(filter_form)) {
-    instruments <- get_instruments(mode = "local")
+    instruments <- get_instruments(mode = mode)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
         filter_(.dots = list(~language == filter_language))
@@ -156,7 +157,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     ON common_administration.instrument_id = common_instrument.id
     LEFT JOIN common_child
     ON common_administration.child_id = common_child.id",
-    filter_query(language, form),
+    filter_query(language, form, mode = mode),
     sep = "\n")
   
   admins <- tbl(src, sql(admin_query)) %>%
@@ -224,7 +225,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
     ON common_iteminfo.category_id = common_category.id
     LEFT JOIN common_itemmap
     ON common_iteminfo.map_id = common_itemmap.uni_lemma",
-    filter_query(language, form),
+    filter_query(language, form, mode = mode),
     sep = "\n")
   
   items <- tbl(src, sql(item_query)) %>%
