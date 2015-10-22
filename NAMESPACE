@@ -1,4 +1,5 @@
 export(get_administration_data)
 export(get_instrument_data)
+export(get_instruments)
 export(get_item_data)
 import(dplyr)

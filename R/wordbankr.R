@@ -44,8 +44,7 @@ get_instrument_table <- function(src, language, form) {
                                stringr::str_split(tolower(language), " "),
                                stringr::str_split(tolower(form), " "))),
                       collapse = "_")
-  instrument_table <- dplyr::tbl(src, table_name) %>%
-    rename_(data_id = "basetable_ptr_id")
+  instrument_table <- dplyr::tbl(src, table_name)
   return(instrument_table)
 }
 
@@ -96,20 +95,23 @@ get_instruments <- function(mode = "remote") {
 }
 
 
-filter_query <- function(filter_language, filter_form) {
-  conditions <- c()
-  if (!is.null(filter_language)) {
-    conditions <- c(conditions, sprintf("language = '%s'", filter_language))
+filter_query <- function(filter_language = NULL, filter_form = NULL) {
+  if (!is.null(filter_language) | !is.null(filter_form)) {
+    instruments <- get_instruments(mode = "local")
+    if (!is.null(filter_language)) {
+      instruments <- instruments %>%
+        filter_(.dots = list(~language == filter_language))
+    }
+    if (!is.null(filter_form)) {
+      instruments <- instruments %>%
+        filter_(.dots = list(~form == filter_form))
+    }
+    instrument_ids <- instruments$instrument_id
+    return(sprintf("WHERE instrument_id IN (%s)",
+                   paste(instrument_ids, collapse = ", ")))
+  } else {
+    return("")
   }
-  if (!is.null(filter_form)) {
-    conditions <- c(conditions, sprintf("form = '%s'", filter_form))
-  }
-  if (length(conditions) == 2) {
-    return(sprintf("WHERE %s AND %s", conditions[1], conditions[2]))
-  } else if (length(conditions) == 1) {
-    return(sprintf("WHERE %s", conditions))
-  }
-  return("")
 }
 
 
@@ -186,6 +188,11 @@ get_administration_data <- function(language = NULL, form = NULL,
 }
 
 
+strip_item_id <- function(item_id) {
+  as.numeric(stringr::str_sub(item_id, 6, stringr::str_length(item_id)))
+}
+
+
 #' Get the Wordbank by-item data
 #' 
 #' @param language An optional string specifying which language's items to
@@ -222,7 +229,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
   
   items <- tbl(src, sql(item_query)) %>%
     collect() %>%
-    mutate_(num_item_id = ~as.numeric(substr(item_id, 6, nchar(item_id))))
+    mutate_(num_item_id = ~strip_item_id(item_id))
   
   rm(src)
   gc()
@@ -281,27 +288,27 @@ get_instrument_data <- function(instrument_language, instrument_form,
   
   if (class(iteminfo) == "logical" && iteminfo) {
     iteminfo <- get_item_data(instrument_language, instrument_form,
-                              mode = mode)
-  }
-  
-  strip_item_id <- function(item_id) {
-    as.numeric(stringr::str_sub(item_id, 6, stringr::str_length(item_id)))
+                              mode = mode) %>%
+      select_(.dots = list("-language", "-form"))
   }
   
   instrument_data <- instrument_table %>%
-    select_(.dots = as.list(c("data_id", items))) %>%
+    select_(.dots = as.list(c("basetable_ptr_id", items))) %>%
     collect() %>%
-    mutate_(data_id = ~as.numeric(data_id)) %>%
+    mutate_(data_id = ~as.numeric(basetable_ptr_id)) %>%
+    select_("-basetable_ptr_id") %>%
     tidyr::gather_("item_id", "value", items) %>%
     mutate_(num_item_id = ~strip_item_id(item_id)) %>%
     select_("-item_id")
   
   if ("data.frame" %in% class(administrations)) {
-    instrument_data <- left_join(instrument_data, administrations)
+    instrument_data <- left_join(instrument_data, administrations,
+                                 by = "data_id")
   }
   
   if ("data.frame" %in% class(iteminfo)) {
-    instrument_data <- left_join(instrument_data, iteminfo)
+    instrument_data <- left_join(instrument_data, iteminfo,
+                                 by = "num_item_id")
   }
   
   rm(src, instrument_table)
