@@ -117,20 +117,20 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 
 
 #' Get the Wordbank by-administration data
-#' 
+#'
 #' @param language An optional string specifying which language's
 #'   administrations to retrieve.
 #' @param form An optional string specifying which form's administrations to
 #'   retrieve.
-#' @param filter_age A logical indicating whether to filter the administrations 
+#' @param filter_age A logical indicating whether to filter the administrations
 #'   to ones in the valid age range for their instrument
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI administration and each column 
-#'   is a variable about the administration (\code{data_id}, \code{age}, 
-#'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
-#'   \code{form}), or its child (\code{birth_order}, \code{ethnicity}, 
+#' @return A data frame where each row is a CDI administration and each column
+#'   is a variable about the administration (\code{data_id}, \code{age},
+#'   \code{comprehension}, \code{production}), its instrument (\code{language},
+#'   \code{form}), or its child (\code{birth_order}, \code{ethnicity},
 #'   \code{sex}, \code{mom_ed}).
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' english_ws_admins <- get_administration_data("English", "WS")
@@ -195,16 +195,16 @@ strip_item_id <- function(item_id) {
 
 
 #' Get the Wordbank by-item data
-#' 
+#'
 #' @param language An optional string specifying which language's items to
 #'   retrieve.
 #' @param form An optional string specifying which form's items to retrieve.
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI item and each column is a 
-#'   variable about it (\code{language}, \code{form}, \code{type}, 
-#'   \code{lexical_category}, \code{category}, \code{uni_lemma}, \code{item}, 
+#' @return A data frame where each row is a CDI item and each column is a
+#'   variable about it (\code{language}, \code{form}, \code{type},
+#'   \code{lexical_category}, \code{category}, \code{uni_lemma}, \code{item},
 #'   \code{definition}, \code{num_item_id}).
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' english_ws_items <- get_item_data("English", "WS")
@@ -303,13 +303,13 @@ get_instrument_data <- function(instrument_language, instrument_form,
     select_("-item_id")
   
   if ("data.frame" %in% class(administrations)) {
-    instrument_data <- left_join(instrument_data, administrations,
-                                 by = "data_id")
+    instrument_data <- right_join(instrument_data, administrations,
+                                  by = "data_id")
   }
   
   if ("data.frame" %in% class(iteminfo)) {
-    instrument_data <- left_join(instrument_data, iteminfo,
-                                 by = "num_item_id")
+    instrument_data <- right_join(instrument_data, iteminfo,
+                                  by = "num_item_id")
   }
   
   rm(src, instrument_table)
