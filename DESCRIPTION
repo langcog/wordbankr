@@ -15,6 +15,7 @@ BugReports: http://github.com/langcog/wordbankr/issues
 Imports: 
   assertthat (>= 0.1),
   dplyr (>= 0.4.3),
+  magrittr (>= 1.5),
   tidyr (>= 0.3.1),
   RMySQL (>= 0.10.6),
   stringr (>= 1.0.0)

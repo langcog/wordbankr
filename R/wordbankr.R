@@ -1,3 +1,6 @@
+#' @importFrom magrittr "%>%"
+NULL
+
 #' Connect to the Wordbank database
 #'
 #' @param mode A string indicating connection mode: one of \code{"local"},
@@ -84,8 +87,8 @@ get_instruments <- function(mode = "remote") {
   src <- connect_to_wordbank(mode = mode)
   
   instruments <- get_common_table(src, name = "instrument") %>%
-    rename_(instrument_id = "id") %>%
-    collect()
+    dplyr::rename_(instrument_id = "id") %>%
+    dplyr::collect()
   
   rm(src)
   gc()
@@ -101,11 +104,11 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
     instruments <- get_instruments(mode = mode)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
-        filter_(.dots = list(~language == filter_language))
+        dplyr::filter_(.dots = list(~language == filter_language))
     }
     if (!is.null(filter_form)) {
       instruments <- instruments %>%
-        filter_(.dots = list(~form == filter_form))
+        dplyr::filter_(.dots = list(~form == filter_form))
     }
     instrument_ids <- instruments$instrument_id
     return(sprintf("WHERE instrument_id IN (%s)",
@@ -143,11 +146,12 @@ get_administration_data <- function(language = NULL, form = NULL,
   src <- connect_to_wordbank(mode = mode)
   
   mom_ed <- get_common_table(src, "momed") %>%
-    collect() %>%
-    rename_(momed_id = "id", momed_level = "level", momed_order = "order") %>%
-    arrange_("momed_order") %>%
-    transmute_(momed_id = ~as.numeric(momed_id),
-               mom_ed = ~factor(momed_level, levels = momed_level))
+    dplyr::collect() %>%
+    dplyr::rename_(momed_id = "id", momed_level = "level",
+                   momed_order = "order") %>%
+    dplyr::arrange_("momed_order") %>%
+    dplyr::transmute_(momed_id = ~as.numeric(momed_id),
+                      mom_ed = ~factor(momed_level, levels = momed_level))
   
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
@@ -160,30 +164,31 @@ get_administration_data <- function(language = NULL, form = NULL,
     filter_query(language, form, mode = mode),
     sep = "\n")
   
-  admins <- tbl(src, sql(admin_query)) %>%
-    collect() %>%
-    mutate_(data_id = ~as.numeric(data_id)) %>%
-    left_join(mom_ed) %>%
-    select_("-momed_id") %>%
-    mutate_(sex = ~factor(sex, levels = c("F", "M", "O"),
-                          labels = c("Female", "Male", "Other")),
-            ethnicity = ~factor(ethnicity, levels = c("A", "B", "O", "W", "H"),
-                                labels = c("Asian", "Black", "Other",
-                                           "White", "Hispanic")),
-            birth_order = ~factor(birth_order,
-                                  levels = c(1, 2, 3, 4, 5, 6, 7, 8),
-                                  labels = c("First", "Second", "Third",
-                                             "Fourth", "Fifth", "Sixth",
-                                             "Seventh", "Eighth")))
+  admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
+    dplyr::collect() %>%
+    dplyr::mutate_(data_id = ~as.numeric(data_id)) %>%
+    dplyr::left_join(mom_ed) %>%
+    dplyr::select_("-momed_id") %>%
+    dplyr::mutate_(sex = ~factor(sex, levels = c("F", "M", "O"),
+                                 labels = c("Female", "Male", "Other")),
+                   ethnicity = ~factor(ethnicity,
+                                       levels = c("A", "B", "O", "W", "H"),
+                                       labels = c("Asian", "Black", "Other",
+                                                  "White", "Hispanic")),
+                   birth_order = ~factor(birth_order,
+                                         levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                                         labels = c("First", "Second", "Third",
+                                                    "Fourth", "Fifth", "Sixth",
+                                                    "Seventh", "Eighth")))
   
   rm(src)
   gc()
   
   if (filter_age) admins <- admins %>%
-    filter_(.dots = list(~age >= age_min, ~age <= age_max))
+    dplyr::filter_(.dots = list(~age >= age_min, ~age <= age_max))
   
   admins <- admins %>%
-    select_(.dots = list("-age_min", "-age_max"))
+    dplyr::select_(.dots = list("-age_min", "-age_max"))
   return(admins)
   
 }
@@ -228,9 +233,9 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
     filter_query(language, form, mode = mode),
     sep = "\n")
   
-  items <- tbl(src, sql(item_query)) %>%
-    collect() %>%
-    mutate_(num_item_id = ~strip_item_id(item_id))
+  items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
+    dplyr::collect() %>%
+    dplyr::mutate_(num_item_id = ~strip_item_id(item_id))
   
   rm(src)
   gc()
@@ -290,26 +295,26 @@ get_instrument_data <- function(instrument_language, instrument_form,
   if (class(iteminfo) == "logical" && iteminfo) {
     iteminfo <- get_item_data(instrument_language, instrument_form,
                               mode = mode) %>%
-      select_(.dots = list("-language", "-form"))
+      dplyr::select_(.dots = list("-language", "-form"))
   }
   
   instrument_data <- instrument_table %>%
-    select_(.dots = as.list(c("basetable_ptr_id", items))) %>%
-    collect() %>%
-    mutate_(data_id = ~as.numeric(basetable_ptr_id)) %>%
-    select_("-basetable_ptr_id") %>%
+    dplyr::select_(.dots = as.list(c("basetable_ptr_id", items))) %>%
+    dplyr::collect() %>%
+    dplyr::mutate_(data_id = ~as.numeric(basetable_ptr_id)) %>%
+    dplyr::select_("-basetable_ptr_id") %>%
     tidyr::gather_("item_id", "value", items) %>%
-    mutate_(num_item_id = ~strip_item_id(item_id)) %>%
-    select_("-item_id")
+    dplyr::mutate_(num_item_id = ~strip_item_id(item_id)) %>%
+    dplyr::select_("-item_id")
   
   if ("data.frame" %in% class(administrations)) {
-    instrument_data <- right_join(instrument_data, administrations,
-                                  by = "data_id")
+    instrument_data <- dplyr::right_join(instrument_data, administrations,
+                                         by = "data_id")
   }
   
   if ("data.frame" %in% class(iteminfo)) {
-    instrument_data <- right_join(instrument_data, iteminfo,
-                                  by = "num_item_id")
+    instrument_data <- dplyr::right_join(instrument_data, iteminfo,
+                                         by = "num_item_id")
   }
   
   rm(src, instrument_table)
