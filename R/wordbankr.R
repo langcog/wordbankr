@@ -14,8 +14,8 @@ connect_to_wordbank <- function(mode = "remote") {
   
   assertthat::assert_that(is.element(mode, c("local", "remote")))
   address <- switch(mode,
-                    local = "",
-                    remote = "54.200.225.86")
+                    local = "localhost",
+                    remote = "server.wordbank.stanford.edu")
   
   src <- dplyr::src_mysql(host = address, dbname = "wordbank",
                           user = "wordbank", password = "wordbank")
