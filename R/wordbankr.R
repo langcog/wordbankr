@@ -286,15 +286,28 @@ get_instrument_data <- function(instrument_language, instrument_form,
     names(items) <- NULL
   }
   
-  if (class(administrations) == "logical" && administrations) {
-    administrations <- get_administration_data(instrument_language,
-                                               instrument_form,
-                                               mode = mode)
+  if (class(administrations) == "logical") {
+    if (administrations) {
+      administrations <- get_administration_data(instrument_language,
+                                                 instrument_form,
+                                                 mode = mode)
+    } 
+  } else {
+    administrations <- administrations %>%
+      dplyr::filter_(.dots = list(~language == instrument_language,
+                                  ~form == instrument_form))
   }
   
-  if (class(iteminfo) == "logical" && iteminfo) {
-    iteminfo <- get_item_data(instrument_language, instrument_form,
-                              mode = mode) %>%
+  if (class(iteminfo) == "logical") {
+    if (iteminfo) {
+      iteminfo <- get_item_data(instrument_language, instrument_form,
+                                mode = mode) %>%
+        dplyr::select_(.dots = list("-language", "-form"))
+    }
+  } else {
+    iteminfo <- iteminfo %>%
+      dplyr::filter_(.dots = list(~language == instrument_language,
+                                  ~form == instrument_form)) %>%
       dplyr::select_(.dots = list("-language", "-form"))
   }
   
