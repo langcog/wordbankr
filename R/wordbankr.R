@@ -286,7 +286,7 @@ get_instrument_data <- function(instrument_language, instrument_form,
     names(items) <- NULL
   }
   
-  if (class(administrations) == "logical") {
+  if ("logical" %in% class(administrations)) {
     if (administrations) {
       administrations <- get_administration_data(instrument_language,
                                                  instrument_form,
@@ -298,7 +298,7 @@ get_instrument_data <- function(instrument_language, instrument_form,
                                   ~form == instrument_form))
   }
   
-  if (class(iteminfo) == "logical") {
+  if ("logical" %in% class(iteminfo)) {
     if (iteminfo) {
       iteminfo <- get_item_data(instrument_language, instrument_form,
                                 mode = mode) %>%
