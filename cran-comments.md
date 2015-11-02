@@ -6,13 +6,7 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs.
 
-There were 2 NOTEs:
-
-* checking CRAN incoming feasibility ... NOTE
-  Maintainer: ‘Mika Braginsky <mika.br@gmail.com>’
-  New submission
-
-  This is my first submission.
+There were 1 NOTEs:
 
 * checking dependencies in R code ... NOTE
   Namespace in Imports field not imported from: 'RMySQL'
