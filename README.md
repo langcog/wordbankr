@@ -8,8 +8,9 @@ Installation
 ------------
 
 ```
-install.packages("devtools")
-devtools::install_github("langcog/wordbankr")
+We are now on [CRAN](http://langcog.github.io/wordbankr/)!
+
+install.packages("wordbankr")
 ```
 
 Usage
