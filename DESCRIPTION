@@ -2,7 +2,7 @@ Package: wordbankr
 Type: Package
 Title: Accessing the Wordbank Database
 Description: Tools for connecting to Wordbank, an open repository for developmental vocabulary data.
-Version: 0.1
+Version: 0.1.1
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
