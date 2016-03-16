@@ -120,20 +120,20 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 
 
 #' Get the Wordbank by-administration data
-#'
-#' @param language An optional string specifying which language's
+#' 
+#' @param language An optional string specifying which language's 
 #'   administrations to retrieve.
-#' @param form An optional string specifying which form's administrations to
+#' @param form An optional string specifying which form's administrations to 
 #'   retrieve.
-#' @param filter_age A logical indicating whether to filter the administrations
+#' @param filter_age A logical indicating whether to filter the administrations 
 #'   to ones in the valid age range for their instrument
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI administration and each column
-#'   is a variable about the administration (\code{data_id}, \code{age},
+#' @return A data frame where each row is a CDI administration and each column 
+#'   is a variable about the administration (\code{data_id}, \code{age}, 
 #'   \code{comprehension}, \code{production}), its instrument (\code{language},
-#'   \code{form}), or its child (\code{birth_order}, \code{ethnicity},
-#'   \code{sex}, \code{mom_ed}).
-#'
+#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
+#'   \code{mom_ed}), or its dataset source (\code{norming}).
+#'   
 #' @examples
 #' \dontrun{
 #' english_ws_admins <- get_administration_data("English", "WS")
@@ -155,8 +155,10 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
-    birth_order, ethnicity, sex, momed_id, age_min, age_max
+    birth_order, ethnicity, sex, momed_id, age_min, age_max, norming
     FROM common_administration
+    LEFT JOIN common_source
+    ON common_administration.source_id = common_source.id
     LEFT JOIN common_instrument
     ON common_administration.instrument_id = common_instrument.id
     LEFT JOIN common_child
@@ -166,7 +168,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
     dplyr::collect() %>%
-    dplyr::mutate_(data_id = ~as.numeric(data_id)) %>%
+    dplyr::mutate_(data_id = ~as.numeric(data_id),
+                   norming = ~as.logical(norming)) %>%
     dplyr::left_join(mom_ed) %>%
     dplyr::select_("-momed_id") %>%
     dplyr::mutate_(sex = ~factor(sex, levels = c("F", "M", "O"),
