@@ -7,9 +7,10 @@ R package for accessing the Wordbank database.
 Installation
 ------------
 
+We are now on [CRAN](https://cran.r-project.org/web/packages/wordbankr/)!
+
 ```
-install.packages("devtools")
-devtools::install_github("langcog/wordbankr")
+install.packages("wordbankr")
 ```
 
 Usage
