@@ -23,9 +23,10 @@ or \code{"remote"} (defaults to \code{"remote"})}
 \value{
 A data frame where each row is a CDI administration and each column 
   is a variable about the administration (\code{data_id}, \code{age}, 
-  \code{comprehension}, \code{production}), its instrument (\code{language},
-  \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
-  \code{mom_ed}), or its dataset source (\code{norming}).
+  \code{comprehension}, \code{production}), its instrument (\code{language}, 
+  \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
+  \code{mom_ed}), or its dataset source (\code{norming},
+  \code{longitudinal}).
 }
 \description{
 Get the Wordbank by-administration data

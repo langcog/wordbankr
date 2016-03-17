@@ -130,9 +130,10 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI administration and each column 
 #'   is a variable about the administration (\code{data_id}, \code{age}, 
-#'   \code{comprehension}, \code{production}), its instrument (\code{language},
-#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
-#'   \code{mom_ed}), or its dataset source (\code{norming}).
+#'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
+#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
+#'   \code{mom_ed}), or its dataset source (\code{norming},
+#'   \code{longitudinal}).
 #'   
 #' @examples
 #' \dontrun{
@@ -155,7 +156,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
-    birth_order, ethnicity, sex, momed_id, age_min, age_max, norming
+    birth_order, ethnicity, sex, momed_id, age_min, age_max, norming,
+    longitudinal
     FROM common_administration
     LEFT JOIN common_source
     ON common_administration.source_id = common_source.id
@@ -169,7 +171,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
     dplyr::collect() %>%
     dplyr::mutate_(data_id = ~as.numeric(data_id),
-                   norming = ~as.logical(norming)) %>%
+                   norming = ~as.logical(norming),
+                   longitudinal = ~as.logical(longitudinal)) %>%
     dplyr::left_join(mom_ed) %>%
     dplyr::select_("-momed_id") %>%
     dplyr::mutate_(sex = ~factor(sex, levels = c("F", "M", "O"),
