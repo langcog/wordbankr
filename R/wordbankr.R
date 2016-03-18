@@ -43,9 +43,14 @@ connect_to_wordbank <- function(mode = "remote") {
 #' rm(src, eng_ws)
 #' }
 get_instrument_table <- function(src, language, form) {
-  table_name <- paste(unlist(c("instruments",
-                               stringr::str_split(tolower(language), " "),
-                               stringr::str_split(tolower(form), " "))),
+  san_string <- function(s) {
+    s %>%
+      tolower() %>%
+      stringr::str_replace_all("[[:punct:]]", "") %>%
+      stringr::str_split(" ") %>%
+      unlist()
+  }
+  table_name <- paste(c("instruments", san_string(language), san_string(form)),
                       collapse = "_")
   instrument_table <- dplyr::tbl(src, table_name)
   return(instrument_table)
