@@ -117,7 +117,6 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
     }
     assertthat::assert_that(nrow(instruments) > 0)
     instrument_ids <- instruments$instrument_id
-    cat(instrument_ids)
     return(sprintf("WHERE instrument_id IN (%s)",
                    paste(instrument_ids, collapse = ", ")))
   } else {
