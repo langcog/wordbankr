@@ -135,7 +135,7 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   to ones in the valid age range for their instrument
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI administration and each column 
-#'   is a variable about the administration (\code{data_id}, \code{age}, 
+#'   is a variable about the administration (\code{child_id}, \code{data_id}, \code{age}, 
 #'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
 #'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
 #'   \code{mom_ed}), or its dataset source (\code{norming},
@@ -161,7 +161,7 @@ get_administration_data <- function(language = NULL, form = NULL,
                       mom_ed = ~factor(momed_level, levels = momed_level))
   
   admin_query <- paste(
-    "SELECT data_id, age, comprehension, production, language, form,
+    "SELECT child_id, data_id, age, comprehension, production, language, form,
     birth_order, ethnicity, sex, momed_id, age_min, age_max, norming,
     longitudinal, name as source_name
     FROM common_administration
