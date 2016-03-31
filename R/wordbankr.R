@@ -181,8 +181,7 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
     dplyr::collect() %>%
-    dplyr::mutate_(original_id = ~as.numeric(original_id),
-                   data_id = ~as.numeric(data_id),
+    dplyr::mutate_(data_id = ~as.numeric(data_id),
                    norming = ~as.logical(norming),
                    longitudinal = ~as.logical(longitudinal)) %>%
     dplyr::left_join(mom_ed) %>%
