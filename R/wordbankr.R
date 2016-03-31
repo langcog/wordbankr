@@ -163,7 +163,7 @@ get_administration_data <- function(language = NULL, form = NULL,
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
     birth_order, ethnicity, sex, momed_id, age_min, age_max, norming,
-    longitudinal
+    longitudinal, name as source_name
     FROM common_administration
     LEFT JOIN common_source
     ON common_administration.source_id = common_source.id
