@@ -133,13 +133,17 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   retrieve.
 #' @param filter_age A logical indicating whether to filter the administrations 
 #'   to ones in the valid age range for their instrument
+#' @param original_ids A logical indicating whether to include the original ids provided
+#'   by data contributors. Wordbank provides no guarantees about the structure or 
+#'   uniqueness of these ids. Use at your own risk!    
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI administration and each column 
 #'   is a variable about the administration (\code{data_id}, \code{age}, 
 #'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
 #'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
 #'   \code{mom_ed}), or its dataset source (\code{norming},
-#'   \code{longitudinal}).
+#'   \code{longitudinal}). Also includes an \code{original_id} column if the
+#'   \code{original_ids} flag is \code{TRUE}.
 #'   
 #' @examples
 #' \dontrun{
@@ -148,7 +152,8 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' }
 #' @export
 get_administration_data <- function(language = NULL, form = NULL,
-                                    filter_age = TRUE, mode = "remote") {
+                                    filter_age = TRUE, original_ids = FALSE,
+                                    mode = "remote") {
   
   src <- connect_to_wordbank(mode = mode)
   
@@ -162,8 +167,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
-    birth_order, ethnicity, sex, momed_id, zygosity, age_min, age_max,
-    norming, longitudinal, name as source_name
+    birth_order, ethnicity, sex, momed_id, zygosity, study_id as original_id,
+    age_min, age_max, norming, longitudinal, name as source_name
     FROM common_administration
     LEFT JOIN common_source
     ON common_administration.source_id = common_source.id
@@ -192,6 +197,9 @@ get_administration_data <- function(language = NULL, form = NULL,
                                          labels = c("First", "Second", "Third",
                                                     "Fourth", "Fifth", "Sixth",
                                                     "Seventh", "Eighth")))
+  
+  if(!original_ids)
+    admins <- dplyr::select_(admins, "-original_id")
   
   rm(src)
   gc()
