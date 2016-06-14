@@ -298,11 +298,11 @@ get_instrument_data <- function(instrument_language, instrument_form,
   instrument_table <- get_instrument_table(src, instrument_language,
                                            instrument_form)
 
+  columns <- colnames(instrument_table)
   if (is.null(items)) {
-    columns <- instrument_table$select
-    items <- as.character(columns)[2:length(columns)]
+    items <- columns[2:length(columns)]
   } else {
-    assertthat::assert_that(all(items %in% instrument_table$select))
+    assertthat::assert_that(all(items %in% columns))
     names(items) <- NULL
   }
 
