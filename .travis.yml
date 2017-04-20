@@ -14,6 +14,8 @@ r_binary_packages:
 - dplyr
 - tidyr
 - knitr
+r_github_packages:
+- tidyverse/dbplyr
 notifications:
   email:
     on_success: change

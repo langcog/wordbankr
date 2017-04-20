@@ -74,5 +74,6 @@ animal_summary <- animal_data %>%
   summarise(median_num_animals = median(num_animals, na.rm = TRUE))
   
 ggplot(animal_summary, aes(x = age, y = median_num_animals)) +
-  geom_point()
+  geom_point() +
+  labs(x = "Age (months)", y = "Median number of animal words producing")
 ```
