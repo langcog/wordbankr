@@ -356,3 +356,32 @@ get_instrument_data <- function(instrument_language, instrument_form,
   return(instrument_data)
 
 }
+
+get_item_info <- function(instrument_language = NULL, instrument_form = NULL, mode = "remote") {
+
+  src <- connect_to_wordbank(mode = mode)
+  instruments <- get_instruments(mode) %>% 
+    dplyr::select(instrument_id, language, form)
+  
+  categories <- get_common_table(src, "category") %>% 
+    dplyr::collect() %>% 
+    dplyr::rename(category_id = id, category = name)
+  
+  item_info <- get_common_table(src, "iteminfo") %>% 
+    dplyr::collect() %>% 
+    dplyr::left_join(instruments, by="instrument_id") %>% 
+    dplyr::left_join(categories, by ="category_id") %>% 
+    dplyr::select(-instrument_id, -category_id)
+  
+  if (!is.null(instrument_language)) {
+    item_info <- dplyr::filter(item_info, language == instrument_language)
+  }
+  if (!is.null(instrument_form)) {
+    item_info <- dplyr::filter(item_info, form == instrument_form)
+  }
+
+  rm(src, instruments, categories)
+  gc()
+  
+  return(item_info)
+}
