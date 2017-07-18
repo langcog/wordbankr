@@ -109,11 +109,11 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
     instruments <- get_instruments(mode = mode)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
-        dplyr::filter_(.dots = list(~language == filter_language))
+        dplyr::filter(language == filter_language)
     }
     if (!is.null(filter_form)) {
       instruments <- instruments %>%
-        dplyr::filter_(.dots = list(~form == filter_form))
+        dplyr::filter(form == filter_form)
     }
     assertthat::assert_that(nrow(instruments) > 0)
     instrument_ids <- instruments$instrument_id
@@ -357,31 +357,74 @@ get_instrument_data <- function(instrument_language, instrument_form,
 
 }
 
-get_item_info <- function(instrument_language = NULL, instrument_form = NULL, mode = "remote") {
 
+
+find_matches <- function(x, mode) {
+  
+  curr_language <- x$language[1]
+  curr_form <- x$form[1]
+  curr_item <- x$item_id
+  
+  temp <- get_instrument_data(instrument_language = curr_language, 
+                              instrument_form = curr_form, 
+                              items = curr_item, administrations = T, 
+                              iteminfo = T, mode = mode) %>%
+    dplyr::filter(item_id %in% x$item_id) %>%
+    group_by(language, item_id, definition, uni_lemma, lexical_category, lexical_class, age) %>%
+    summarise(n = n(),
+              comprehension = sum(value %in% c("understands","produces"),na.rm=T)/n(),
+              production = sum(value == "produces", na.rm=T)/n(),
+              comprehension_sd = sd(value %in% c("understands","produces"),na.rm=T)/n(),
+              production_sd = sd(value == "produces", na.rm=T)/n()
+    )
+}
+
+
+#' Get a list of unilemmas available at Wordbank
+#'
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @return A data frame
+#' @inheritParams connect_to_wordbank
+#'
+#' @examples
+#' \dontrun{
+#' unilemmas <- get_unilemmas()
+#' }
+#' @export
+get_unilemmas <- function(mode = "remote") {
+  src <- connect_to_wordbank(mode = "remote")
+  unilemmas <- get_common_table(src, "itemmap") %>% collect()
+}
+
+
+#' Match unilemmas to their Wordbank group-by-item data
+#'
+#' @param unilemmas A character vector of unilemmas to get group-by-item data for
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @inheritParams connect_to_wordbank
+#' @return A data frame where each row is a particular CDI item with a set of 
+#' variables describing its instrument (\code{language}), its variables (\code{item_id}, 
+#'  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
+#'  its agegroup (\code{age}, \code{n}), and the group's performance (\code{comprehension}, 
+#'  \code{production}, \code{comprehension_sd}, \code{production_sd}).
+#'
+#' @examples
+#' \dontrun{
+#' eng_ws_data <- get_instrument_data(instrument_language = "English",
+#'                                    instrument_form = "WS",
+#'                                    items = c("item_1", "item_42"))
+#' }
+#' @export
+match_unilemmas <- function(unilemmas = c('dog'), mode = "remote") {
   src <- connect_to_wordbank(mode = mode)
-  instruments <- get_instruments(mode) %>% 
-    dplyr::select(instrument_id, language, form)
+  item_data <- get_item_data(mode = mode) %>%
+    dplyr::filter(uni_lemma %in% unilemmas &
+                    form == "WG") %>%
+    split(.$language) %>%
+    map_df(function(x) find_matches(x, mode))
   
-  categories <- get_common_table(src, "category") %>% 
-    dplyr::collect() %>% 
-    dplyr::rename(category_id = id, category = name)
+  return(item_data)
   
-  item_info <- get_common_table(src, "iteminfo") %>% 
-    dplyr::collect() %>% 
-    dplyr::left_join(instruments, by="instrument_id") %>% 
-    dplyr::left_join(categories, by ="category_id") %>% 
-    dplyr::select(-instrument_id, -category_id)
-  
-  if (!is.null(instrument_language)) {
-    item_info <- dplyr::filter(item_info, language == instrument_language)
-  }
-  if (!is.null(instrument_form)) {
-    item_info <- dplyr::filter(item_info, form == instrument_form)
-  }
-
-  rm(src, instruments, categories)
-  gc()
-  
-  return(item_info)
 }
