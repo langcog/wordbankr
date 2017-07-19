@@ -1,5 +1,10 @@
 #' @importFrom magrittr "%>%"
+#' @importFrom stats sd
+
 NULL
+
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+
 
 #' Connect to the Wordbank database
 #'
@@ -109,11 +114,11 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
     instruments <- get_instruments(mode = mode)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
-        dplyr::filter(language == filter_language)
+        dplyr::filter_(.dots = list(~language == filter_language))
     }
     if (!is.null(filter_form)) {
       instruments <- instruments %>%
-        dplyr::filter(form == filter_form)
+        dplyr::filter_(.dots = list(~form == filter_form))
     }
     assertthat::assert_that(nrow(instruments) > 0)
     instrument_ids <- instruments$instrument_id
@@ -361,22 +366,22 @@ get_instrument_data <- function(instrument_language, instrument_form,
 
 find_matches <- function(x, mode) {
   
-  curr_language <- x$language[1]
-  curr_form <- x$form[1]
-  curr_item <- x$item_id
-  
-  temp <- get_instrument_data(instrument_language = curr_language, 
-                              instrument_form = curr_form, 
-                              items = curr_item, administrations = T, 
+  temp <- get_instrument_data(instrument_language = x$language[1], 
+                              instrument_form = x$form[1], 
+                              items = x$item_id, administrations = T, 
                               iteminfo = T, mode = mode) %>%
-    dplyr::filter(item_id %in% x$item_id) %>%
-    dplyr::group_by(language, item_id, definition, uni_lemma, lexical_category, lexical_class, age) %>%
-    dplyr::summarise(n_children = n(),
-              comprehension = sum(value %in% c("understands","produces"),na.rm=T)/n(),
-              production = sum(value == "produces", na.rm=T)/n(),
-              comprehension_sd = sd(value %in% c("understands","produces"),na.rm=T)/n(),
-              production_sd = sd(value == "produces", na.rm=T)/n()
+    dplyr::filter_(.dots = list(~item_id %in% x$item_id)) %>%
+    dplyr::group_by_(.dots = c("language", "item_id", "definition", "uni_lemma",
+                               "lexical_category", "lexical_class", "age")) %>%
+    dplyr::summarise_(n_children = ~n(),
+              comprehension = ~sum(value %in% c("understands","produces"),na.rm=T)/n(),
+              production = ~sum(value == "produces", na.rm=T)/n(),
+              comprehension_sd = ~sd(value %in% c("understands","produces"),na.rm=T)/n(),
+              production_sd = ~sd(value == "produces", na.rm=T)/n()
     )
+  gc()
+  return(temp)
+  
 }
 
 
@@ -396,6 +401,11 @@ get_unilemmas <- function(mode = "remote") {
   src <- connect_to_wordbank(mode = "remote")
   unilemmas <- get_common_table(src, "itemmap") %>% 
     dplyr::collect()
+  
+  rm(src)
+  gc()
+  
+  return(unilemmas)
 }
 
 
@@ -419,10 +429,13 @@ get_unilemmas <- function(mode = "remote") {
 match_unilemmas <- function(unilemmas = c('dog'), mode = "remote") {
   src <- connect_to_wordbank(mode = mode)
   item_data <- get_item_data(mode = mode) %>%
-    dplyr::filter(uni_lemma %in% unilemmas &
-                    form == "WG") %>%
+    dplyr::filter_(.dots = list(~uni_lemma %in% unilemmas,
+                                ~form == "WG")) %>%
     split(.$language) %>%
     purrr::map_df(function(x) find_matches(x, mode))
+  
+  rm(src)
+  gc()
   
   return(item_data)
   
