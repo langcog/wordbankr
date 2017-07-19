@@ -370,8 +370,8 @@ find_matches <- function(x, mode) {
                               items = curr_item, administrations = T, 
                               iteminfo = T, mode = mode) %>%
     dplyr::filter(item_id %in% x$item_id) %>%
-    group_by(language, item_id, definition, uni_lemma, lexical_category, lexical_class, age) %>%
-    summarise(n = n(),
+    dplyr::group_by(language, item_id, definition, uni_lemma, lexical_category, lexical_class, age) %>%
+    dplyr::summarise(n_children = n(),
               comprehension = sum(value %in% c("understands","produces"),na.rm=T)/n(),
               production = sum(value == "produces", na.rm=T)/n(),
               comprehension_sd = sd(value %in% c("understands","produces"),na.rm=T)/n(),
@@ -394,7 +394,8 @@ find_matches <- function(x, mode) {
 #' @export
 get_unilemmas <- function(mode = "remote") {
   src <- connect_to_wordbank(mode = "remote")
-  unilemmas <- get_common_table(src, "itemmap") %>% collect()
+  unilemmas <- get_common_table(src, "itemmap") %>% 
+    dplyr::collect()
 }
 
 
@@ -407,14 +408,12 @@ get_unilemmas <- function(mode = "remote") {
 #' @return A data frame where each row is a particular CDI item with a set of 
 #' variables describing its instrument (\code{language}), its variables (\code{item_id}, 
 #'  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-#'  its agegroup (\code{age}, \code{n}), and the group's performance (\code{comprehension}, 
+#'  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
 #'  \code{production}, \code{comprehension_sd}, \code{production_sd}).
 #'
 #' @examples
 #' \dontrun{
-#' eng_ws_data <- get_instrument_data(instrument_language = "English",
-#'                                    instrument_form = "WS",
-#'                                    items = c("item_1", "item_42"))
+#' crossling_words <- match_unilemmas(unilemmas = c("hat", "nose"))
 #' }
 #' @export
 match_unilemmas <- function(unilemmas = c('dog'), mode = "remote") {
@@ -423,7 +422,7 @@ match_unilemmas <- function(unilemmas = c('dog'), mode = "remote") {
     dplyr::filter(uni_lemma %in% unilemmas &
                     form == "WG") %>%
     split(.$language) %>%
-    map_df(function(x) find_matches(x, mode))
+    purrr::map_df(function(x) find_matches(x, mode))
   
   return(item_data)
   

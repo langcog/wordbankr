@@ -42,4 +42,3 @@ eng_ws_data <- get_instrument_data(instrument_language = "English",
                                    items = c("item_1", "item_42"))
 }
 }
-
