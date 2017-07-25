@@ -363,10 +363,26 @@ get_instrument_data <- function(instrument_language, instrument_form,
 }
 
 
-
-find_matches <- function(x, mode) {
+#' Connect to the Wordbank database
+#' @param x A 1-row dataframe passed on from \code{"match_crossling_items"} 
+#'   with the following variables:
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @return A dataframe describing the instrument (\code{language}), its variables (\code{item_id}, 
+#'   \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
+#'   its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+#'   \code{production}, \code{comprehension_sd}, \code{production_sd}).
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' dog_unilemma <- get_item_data(language = "Italian", form = "WG") %>%
+#'   filter(uni_lemma == "dog")
+#' dog_in_italian <- find_matches(dog_unilemma)
+#' }
+find_matches <- function(x, mode = "remote") {
   
-  temp <- get_instrument_data(instrument_language = x$language[1], 
+  match_data <- get_instrument_data(instrument_language = x$language[1], 
                               instrument_form = x$form[1], 
                               items = x$item_id, administrations = T, 
                               iteminfo = T, mode = mode) %>%
@@ -380,7 +396,7 @@ find_matches <- function(x, mode) {
               production_sd = ~sd(value == "produces", na.rm=T)/n()
     )
   gc()
-  return(temp)
+  return(match_data)
   
 }
 
@@ -394,10 +410,10 @@ find_matches <- function(x, mode) {
 #'
 #' @examples
 #' \dontrun{
-#' unilemmas <- get_unilemmas()
+#' unilemmas <- get_crossling_items()
 #' }
 #' @export
-get_unilemmas <- function(mode = "remote") {
+get_crossling_items <- function(mode = "remote") {
   src <- connect_to_wordbank(mode = "remote")
   unilemmas <- get_common_table(src, "itemmap") %>% 
     dplyr::collect()
@@ -423,10 +439,10 @@ get_unilemmas <- function(mode = "remote") {
 #'
 #' @examples
 #' \dontrun{
-#' crossling_words <- match_unilemmas(unilemmas = c("hat", "nose"))
+#' crossling_words <- match_crossling_items(unilemmas = c("hat", "nose"))
 #' }
 #' @export
-match_unilemmas <- function(unilemmas = c('dog'), mode = "remote") {
+match_crossling_items <- function(unilemmas = c('dog'), mode = "remote") {
   src <- connect_to_wordbank(mode = mode)
   item_data <- get_item_data(mode = mode) %>%
     dplyr::filter_(.dots = list(~uni_lemma %in% unilemmas,
