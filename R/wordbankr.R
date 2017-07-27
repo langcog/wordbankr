@@ -1,5 +1,10 @@
 #' @importFrom magrittr "%>%"
+#' @importFrom stats sd
+
 NULL
+
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+
 
 #' Connect to the Wordbank database
 #'
@@ -357,31 +362,97 @@ get_instrument_data <- function(instrument_language, instrument_form,
 
 }
 
-get_item_info <- function(instrument_language = NULL, instrument_form = NULL, mode = "remote") {
 
-  src <- connect_to_wordbank(mode = mode)
-  instruments <- get_instruments(mode) %>% 
-    dplyr::select(instrument_id, language, form)
+#' Connect to the Wordbank database
+#' @param x A 1-row dataframe passed on from \code{"match_crossling_items"} 
+#'   with the following variables:
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @return A dataframe describing the instrument (\code{language}), its variables (\code{item_id}, 
+#'   \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
+#'   its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+#'   \code{production}, \code{comprehension_sd}, \code{production_sd}).
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' dog_unilemma <- get_item_data(language = "Italian", form = "WG") %>%
+#'   filter(uni_lemma == "dog")
+#' dog_in_italian <- find_matches(dog_unilemma)
+#' }
+find_matches <- function(x, mode = "remote") {
   
-  categories <- get_common_table(src, "category") %>% 
-    dplyr::collect() %>% 
-    dplyr::rename(category_id = id, category = name)
+  match_data <- get_instrument_data(instrument_language = x$language[1], 
+                              instrument_form = x$form[1], 
+                              items = x$item_id, administrations = T, 
+                              iteminfo = T, mode = mode) %>%
+    dplyr::filter_(.dots = list(~item_id %in% x$item_id)) %>%
+    dplyr::group_by_(.dots = c("language", "item_id", "definition", "uni_lemma",
+                               "lexical_category", "lexical_class", "age")) %>%
+    dplyr::summarise_(n_children = ~n(),
+              comprehension = ~sum(value %in% c("understands","produces"),na.rm=T)/n(),
+              production = ~sum(value == "produces", na.rm=T)/n(),
+              comprehension_sd = ~sd(value %in% c("understands","produces"),na.rm=T)/n(),
+              production_sd = ~sd(value == "produces", na.rm=T)/n()
+    )
+  gc()
+  return(match_data)
   
-  item_info <- get_common_table(src, "iteminfo") %>% 
-    dplyr::collect() %>% 
-    dplyr::left_join(instruments, by="instrument_id") %>% 
-    dplyr::left_join(categories, by ="category_id") %>% 
-    dplyr::select(-instrument_id, -category_id)
-  
-  if (!is.null(instrument_language)) {
-    item_info <- dplyr::filter(item_info, language == instrument_language)
-  }
-  if (!is.null(instrument_form)) {
-    item_info <- dplyr::filter(item_info, form == instrument_form)
-  }
+}
 
-  rm(src, instruments, categories)
+
+#' Get a list of unilemmas available at Wordbank
+#'
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @return A data frame
+#' @inheritParams connect_to_wordbank
+#'
+#' @examples
+#' \dontrun{
+#' unilemmas <- get_crossling_items()
+#' }
+#' @export
+get_crossling_items <- function(mode = "remote") {
+  src <- connect_to_wordbank(mode = "remote")
+  unilemmas <- get_common_table(src, "itemmap") %>% 
+    dplyr::collect()
+  
+  rm(src)
   gc()
   
-  return(item_info)
+  return(unilemmas)
+}
+
+
+#' Match unilemmas to their Wordbank group-by-item data
+#'
+#' @param unilemmas A character vector of unilemmas to get group-by-item data for
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @inheritParams connect_to_wordbank
+#' @return A data frame where each row is a particular CDI item with a set of 
+#' variables describing its instrument (\code{language}), its variables (\code{item_id}, 
+#'  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
+#'  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+#'  \code{production}, \code{comprehension_sd}, \code{production_sd}).
+#'
+#' @examples
+#' \dontrun{
+#' crossling_words <- match_crossling_items(unilemmas = c("hat", "nose"))
+#' }
+#' @export
+match_crossling_items <- function(unilemmas = c('dog'), mode = "remote") {
+  src <- connect_to_wordbank(mode = mode)
+  item_data <- get_item_data(mode = mode) %>%
+    dplyr::filter_(.dots = list(~uni_lemma %in% unilemmas,
+                                ~form == "WG")) %>%
+    split(.$language) %>%
+    purrr::map_df(function(x) find_matches(x, mode))
+  
+  rm(src)
+  gc()
+  
+  return(item_data)
+  
 }

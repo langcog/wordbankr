@@ -23,4 +23,3 @@ rm(wordbank)
 }
 }
 \keyword{internal}
-
