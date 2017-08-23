@@ -15,14 +15,14 @@ License: GPL-3
 URL: https://github.com/langcog/wordbankr
 BugReports: http://github.com/langcog/wordbankr/issues
 Imports:
-    assertthat (>= 0.1),
-    dplyr (>= 0.4.3),
-    dbplyr (>= 0.0.0.9000),
+    assertthat (>= 0.2.0),
+    dplyr (>= 0.7.2),
+    dbplyr (>= 1.1.0),
     magrittr (>= 1.5),
-    purrr (>= 0.2.2),
-    tidyr (>= 0.4.1),
-    RMySQL (>= 0.10.9),
-    stringr (>= 1.0.0)
+    purrr (>= 0.2.3),
+    tidyr (>= 0.7.0),
+    RMySQL (>= 0.10.11),
+    stringr (>= 1.2.0)
 Suggests:
     ggplot2,
     knitr,
