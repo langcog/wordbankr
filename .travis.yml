@@ -1,4 +1,5 @@
 language: r
+cache: packages
 warnings_are_errors: true
 sudo: required
 env:
@@ -14,9 +15,6 @@ r_binary_packages:
 - dplyr
 - tidyr
 - knitr
-r_github_packages:
-- tidyverse/dplyr
-- hadley/dbplyr
 notifications:
   email:
     on_success: change
