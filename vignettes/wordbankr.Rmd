@@ -24,7 +24,7 @@ There are three different data views that you can pull out of Wordbank: by-admin
 
 The `get_administration_data` function gives by-administration information, for either a specific language and form or for all instruments:
 ```{r}
-english_ws_admins <- get_administration_data("English", "WS")
+english_ws_admins <- get_administration_data("English (American)", "WS")
 head(english_ws_admins)
 all_admins <- get_administration_data()
 head(all_admins)
@@ -40,9 +40,11 @@ head(all_items)
 
 If you are only looking at total vocabulary size, `admins` is all you need, since it has both productive and receptive vocabulary sizes calculated. If you are looking at specific items or subsets of items, you need to load instrument data, using the `get_instrument_data` function. Pass it an instrument language and form, along with a list of items you want to extract (by `item_id`).
 ```{r}
-eng_ws_canines <- get_instrument_data(instrument_language = "English",
-                                      instrument_form = "WS",
-                                      items = c("item_26", "item_46"))
+eng_ws_canines <- get_instrument_data(
+  instrument_language = "English (American)",
+  instrument_form = "WS",
+  items = c("item_26", "item_46")
+)
 head(eng_ws_canines)
 ```
 
@@ -52,13 +54,13 @@ Loading the data is fast if you need only a handful of items, but the time scale
 
 As an example, let's say we want to look at the production of animal words on English Words & Sentences over age. First we get the items we want:
 ```{r, fig.width=6, fig.height=4}
-animals <- get_item_data("English", "WS") %>%
+animals <- get_item_data("English (American)", "WS") %>%
   filter(category == "animals")
 ```
 
 Then we get the instrument data for those items:
 ```{r}
-animal_data <- get_instrument_data(instrument_language = "English",
+animal_data <- get_instrument_data(instrument_language = "English (American)",
                                    instrument_form = "WS",
                                    items = animals$item_id,
                                    administrations = english_ws_admins)
