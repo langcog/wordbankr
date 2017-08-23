@@ -275,9 +275,9 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 
 #' Get the Wordbank administration-by-item data
 #'
-#' @param instrument_language A string of the instrument's language (insensitive
+#' @param language A string of the instrument's language (insensitive
 #'   to case and whitespace)
-#' @param instrument_form A string of the instrument's form (insensitive to case
+#' @param form A string of the instrument's form (insensitive to case
 #'   and whitespace)
 #' @param items A character vector of column names of \code{instrument_table} of
 #'   items to extract. If not supplied, defaults to all the columns of
@@ -293,20 +293,20 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 #'
 #' @examples
 #' \dontrun{
-#' eng_ws_data <- get_instrument_data(instrument_language = "English",
-#'                                    instrument_form = "WS",
+#' eng_ws_data <- get_instrument_data(language = "English",
+#'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"))
 #' }
 #' @export
-get_instrument_data <- function(instrument_language, instrument_form,
+get_instrument_data <- function(language, form,
                                 items = NULL, administrations = FALSE,
                                 iteminfo = FALSE, mode = "remote") {
   
   items_quo <- rlang::enquo(items)
 
   src <- connect_to_wordbank(mode = mode)
-  instrument_table <- get_instrument_table(src, instrument_language,
-                                           instrument_form)
+  instrument_table <- get_instrument_table(src, language,
+                                           form)
   
   columns <- colnames(instrument_table)
   if (is.null(items)) {
@@ -318,26 +318,26 @@ get_instrument_data <- function(instrument_language, instrument_form,
   
   if ("logical" %in% class(administrations)) {
     if (administrations) {
-      administrations <- get_administration_data(instrument_language,
-                                                 instrument_form,
+      administrations <- get_administration_data(language,
+                                                 form,
                                                  mode = mode)
     }
   } else {
     administrations <- administrations %>%
-      dplyr::filter(language == instrument_language,
-                    form == instrument_form)
+      dplyr::filter(language == language,
+                    form == form)
   }
   
   if ("logical" %in% class(iteminfo)) {
     if (iteminfo) {
-      iteminfo <- get_item_data(instrument_language, instrument_form,
+      iteminfo <- get_item_data(language, form,
                                 mode = mode) %>%
         dplyr::select(-language, -form)
     }
   } else {
     iteminfo <- iteminfo %>%
-      dplyr::filter(list(language == instrument_language,
-                         form == instrument_form,
+      dplyr::filter(list(language == language,
+                         form == form,
                          is.element(item_id, items))) %>%
       dplyr::select(-language, -form)
   }
@@ -388,8 +388,8 @@ get_instrument_data <- function(instrument_language, instrument_form,
 #' }
 find_matches <- function(x, mode = "remote") {
   
-  match_data <- get_instrument_data(instrument_language = x$language[1], 
-                                    instrument_form = x$form[1], 
+  match_data <- get_instrument_data(language = x$language[1], 
+                                    form = x$form[1], 
                                     items = x$item_id, administrations = TRUE, 
                                     iteminfo = TRUE, mode = mode) %>%
     dplyr::filter(~item_id %in% x$item_id) %>%

@@ -41,8 +41,8 @@ head(all_items)
 If you are only looking at total vocabulary size, `admins` is all you need, since it has both productive and receptive vocabulary sizes calculated. If you are looking at specific items or subsets of items, you need to load instrument data, using the `get_instrument_data` function. Pass it an instrument language and form, along with a list of items you want to extract (by `item_id`).
 ```{r}
 eng_ws_canines <- get_instrument_data(
-  instrument_language = "English (American)",
-  instrument_form = "WS",
+  language = "English (American)",
+  form = "WS",
   items = c("item_26", "item_46")
 )
 head(eng_ws_canines)
@@ -60,8 +60,8 @@ animals <- get_item_data("English (American)", "WS") %>%
 
 Then we get the instrument data for those items:
 ```{r}
-animal_data <- get_instrument_data(instrument_language = "English (American)",
-                                   instrument_form = "WS",
+animal_data <- get_instrument_data(language = "English (American)",
+                                   form = "WS",
                                    items = animals$item_id,
                                    administrations = english_ws_admins)
 ```

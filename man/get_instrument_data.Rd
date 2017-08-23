@@ -4,14 +4,14 @@
 \alias{get_instrument_data}
 \title{Get the Wordbank administration-by-item data}
 \usage{
-get_instrument_data(instrument_language, instrument_form, items = NULL,
-  administrations = FALSE, iteminfo = FALSE, mode = "remote")
+get_instrument_data(language, form, items = NULL, administrations = FALSE,
+  iteminfo = FALSE, mode = "remote")
 }
 \arguments{
-\item{instrument_language}{A string of the instrument's language (insensitive
+\item{language}{A string of the instrument's language (insensitive
 to case and whitespace)}
 
-\item{instrument_form}{A string of the instrument's form (insensitive to case
+\item{form}{A string of the instrument's form (insensitive to case
 and whitespace)}
 
 \item{items}{A character vector of column names of \code{instrument_table} of
@@ -37,8 +37,8 @@ Get the Wordbank administration-by-item data
 }
 \examples{
 \dontrun{
-eng_ws_data <- get_instrument_data(instrument_language = "English",
-                                   instrument_form = "WS",
+eng_ws_data <- get_instrument_data(language = "English",
+                                   form = "WS",
                                    items = c("item_1", "item_42"))
 }
 }
