@@ -327,7 +327,8 @@ get_instrument_data <- function(instrument_language, instrument_form,
   } else {
     iteminfo <- iteminfo %>%
       dplyr::filter_(.dots = list(~language == instrument_language,
-                                  ~form == instrument_form)) %>%
+                                  ~form == instrument_form,
+                                  ~is.element(item_id, items))) %>%
       dplyr::select_(.dots = list("-language", "-form"))
   }
 
