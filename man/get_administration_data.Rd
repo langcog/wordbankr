@@ -42,4 +42,3 @@ english_ws_admins <- get_administration_data("English", "WS")
 all_admins <- get_administration_data()
 }
 }
-
