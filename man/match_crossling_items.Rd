@@ -4,7 +4,7 @@
 \alias{match_crossling_items}
 \title{Match unilemmas to their Wordbank group-by-item data}
 \usage{
-match_crossling_items(unilemmas = c("dog"), mode = "remote")
+match_crossling_items(unilemmas, mode = "remote")
 }
 \arguments{
 \item{unilemmas}{A character vector of unilemmas to get group-by-item data for}

@@ -7,22 +7,24 @@ Version: 0.2.2
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
-    person("Michael", "Frank", email = "mcfrank@stanford.edu", role = "ctb")
+    person("Michael", "Frank", email = "mcfrank@stanford.edu", role = "ctb"),
+    person("Danielle", "Kellier", email = "dkellier@stanford.edu", role = "ctb")
     )
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.3.3)
 License: GPL-3
 URL: https://github.com/langcog/wordbankr
 BugReports: http://github.com/langcog/wordbankr/issues
 Imports:
     assertthat (>= 0.2.0),
-    dplyr (>= 0.7.2),
+    DBI (>= 0.6),
     dbplyr (>= 1.1.0),
-    magrittr (>= 1.5),
+    dplyr (>= 0.7.2),
     purrr (>= 0.2.3),
-    tidyr (>= 0.7.0),
+    rlang (>= 0.1.2),
     RMySQL (>= 0.10.11),
-    stringr (>= 1.2.0)
+    stringr (>= 1.2.0),
+    tidyr (>= 0.7.0)
 Suggests:
     ggplot2,
     knitr,
