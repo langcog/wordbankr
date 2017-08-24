@@ -309,8 +309,10 @@ get_instrument_data <- function(language, form,
                                            form)
   
   columns <- colnames(instrument_table)
+
   if (is.null(items)) {
     items <- columns[2:length(columns)]
+    items_quo <- rlang::enquo(items)
   } else {
     assertthat::assert_that(all(items %in% columns))
     names(items) <- NULL
