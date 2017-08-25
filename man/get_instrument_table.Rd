@@ -24,8 +24,8 @@ Connect to an instrument's Wordbank table
 \examples{
 \dontrun{
 src <- connect_to_wordbank()
-eng_ws <- get_instrument_table(src, "english", "ws")
-rm(src, eng_ws)
+eng_ws <- get_instrument_table(src, "English (American)", "WS")
+DBI::dbDisconnect(src)
 }
 }
 \keyword{internal}

@@ -18,8 +18,8 @@ Connect to the Wordbank database
 }
 \examples{
 \dontrun{
-wordbank <- connect_to_wordbank()
-rm(wordbank)
+src <- connect_to_wordbank()
+DBI::dbDisconnect(src)
 }
 }
 \keyword{internal}

@@ -21,7 +21,7 @@ Connect to a single Wordbank common table
 \dontrun{
 src <- connect_to_wordbank()
 instruments <- get_common_table(src, "instrument")
-rm(src, instruments)
+DBI::dbDisconnect(src)
 }
 }
 \keyword{internal}

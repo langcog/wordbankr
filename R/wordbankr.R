@@ -18,8 +18,8 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' wordbank <- connect_to_wordbank()
-#' rm(wordbank)
+#' src <- connect_to_wordbank()
+#' DBI::dbDisconnect(src)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
   
@@ -48,8 +48,8 @@ connect_to_wordbank <- function(mode = "remote") {
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
-#' eng_ws <- get_instrument_table(src, "english", "ws")
-#' rm(src, eng_ws)
+#' eng_ws <- get_instrument_table(src, "English (American)", "WS")
+#' DBI::dbDisconnect(src)
 #' }
 get_instrument_table <- function(src, language, form) {
   san_string <- function(s) {
@@ -77,7 +77,7 @@ get_instrument_table <- function(src, language, form) {
 #' \dontrun{
 #' src <- connect_to_wordbank()
 #' instruments <- get_common_table(src, "instrument")
-#' rm(src, instruments)
+#' DBI::dbDisconnect(src)
 #' }
 get_common_table <- function(src, name) {
   common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
@@ -104,8 +104,7 @@ get_instruments <- function(mode = "remote") {
     dplyr::rename_(instrument_id = "id") %>%
     dplyr::collect()
   
-  rm(src)
-  gc()
+  DBI::dbDisconnect(src)
   
   return(instruments)
   
@@ -209,8 +208,7 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (!original_ids)
     admins <- admins %>% dplyr::select(-original_id)
   
-  rm(src)
-  gc()
+  DBI::dbDisconnect(src)
   
   if (filter_age) admins <- admins %>%
     dplyr::filter(age >= age_min, age <= age_max)
@@ -265,8 +263,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
     dplyr::collect() %>%
     dplyr::mutate(num_item_id = strip_item_id(item_id))
   
-  rm(src)
-  gc()
+  DBI::dbDisconnect(src)
   
   return(items)
   
@@ -363,8 +360,7 @@ get_instrument_data <- function(language, form,
                                          by = "num_item_id")
   }
   
-  rm(src, instrument_table)
-  gc()
+  DBI::dbDisconnect(src)
   
   return(instrument_data)
   
@@ -429,8 +425,7 @@ get_crossling_items <- function(mode = "remote") {
   unilemmas <- get_common_table(src, "itemmap") %>% 
     dplyr::collect()
   
-  rm(src)
-  gc()
+  DBI::dbDisconnect(src)
   
   return(unilemmas)
 }
@@ -460,8 +455,7 @@ match_crossling_items <- function(unilemmas, mode = "remote") {
     split(.$language) %>%
     purrr::map_df(function(x) find_matches(x, mode))
   
-  rm(src)
-  gc()
+  DBI::dbDisconnect(src)
   
   return(item_data)
   
