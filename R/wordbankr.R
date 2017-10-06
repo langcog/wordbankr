@@ -335,9 +335,9 @@ get_instrument_data <- function(language, form,
     }
   } else {
     iteminfo <- iteminfo %>%
-      dplyr::filter(list(language == language,
-                         form == form,
-                         is.element(item_id, items))) %>%
+      dplyr::filter(language == language,
+                    form == form,
+                    is.element(item_id, items)) %>%
       dplyr::select(-language, -form)
   }
   
