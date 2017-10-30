@@ -23,6 +23,7 @@ Imports:
     purrr (>= 0.2.3),
     rlang (>= 0.1.2),
     RMySQL (>= 0.10.11),
+    robustbase (>= 0.92),
     stringr (>= 1.2.0),
     tidyr (>= 0.7.0)
 Suggests:

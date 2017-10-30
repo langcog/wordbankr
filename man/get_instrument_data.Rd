@@ -37,7 +37,7 @@ Get the Wordbank administration-by-item data
 }
 \examples{
 \dontrun{
-eng_ws_data <- get_instrument_data(language = "English",
+eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"))
 }

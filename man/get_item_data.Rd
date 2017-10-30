@@ -26,7 +26,7 @@ Get the Wordbank by-item data
 }
 \examples{
 \dontrun{
-english_ws_items <- get_item_data("English", "WS")
+english_ws_items <- get_item_data("English (American)", "WS")
 all_items <- get_item_data()
 }
 }
