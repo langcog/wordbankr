@@ -36,7 +36,7 @@ all_admins <- get_administration_data()
 
 Get by-item data.
 ```
-english_ws_items <- get_items_data("English (American)", "WS")
+english_ws_items <- get_item_data("English (American)", "WS")
 all_items <- get_items_data()
 ```
 
