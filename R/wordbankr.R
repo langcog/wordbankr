@@ -482,7 +482,7 @@ find_matches <- function(x, mode = "remote") {
                                     form = x$form[1], 
                                     items = x$item_id, administrations = TRUE, 
                                     iteminfo = TRUE, mode = mode) %>%
-    dplyr::filter(~item_id %in% x$item_id) %>%
+    dplyr::filter(item_id %in% x$item_id) %>%
     dplyr::group_by(language, item_id, definition, uni_lemma,
                     lexical_category, lexical_class, age) %>%
     dplyr::summarise(
