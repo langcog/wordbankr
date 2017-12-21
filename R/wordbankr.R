@@ -556,3 +556,88 @@ match_crossling_items <- function(unilemmas, mode = "remote") {
   return(item_data)
   
 }
+
+
+#' Get the Wordbank source data
+#'
+#' @param language An optional string specifying which language's 
+#'   datasets to retrieve.
+#' @param form An optional string specifying which form's datasets to 
+#'   retrieve.
+#' @param administrations Either a logical indicating whether to include
+#'   summary-level statistics on the administrations within a dataset.
+#' @inheritParams connect_to_wordbank
+#' @return A data frame where each row is a particular dataset and its 
+#' characteristics: dataset id and name (\code{source_id}, \code{name},
+#' \code{dataset}), language (\code{instrument_language}), 
+#' form (\code{instrument_form}), contributor and affiliated institution 
+#' (\code{contributor}), provided citation (\code{citation}), whether
+#' dataset includes longitudinal participants (\code{longitudinal}),
+#' and licensing information (\code{license}). Also includes summary
+#' statistics on a dataset if the (\code{administrations}) flag is \code{TRUE},
+#' including number of children (\code{n_children}) and age range
+#' (\code{age_min}, \code{age_max}).
+#'
+#' @examples
+#' \dontrun{
+#' english_ws_sources <- get_source_data(language = "English (American)",
+#'                                    form = "WS",
+#'                                    administrations = TRUE)
+#' }
+#' @export
+get_source_data <- function(language = NULL, form = NULL, 
+                            administrations = FALSE, mode = "remote") {
+  
+  src <- connect_to_wordbank(mode = mode)
+  instrument_table <- get_instruments(mode = mode)
+  
+  source_data <- get_common_table(src, "source") %>%
+    dplyr::collect()
+  
+  if (!is.null(language) | !is.null(form)) {
+    if (!is.null(language)) {
+      source_data <- source_data %>%
+        dplyr::filter(.data$instrument_language == language)
+    }
+    if (!is.null(form)) {
+      source_data <- source_data %>%
+        dplyr::filter(.data$instrument_form == form)
+    }
+    assertthat::assert_that(nrow(source_data) > 0)
+  }
+  
+  source_data <- source_data %>%
+    dplyr::rename(source_id = .data$id) %>%
+    dplyr::mutate(longitudinal = as.logical(.data$longitudinal),
+                  instrument_form = factor(.data$instrument_form, 
+                                           levels = c("WS", "WG", "TC", "TEDS Twos", 
+                                                      "TEDS Threes", "FormA", "FormBOne",
+                                                      "FormBTwo", "FormC", "IC", "Oxford CDI"),
+                                           labels = c("Words & Sentences", "Words & Gestures", 
+                                                      "Toddler Checklist", "TEDS Twos", 
+                                                      "TEDS Threes", "FormA", "FormBOne",
+                                                      "FormBTwo", "FormC", "Infant Checklist",
+                                                      "Oxford CDI")),
+                  license = factor(.data$license,
+                                   levels = c("CC-BY", "CC-BY-NC"),
+                                   labels = c("Creative Commons Attribution 4.0 International", 
+                                              "Creative Commons Attribution-NonCommercial 4.0 International")))
+  
+  if (administrations) {
+    admins <- get_common_table(src, "administration") %>% 
+      dplyr::collect() %>%
+      dplyr::filter(.data$source_id %in% source_data$source_id) %>%
+      dplyr::group_by(.data$source_id) %>%
+      dplyr::summarise(n_children = dplyr::n_distinct(.data$child_id),
+                       age_min = min(.data$age, na.rm = TRUE),
+                       age_max = max(.data$age, na.rm = TRUE))
+    
+    source_data <- source_data %>%
+      dplyr::left_join(admins, by = "source_id")
+  }
+  
+  DBI::dbDisconnect(src)
+  
+  return(source_data)
+  
+}
