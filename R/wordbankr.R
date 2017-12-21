@@ -2,9 +2,10 @@ if (getRversion() >= "2.15.1") utils::globalVariables(
   c(".", "age", "age_max", "age_min", "basetable_ptr_id", "birth_order",
     "data_id", "definition", "ethnicity", "form", "id", "item_id", "language",
     "level", "lexical_category", "lexical_class", "longitudinal", "momed_id",
-    "momed_level", "momed_order", "n", "n_children", "norming", "original_id",
-    "sex", "uni_lemma", "value", "num_item_id", "num_true", "num_false", "data",
-    "fit_data", "prop", "measure_name", "produces", "understands")
+    "momed_level", "momed_order", "name", "source_name", "dataset", "source_id",
+    "n", "n_children", "norming", "original_id", "sex", "uni_lemma", "value", 
+    "num_item_id", "num_true", "num_false", "data", "fit_data", "prop", 
+    "measure_name", "produces", "understands")
 )
 
 #' @importFrom dplyr "%>%"
