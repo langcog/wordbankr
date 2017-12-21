@@ -173,13 +173,20 @@ get_administration_data <- function(language = NULL, form = NULL,
     dplyr::transmute(momed_id = as.numeric(momed_id),
                      mom_ed = factor(momed_level, levels = momed_level))
   
+  sources <- get_common_table(src, "source") %>%
+    dplyr::collect() %>%
+    dplyr::rename(source_id = id) %>%
+    dplyr::mutate(source_name = ifelse(nchar(dataset) > 0,
+                                paste0(name, " (", dataset, ")"),
+                                name),
+           longitudinal = as.logical(longitudinal)) %>%
+    dplyr::select(source_id, longitudinal, source_name, license)
+  
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
     birth_order, ethnicity, sex, momed_id, zygosity, study_id as original_id,
-    age_min, age_max, norming, longitudinal, name as source_name
+    age_min, age_max, norming, source_id
     FROM common_administration
-    LEFT JOIN common_source
-    ON common_administration.source_id = common_source.id
     LEFT JOIN common_instrument
     ON common_administration.instrument_id = common_instrument.id
     LEFT JOIN common_child
@@ -189,10 +196,11 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
     dplyr::collect() %>%
-    dplyr::mutate(data_id = as.numeric(data_id), norming = as.logical(norming),
-                  longitudinal = as.logical(longitudinal)) %>%
+    dplyr::mutate(data_id = as.numeric(data_id), norming = as.logical(norming)) %>%
     dplyr::left_join(mom_ed, by = "momed_id") %>%
     dplyr::select(-momed_id) %>%
+    dplyr::left_join(sources, by = "source_id") %>%
+    dplyr::select(-source_id) %>%
     dplyr::mutate(sex = factor(sex, levels = c("F", "M", "O"),
                                labels = c("Female", "Male", "Other")),
                   ethnicity = factor(ethnicity,
