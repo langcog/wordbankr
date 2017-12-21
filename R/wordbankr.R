@@ -1,14 +1,9 @@
 if (getRversion() >= "2.15.1") utils::globalVariables(
-  c(".", "age", "age_max", "age_min", "basetable_ptr_id", "birth_order",
-    "data_id", "definition", "ethnicity", "form", "id", "item_id", "language",
-    "level", "lexical_category", "lexical_class", "longitudinal", "momed_id",
-    "momed_level", "momed_order", "name", "source_name", "dataset", "source_id",
-    "n", "n_children", "norming", "original_id", "sex", "uni_lemma", "value", 
-    "num_item_id", "num_true", "num_false", "data", "fit_data", "prop", 
-    "measure_name", "produces", "understands")
+  c(".", "n")
 )
 
 #' @importFrom dplyr "%>%"
+#' @importFrom rlang .data
 NULL
 
 #' Connect to the Wordbank database
@@ -119,11 +114,11 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
     instruments <- get_instruments(mode = mode)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
-        dplyr::filter(language == filter_language)
+        dplyr::filter(.data$language == filter_language)
     }
     if (!is.null(filter_form)) {
       instruments <- instruments %>%
-        dplyr::filter(form == filter_form)
+        dplyr::filter(.data$form == filter_form)
     }
     assertthat::assert_that(nrow(instruments) > 0)
     instrument_ids <- instruments$instrument_id
@@ -169,19 +164,19 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   mom_ed <- get_common_table(src, "momed") %>%
     dplyr::collect() %>%
-    dplyr::rename(momed_id = id, momed_level = level, momed_order = order) %>%
-    dplyr::arrange(momed_order) %>%
-    dplyr::transmute(momed_id = as.numeric(momed_id),
-                     mom_ed = factor(momed_level, levels = momed_level))
+    dplyr::rename(momed_id = .data$id, momed_level = .data$level, momed_order = .data$order) %>%
+    dplyr::arrange(.data$momed_order) %>%
+    dplyr::transmute(momed_id = as.numeric(.data$momed_id),
+                     mom_ed = factor(.data$momed_level, levels = .data$momed_level))
   
   sources <- get_common_table(src, "source") %>%
     dplyr::collect() %>%
-    dplyr::rename(source_id = id) %>%
-    dplyr::mutate(source_name = ifelse(nchar(dataset) > 0,
-                                paste0(name, " (", dataset, ")"),
-                                name),
-           longitudinal = as.logical(longitudinal)) %>%
-    dplyr::select(source_id, longitudinal, source_name, license)
+    dplyr::rename(source_id = .data$id) %>%
+    dplyr::mutate(source_name = ifelse(nchar(.data$dataset) > 0,
+                                paste0(.data$name, " (", .data$dataset, ")"),
+                                .data$name),
+           longitudinal = as.logical(.data$longitudinal)) %>%
+    dplyr::select(.data$source_id, .data$longitudinal, .data$source_name, .data$license)
   
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
@@ -197,32 +192,32 @@ get_administration_data <- function(language = NULL, form = NULL,
   
   admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
     dplyr::collect() %>%
-    dplyr::mutate(data_id = as.numeric(data_id), norming = as.logical(norming)) %>%
+    dplyr::mutate(data_id = as.numeric(.data$data_id), norming = as.logical(.data$norming)) %>%
     dplyr::left_join(mom_ed, by = "momed_id") %>%
-    dplyr::select(-momed_id) %>%
+    dplyr::select(-.data$momed_id) %>%
     dplyr::left_join(sources, by = "source_id") %>%
-    dplyr::select(-source_id) %>%
-    dplyr::mutate(sex = factor(sex, levels = c("F", "M", "O"),
+    dplyr::select(-.data$source_id) %>%
+    dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
                                labels = c("Female", "Male", "Other")),
-                  ethnicity = factor(ethnicity,
+                  ethnicity = factor(.data$ethnicity,
                                      levels = c("A", "B", "O", "W", "H"),
                                      labels = c("Asian", "Black", "Other",
                                                 "White", "Hispanic")),
-                  birth_order = factor(birth_order,
+                  birth_order = factor(.data$birth_order,
                                        levels = c(1, 2, 3, 4, 5, 6, 7, 8),
                                        labels = c("First", "Second", "Third",
                                                   "Fourth", "Fifth", "Sixth",
                                                   "Seventh", "Eighth")))
   if (!original_ids)
-    admins <- admins %>% dplyr::select(-original_id)
+    admins <- admins %>% dplyr::select(-.data$original_id)
   
   DBI::dbDisconnect(src)
   
   if (filter_age) admins <- admins %>%
-    dplyr::filter(age >= age_min, age <= age_max)
+    dplyr::filter(.data$age >= .data$age_min, .data$age <= .data$age_max)
   
   admins <- admins %>%
-    dplyr::select(-age_min, -age_max)
+    dplyr::select(-.data$age_min, -.data$age_max)
   return(admins)
   
 }
@@ -269,7 +264,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
   
   items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
     dplyr::collect() %>%
-    dplyr::mutate(num_item_id = strip_item_id(item_id))
+    dplyr::mutate(num_item_id = strip_item_id(.data$item_id))
   
   DBI::dbDisconnect(src)
   
@@ -328,29 +323,29 @@ get_instrument_data <- function(language, form,
     }
   } else {
     administrations <- administrations %>%
-      dplyr::filter(language == language, form == form)
+      dplyr::filter(.data$language == language, .data$form == form)
   }
   
   if ("logical" %in% class(iteminfo)) {
     if (iteminfo) {
       iteminfo <- get_item_data(language, form, mode = mode) %>%
-        dplyr::select(-language, -form)
+        dplyr::select(-.data$language, -.data$form)
     }
   } else {
     iteminfo <- iteminfo %>%
-      dplyr::filter(language == language, form == form,
-                    is.element(item_id, items)) %>%
-      dplyr::select(-language, -form)
+      dplyr::filter(.data$language == language, .data$form == form,
+                    is.element(.data$item_id, .data$items)) %>%
+      dplyr::select(-.data$language, -.data$form)
   }
   
   instrument_data <- instrument_table %>%
-    dplyr::select(basetable_ptr_id, !!items_quo) %>%
+    dplyr::select(.data$basetable_ptr_id, !!items_quo) %>%
     dplyr::collect() %>%
-    dplyr::mutate(data_id = as.numeric(basetable_ptr_id)) %>%
-    dplyr::select(-basetable_ptr_id) %>%
-    tidyr::gather(item_id, value, !!items_quo) %>%
-    dplyr::mutate(num_item_id = strip_item_id(item_id)) %>%
-    dplyr::select(-item_id)
+    dplyr::mutate(data_id = as.numeric(.data$basetable_ptr_id)) %>%
+    dplyr::select(-.data$basetable_ptr_id) %>%
+    tidyr::gather("item_id", "value", !!items_quo) %>%
+    dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
+    dplyr::select(-.data$item_id)
   
   if ("data.frame" %in% class(administrations)) {
     instrument_data <- dplyr::right_join(instrument_data, administrations,
@@ -406,16 +401,16 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
   assertthat::assert_that(is.element("num_item_id", colnames(instrument_data)))
   
   instrument_summary <- instrument_data %>%
-    dplyr::filter(!is.na(age)) %>%
-    dplyr::mutate(produces = !is.na(value) & value == "produces",
-                  understands = !is.na(value) &
-                    (value == "understands" | value == "produces")) %>%
-    dplyr::select(-value) %>%
-    tidyr::gather(measure_name, value, produces, understands) %>%
-    dplyr::filter(measure_name == measure) %>%
-    dplyr::group_by(age, num_item_id) %>%
-    dplyr::summarise(num_true = sum(value),
-                     num_false = n() - num_true)
+    dplyr::filter(!is.na(.data$age)) %>%
+    dplyr::mutate(produces = !is.na(.data$value) & .data$value == "produces",
+                  understands = !is.na(.data$value) &
+                    (.data$value == "understands" | .data$value == "produces")) %>%
+    dplyr::select(-.data$value) %>%
+    tidyr::gather("measure_name", "value", .data$produces, .data$understands) %>%
+    dplyr::filter(.data$measure_name == measure) %>%
+    dplyr::group_by(.data$age, .data$num_item_id) %>%
+    dplyr::summarise(num_true = sum(.data$value),
+                     num_false = n() - .data$num_true)
   
   inv_logit <- function(x) 1 / (exp(-x) + 1)
   ages <- dplyr::data_frame(
@@ -424,7 +419,7 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
   
   fit_methods <- list(
     "empirical" = function(item_data) {
-      item_data %>% dplyr::mutate(prop = num_true / (num_true + num_false))
+      item_data %>% dplyr::mutate(prop = .data$num_true / (.data$num_true + .data$num_false))
     },
     "glm" = function(item_data) {
       model <- stats::glm(cbind(num_true, num_false) ~ age, item_data,
@@ -442,16 +437,16 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
   )
   
   compute_aoa <- function(fit_data) {
-    acq <- fit_data %>% dplyr::filter(prop > proportion)
+    acq <- fit_data %>% dplyr::filter(.data$prop > proportion)
     if (nrow(acq)) min(acq$age) else NA
   }
   
   instrument_aoa <- instrument_summary %>%
-    dplyr::group_by(num_item_id) %>%
+    dplyr::group_by(.data$num_item_id) %>%
     tidyr::nest() %>%
-    dplyr::mutate(fit_data = data %>% purrr::map(fit_methods[[method]])) %>%
-    dplyr::mutate(aoa = fit_data %>% purrr::map_dbl(compute_aoa)) %>%
-    dplyr::select(-data, -fit_data)
+    dplyr::mutate(fit_data = .data$data %>% purrr::map(fit_methods[[method]])) %>%
+    dplyr::mutate(aoa = .data$fit_data %>% purrr::map_dbl(compute_aoa)) %>%
+    dplyr::select(-.data$data, -.data$fit_data)
   
   
   item_cols <- c("num_item_id", "item_id", "definition", "type", "category",
@@ -491,17 +486,17 @@ find_matches <- function(x, mode = "remote") {
                                     form = x$form[1], 
                                     items = x$item_id, administrations = TRUE, 
                                     iteminfo = TRUE, mode = mode) %>%
-    dplyr::filter(item_id %in% x$item_id) %>%
-    dplyr::group_by(language, item_id, definition, uni_lemma,
-                    lexical_category, lexical_class, age) %>%
+    dplyr::filter(.data$item_id %in% x$item_id) %>%
+    dplyr::group_by(.data$language, .data$item_id, .data$definition, .data$uni_lemma,
+                    .data$lexical_category, .data$lexical_class, .data$age) %>%
     dplyr::summarise(
       n_children = n(),
-      comprehension = sum(value %in% c("understands", "produces"),
-                          na.rm = TRUE) / n_children,
-      production = sum(value == "produces", na.rm = TRUE) / n_children,
-      comprehension_sd = stats::sd(value %in% c("understands", "produces"),
-                                   na.rm = TRUE) / n_children,
-      production_sd = stats::sd(value == "produces", na.rm = TRUE) / n_children
+      comprehension = sum(.data$value %in% c("understands", "produces"),
+                          na.rm = TRUE) / .data$n_children,
+      production = sum(.data$value == "produces", na.rm = TRUE) / .data$n_children,
+      comprehension_sd = stats::sd(.data$value %in% c("understands", "produces"),
+                                   na.rm = TRUE) / .data$n_children,
+      production_sd = stats::sd(.data$value == "produces", na.rm = TRUE) / .data$n_children
     )
   
   return(match_data)
@@ -552,7 +547,7 @@ get_crossling_items <- function(mode = "remote") {
 match_crossling_items <- function(unilemmas, mode = "remote") {
   src <- connect_to_wordbank(mode = mode)
   item_data <- get_item_data(mode = mode) %>%
-    dplyr::filter(uni_lemma %in% unilemmas, form == "WG") %>%
+    dplyr::filter(.data$uni_lemma %in% unilemmas, .data$form == "WG") %>%
     split(.$language) %>%
     purrr::map_df(function(x) find_matches(x, mode))
   
