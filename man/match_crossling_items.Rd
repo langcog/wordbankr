@@ -13,10 +13,10 @@ match_crossling_items(unilemmas, mode = "remote")
 or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
-A data frame where each row is a particular CDI item with a set of 
-variables describing its instrument (\code{language}), its variables (\code{item_id}, 
+A data frame where each row is a particular CDI item with a set of
+variables describing its instrument (\code{language}), its variables (\code{item_id},
  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
- its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+ its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
  \code{production}, \code{comprehension_sd}, \code{production_sd}).
 }
 \description{

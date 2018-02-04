@@ -7,16 +7,16 @@
 find_matches(x, mode = "remote")
 }
 \arguments{
-\item{x}{A 1-row dataframe passed on from \code{"match_crossling_items"} 
+\item{x}{A 1-row dataframe passed on from \code{"match_crossling_items"}
 with the following variables:}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"},
 or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
-A dataframe describing the instrument (\code{language}), its variables (\code{item_id}, 
+A dataframe describing the instrument (\code{language}), its variables (\code{item_id},
   \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
   \code{production}, \code{comprehension_sd}, \code{production_sd}).
 }
 \description{

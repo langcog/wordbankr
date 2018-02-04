@@ -131,25 +131,26 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 
 
 #' Get the Wordbank by-administration data
-#' 
-#' @param language An optional string specifying which language's 
+#'
+#' @param language An optional string specifying which language's
 #'   administrations to retrieve.
-#' @param form An optional string specifying which form's administrations to 
+#' @param form An optional string specifying which form's administrations to
 #'   retrieve.
-#' @param filter_age A logical indicating whether to filter the administrations 
+#' @param filter_age A logical indicating whether to filter the administrations
 #'   to ones in the valid age range for their instrument
-#' @param original_ids A logical indicating whether to include the original ids provided
-#'   by data contributors. Wordbank provides no guarantees about the structure or 
-#'   uniqueness of these ids. Use at your own risk!    
+#' @param original_ids A logical indicating whether to include the original ids
+#'   provided by data contributors. Wordbank provides no guarantees about the
+#'   structure or uniqueness of these ids. Use at your own risk!
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a CDI administration and each column 
-#'   is a variable about the administration (\code{data_id}, \code{age}, 
-#'   \code{comprehension}, \code{production}), its instrument (\code{language}, 
-#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
-#'   \code{mom_ed}), or its dataset source (\code{norming},
+#' @return A data frame where each row is a CDI administration and each column
+#'   is a variable about the administration (\code{data_id}, \code{age},
+#'   \code{comprehension}, \code{production}), its instrument (\code{language},
+#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
+#'   \code{mom_ed}, \code{zygosity}), and its dataset source
+#'   (\code{source_name}, \code{source_dataset}, \code{norming},
 #'   \code{longitudinal}). Also includes an \code{original_id} column if the
 #'   \code{original_ids} flag is \code{TRUE}.
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' english_ws_admins <- get_administration_data("English (American)", "WS")
@@ -303,12 +304,12 @@ get_instrument_data <- function(language, form,
                                 iteminfo = FALSE, mode = "remote") {
   
   items_quo <- rlang::enquo(items)
-
+  
   src <- connect_to_wordbank(mode = mode)
   instrument_table <- get_instrument_table(src, language, form)
   
   columns <- colnames(instrument_table)
-
+  
   if (is.null(items)) {
     items <- columns[2:length(columns)]
     items_quo <- rlang::enquo(items)
@@ -365,26 +366,26 @@ get_instrument_data <- function(language, form,
 
 
 #' Fit age of acquisition estimates for Wordbank data
-#' 
-#' For each item in the input data, estimate its age of acquisition as the 
-#' earliest age (in months) at which the proportion of children who 
-#' understand/produce the item is greater than some threshold. The proportions 
+#'
+#' For each item in the input data, estimate its age of acquisition as the
+#' earliest age (in months) at which the proportion of children who
+#' understand/produce the item is greater than some threshold. The proportions
 #' used can be empirical or first smoothed by a model.
-#' 
-#' @param instrument_data A data frame returned by \code{get_instrument_data}, 
+#'
+#' @param instrument_data A data frame returned by \code{get_instrument_data},
 #'   which must have an "age" column and a "num_item_id" column
 #' @param measure One of "produces" or "understands" (defaults to "produces")
-#' @param method A string indicating which smoothing method to use: 
-#'   \code{empirical} to use empirical proportions,  \code{glm} to fit a 
-#'   logistic linear model, \code{glmrob} a robust logistic linear model 
+#' @param method A string indicating which smoothing method to use:
+#'   \code{empirical} to use empirical proportions,  \code{glm} to fit a
+#'   logistic linear model, \code{glmrob} a robust logistic linear model
 #'   (defaults to \code{glm})
 #' @param proportion A number between 0 and 1 indicating threshold proportion of
 #'   children
-#'   
+#'
 #' @return A data frame where every row is an item, the item-level columns from
 #'   the input data are preserved, and the \code{aoa} column contains the age of
 #'   acquisition estimates
-#'   
+#'
 #' @examples
 #' \dontrun{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
@@ -464,13 +465,13 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 
 
 #' Connect to the Wordbank database
-#' @param x A 1-row dataframe passed on from \code{"match_crossling_items"} 
+#' @param x A 1-row dataframe passed on from \code{"match_crossling_items"}
 #'   with the following variables:
 #' @param mode A string indicating connection mode: one of \code{"local"},
 #'   or \code{"remote"} (defaults to \code{"remote"})
-#' @return A dataframe describing the instrument (\code{language}), its variables (\code{item_id}, 
+#' @return A dataframe describing the instrument (\code{language}), its variables (\code{item_id},
 #'   \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-#'   its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+#'   its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
 #'   \code{production}, \code{comprehension_sd}, \code{production_sd}).
 #' @keywords internal
 #'
@@ -482,9 +483,9 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 #' }
 find_matches <- function(x, mode = "remote") {
   
-  match_data <- get_instrument_data(language = x$language[1], 
-                                    form = x$form[1], 
-                                    items = x$item_id, administrations = TRUE, 
+  match_data <- get_instrument_data(language = x$language[1],
+                                    form = x$form[1],
+                                    items = x$item_id, administrations = TRUE,
                                     iteminfo = TRUE, mode = mode) %>%
     dplyr::filter(.data$item_id %in% x$item_id) %>%
     dplyr::group_by(.data$language, .data$item_id, .data$definition, .data$uni_lemma,
@@ -506,10 +507,8 @@ find_matches <- function(x, mode = "remote") {
 
 #' Get a list of unilemmas available at Wordbank
 #'
-#' @param mode A string indicating connection mode: one of \code{"local"},
-#'   or \code{"remote"} (defaults to \code{"remote"})
-#' @return A data frame
 #' @inheritParams connect_to_wordbank
+#' @return A data frame
 #'
 #' @examples
 #' \dontrun{
@@ -517,8 +516,8 @@ find_matches <- function(x, mode = "remote") {
 #' }
 #' @export
 get_crossling_items <- function(mode = "remote") {
-  src <- connect_to_wordbank(mode = "remote")
-  unilemmas <- get_common_table(src, "itemmap") %>% 
+  src <- connect_to_wordbank(mode = mode)
+  unilemmas <- get_common_table(src, "itemmap") %>%
     dplyr::collect()
   
   DBI::dbDisconnect(src)
@@ -533,10 +532,10 @@ get_crossling_items <- function(mode = "remote") {
 #' @param mode A string indicating connection mode: one of \code{"local"},
 #'   or \code{"remote"} (defaults to \code{"remote"})
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a particular CDI item with a set of 
-#' variables describing its instrument (\code{language}), its variables (\code{item_id}, 
+#' @return A data frame where each row is a particular CDI item with a set of
+#' variables describing its instrument (\code{language}), its variables (\code{item_id},
 #'  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-#'  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension}, 
+#'  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
 #'  \code{production}, \code{comprehension_sd}, \code{production_sd}).
 #'
 #' @examples
