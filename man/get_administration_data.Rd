@@ -8,28 +8,29 @@ get_administration_data(language = NULL, form = NULL, filter_age = TRUE,
   original_ids = FALSE, mode = "remote")
 }
 \arguments{
-\item{language}{An optional string specifying which language's 
+\item{language}{An optional string specifying which language's
 administrations to retrieve.}
 
-\item{form}{An optional string specifying which form's administrations to 
+\item{form}{An optional string specifying which form's administrations to
 retrieve.}
 
-\item{filter_age}{A logical indicating whether to filter the administrations 
+\item{filter_age}{A logical indicating whether to filter the administrations
 to ones in the valid age range for their instrument}
 
-\item{original_ids}{A logical indicating whether to include the original ids provided
-by data contributors. Wordbank provides no guarantees about the structure or 
-uniqueness of these ids. Use at your own risk!}
+\item{original_ids}{A logical indicating whether to include the original ids
+provided by data contributors. Wordbank provides no guarantees about the
+structure or uniqueness of these ids. Use at your own risk!}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"},
 or \code{"remote"} (defaults to \code{"remote"})}
 }
 \value{
-A data frame where each row is a CDI administration and each column 
-  is a variable about the administration (\code{data_id}, \code{age}, 
-  \code{comprehension}, \code{production}), its instrument (\code{language}, 
-  \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex}, 
-  \code{mom_ed}), or its dataset source (\code{norming},
+A data frame where each row is a CDI administration and each column
+  is a variable about the administration (\code{data_id}, \code{age},
+  \code{comprehension}, \code{production}), its instrument (\code{language},
+  \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
+  \code{mom_ed}, \code{zygosity}), and its dataset source
+  (\code{source_name}, \code{source_dataset}, \code{norming},
   \code{longitudinal}). Also includes an \code{original_id} column if the
   \code{original_ids} flag is \code{TRUE}.
 }

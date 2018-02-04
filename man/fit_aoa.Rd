@@ -8,14 +8,14 @@ fit_aoa(instrument_data, measure = "produces", method = "glm",
   proportion = 0.5)
 }
 \arguments{
-\item{instrument_data}{A data frame returned by \code{get_instrument_data}, 
+\item{instrument_data}{A data frame returned by \code{get_instrument_data},
 which must have an "age" column and a "num_item_id" column}
 
 \item{measure}{One of "produces" or "understands" (defaults to "produces")}
 
-\item{method}{A string indicating which smoothing method to use: 
-\code{empirical} to use empirical proportions,  \code{glm} to fit a 
-logistic linear model, \code{glmrob} a robust logistic linear model 
+\item{method}{A string indicating which smoothing method to use:
+\code{empirical} to use empirical proportions,  \code{glm} to fit a
+logistic linear model, \code{glmrob} a robust logistic linear model
 (defaults to \code{glm})}
 
 \item{proportion}{A number between 0 and 1 indicating threshold proportion of
@@ -27,9 +27,9 @@ A data frame where every row is an item, the item-level columns from
   acquisition estimates
 }
 \description{
-For each item in the input data, estimate its age of acquisition as the 
-earliest age (in months) at which the proportion of children who 
-understand/produce the item is greater than some threshold. The proportions 
+For each item in the input data, estimate its age of acquisition as the
+earliest age (in months) at which the proportion of children who
+understand/produce the item is greater than some threshold. The proportions
 used can be empirical or first smoothed by a model.
 }
 \examples{
