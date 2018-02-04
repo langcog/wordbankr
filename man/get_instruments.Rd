@@ -7,11 +7,13 @@
 get_instruments(mode = "remote")
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-or \code{"remote"} (defaults to \code{"remote"})}
+\item{mode}{A string indicating connection mode: one of \code{"local"}, or
+\code{"remote"} (defaults to \code{"remote"}).}
 }
 \value{
-A data frame
+A data frame where each row is a CDI instrument and each column is a
+  variable about the instrument (\code{instrument_id}, \code{language},
+  \code{form}, \code{age_min}, \code{age_max}, \code{has_grammar}).
 }
 \description{
 Get the Wordbank instruments
@@ -21,4 +23,3 @@ Get the Wordbank instruments
 instruments <- get_instruments()
 }
 }
-\keyword{internal}

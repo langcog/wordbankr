@@ -9,22 +9,22 @@ fit_aoa(instrument_data, measure = "produces", method = "glm",
 }
 \arguments{
 \item{instrument_data}{A data frame returned by \code{get_instrument_data},
-which must have an "age" column and a "num_item_id" column}
+which must have an "age" column and a "num_item_id" column.}
 
-\item{measure}{One of "produces" or "understands" (defaults to "produces")}
+\item{measure}{One of "produces" or "understands" (defaults to "produces").}
 
 \item{method}{A string indicating which smoothing method to use:
 \code{empirical} to use empirical proportions,  \code{glm} to fit a
 logistic linear model, \code{glmrob} a robust logistic linear model
-(defaults to \code{glm})}
+(defaults to \code{glm}).}
 
 \item{proportion}{A number between 0 and 1 indicating threshold proportion of
-children}
+children.}
 }
 \value{
 A data frame where every row is an item, the item-level columns from
   the input data are preserved, and the \code{aoa} column contains the age of
-  acquisition estimates
+  acquisition estimates.
 }
 \description{
 For each item in the input data, estimate its age of acquisition as the

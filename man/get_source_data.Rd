@@ -2,43 +2,41 @@
 % Please edit documentation in R/wordbankr.R
 \name{get_source_data}
 \alias{get_source_data}
-\title{Get the Wordbank source data}
+\title{Get the Wordbank data sources}
 \usage{
 get_source_data(language = NULL, form = NULL, administrations = FALSE,
   mode = "remote")
 }
 \arguments{
-\item{language}{An optional string specifying which language's 
-datasets to retrieve.}
-
-\item{form}{An optional string specifying which form's datasets to 
+\item{language}{An optional string specifying which language's datasets to
 retrieve.}
 
-\item{administrations}{Either a logical indicating whether to include
-summary-level statistics on the administrations within a dataset.}
+\item{form}{An optional string specifying which form's datasets to retrieve.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-or \code{"remote"} (defaults to \code{"remote"})}
+\item{administrations}{A logical indicating whether to include summary-level
+statistics on the administrations within a dataset.}
+
+\item{mode}{A string indicating connection mode: one of \code{"local"}, or
+\code{"remote"} (defaults to \code{"remote"}).}
 }
 \value{
-A data frame where each row is a particular dataset and its 
-characteristics: dataset id and name (\code{source_id}, \code{name},
-\code{dataset}), language (\code{instrument_language}), 
-form (\code{instrument_form}), contributor and affiliated institution 
-(\code{contributor}), provided citation (\code{citation}), whether
-dataset includes longitudinal participants (\code{longitudinal}),
-and licensing information (\code{license}). Also includes summary
-statistics on a dataset if the (\code{administrations}) flag is \code{TRUE},
-including number of children (\code{n_children}) and age range
-(\code{age_min}, \code{age_max}).
+A data frame where each row is a particular dataset and its
+  characteristics: dataset id and name (\code{source_id}, \code{name},
+  \code{dataset}), language (\code{instrument_language}), form
+  (\code{instrument_form}), contributor and affiliated institution
+  (\code{contributor}), provided citation (\code{citation}), whether dataset
+  includes longitudinal participants (\code{longitudinal}), and licensing
+  information (\code{license}). Also includes summary statistics on a dataset
+  if the (\code{administrations}) flag is \code{TRUE}: number of children
+  (\code{n_children}) and age range (\code{age_min}, \code{age_max}).
 }
 \description{
-Get the Wordbank source data
+Get the Wordbank data sources
 }
 \examples{
 \dontrun{
 english_ws_sources <- get_source_data(language = "English (American)",
-                                   form = "WS",
-                                   administrations = TRUE)
+                                      form = "WS",
+                                      administrations = TRUE)
 }
 }

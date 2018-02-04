@@ -7,8 +7,8 @@
 get_crossling_items(mode = "remote")
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-or \code{"remote"} (defaults to \code{"remote"})}
+\item{mode}{A string indicating connection mode: one of \code{"local"}, or
+\code{"remote"} (defaults to \code{"remote"}).}
 }
 \value{
 A data frame

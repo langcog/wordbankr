@@ -8,29 +8,31 @@ get_instrument_data(language, form, items = NULL, administrations = FALSE,
   iteminfo = FALSE, mode = "remote")
 }
 \arguments{
-\item{language}{A string of the instrument's language (insensitive
-to case and whitespace)}
+\item{language}{A string of the instrument's language (insensitive to case
+and whitespace).}
 
-\item{form}{A string of the instrument's form (insensitive to case
-and whitespace)}
+\item{form}{A string of the instrument's form (insensitive to case and
+whitespace).}
 
 \item{items}{A character vector of column names of \code{instrument_table} of
 items to extract. If not supplied, defaults to all the columns of
-\code{instrument_table}}
+\code{instrument_table}.}
 
 \item{administrations}{Either a logical indicating whether to include
 administration data or a data frame of administration data (from
-\code{get_administration_data})}
+\code{get_administration_data}).}
 
 \item{iteminfo}{Either a logical indicating whether to include item data or a
-data frame of item data (from \code{get_item_data})}
+data frame of item data (from \code{get_item_data}).}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"},
-or \code{"remote"} (defaults to \code{"remote"})}
+\item{mode}{A string indicating connection mode: one of \code{"local"}, or
+\code{"remote"} (defaults to \code{"remote"}).}
 }
 \value{
 A data frame where each row is the result (\code{value}) of a given
-  item (\code{num_item_id}) for a given administration (\code{data_id})
+  item (\code{num_item_id}) for a given administration (\code{data_id}), with
+  additional columns of variables about the administration and item, if
+  specified.
 }
 \description{
 Get the Wordbank administration-by-item data

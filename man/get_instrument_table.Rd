@@ -7,16 +7,16 @@
 get_instrument_table(src, language, form)
 }
 \arguments{
-\item{src}{A connection to the Wordbank database}
+\item{src}{A connection to the Wordbank database.}
 
 \item{language}{A string of the instrument's language (insensitive to case
-and whitespace)}
+and whitespace).}
 
 \item{form}{A string of the instrument's form (insensitive to case and
-whitespace)}
+whitespace).}
 }
 \value{
-A \code{tbl} object containing the instrument's data
+A \code{tbl} object containing the instrument's data.
 }
 \description{
 Connect to an instrument's Wordbank table

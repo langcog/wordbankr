@@ -7,12 +7,12 @@
 get_common_table(src, name)
 }
 \arguments{
-\item{src}{A connection to the Wordbank database}
+\item{src}{A connection to the Wordbank database.}
 
-\item{name}{A string indicating the name of a common table}
+\item{name}{A string indicating the name of a common table.}
 }
 \value{
-A \code{tbl} object
+A \code{tbl} object.
 }
 \description{
 Connect to a single Wordbank common table
