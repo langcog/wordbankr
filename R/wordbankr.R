@@ -396,9 +396,9 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 #'                                    items = c("item_1", "item_42"))
 #' }
 #' @export
-get_instrument_data <- function(language, form,
-                                items = NULL, administrations = FALSE,
-                                iteminfo = FALSE, mode = "remote") {
+get_instrument_data <- function(language, form, items = NULL,
+                                administrations = FALSE, iteminfo = FALSE,
+                                mode = "remote") {
 
   items_quo <- rlang::enquo(items)
 
@@ -432,7 +432,7 @@ get_instrument_data <- function(language, form,
   } else {
     iteminfo <- iteminfo %>%
       dplyr::filter(.data$language == language, .data$form == form,
-                    is.element(.data$item_id, .data$items)) %>%
+                    is.element(.data$item_id, items)) %>%
       dplyr::select(-.data$language, -.data$form)
   }
 
@@ -567,51 +567,10 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 }
 
 
-#' Connect to the Wordbank database
-#' @param x A 1-row dataframe passed on from \code{"match_crossling_items"}
-#'   with the following variables:
-#' @param mode A string indicating connection mode: one of \code{"local"},
-#'   or \code{"remote"} (defaults to \code{"remote"})
-#' @return A dataframe describing the instrument (\code{language}), its variables (\code{item_id},
-#'   \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-#'   its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
-#'   \code{production}, \code{comprehension_sd}, \code{production_sd}).
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' dog_unilemma <- get_item_data(language = "Italian", form = "WG") %>%
-#'   filter(uni_lemma == "dog")
-#' dog_in_italian <- find_matches(dog_unilemma)
-#' }
-find_matches <- function(x, mode = "remote") {
-
-  match_data <- get_instrument_data(language = x$language[1],
-                                    form = x$form[1],
-                                    items = x$item_id, administrations = TRUE,
-                                    iteminfo = TRUE, mode = mode) %>%
-    dplyr::filter(.data$item_id %in% x$item_id) %>%
-    dplyr::group_by(.data$language, .data$item_id, .data$definition, .data$uni_lemma,
-                    .data$lexical_category, .data$lexical_class, .data$age) %>%
-    dplyr::summarise(
-      n_children = n(),
-      comprehension = sum(.data$value %in% c("understands", "produces"),
-                          na.rm = TRUE) / .data$n_children,
-      production = sum(.data$value == "produces", na.rm = TRUE) / .data$n_children,
-      comprehension_sd = stats::sd(.data$value %in% c("understands", "produces"),
-                                   na.rm = TRUE) / .data$n_children,
-      production_sd = stats::sd(.data$value == "produces", na.rm = TRUE) / .data$n_children
-    )
-
-  return(match_data)
-
-}
-
-
-#' Get a list of unilemmas available at Wordbank
+#' Get the unilemmas available in Wordbank
 #'
 #' @inheritParams connect_to_wordbank
-#' @return A data frame
+#' @return A data frame with the column \code{uni_lemma}.
 #'
 #' @examples
 #' \dontrun{
@@ -619,7 +578,9 @@ find_matches <- function(x, mode = "remote") {
 #' }
 #' @export
 get_crossling_items <- function(mode = "remote") {
+
   src <- connect_to_wordbank(mode = mode)
+
   unilemmas <- get_common_table(src, "itemmap") %>%
     dplyr::collect()
 
@@ -629,29 +590,76 @@ get_crossling_items <- function(mode = "remote") {
 }
 
 
-#' Match unilemmas to their Wordbank group-by-item data
+#' Get item-by-age summary statistics
 #'
-#' @param unilemmas A character vector of unilemmas to get group-by-item data for
-#' @param mode A string indicating connection mode: one of \code{"local"},
-#'   or \code{"remote"} (defaults to \code{"remote"})
+#' @param lang_items A dataframe as returned by \code{get_item_data()}.
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is a particular CDI item with a set of
-#' variables describing its instrument (\code{language}), its variables (\code{item_id},
-#'  \code{definition}, \code{uni_lemma}, \code{lexical_category}, \code{lexical_class}),
-#'  its agegroup (\code{age}, \code{n_children}), and the group's performance (\code{comprehension},
-#'  \code{production}, \code{comprehension_sd}, \code{production_sd}).
+#' @return A dataframe with a row for each combination of item and age, and
+#'   columns for summary statistics for the group: number of children
+#'   (\code{n_children}), means (\code{comprehension}, \code{production}),
+#'   standard deviations (\code{comprehension_sd}, \code{production_sd}); also
+#'   retains item-level variables from \code{lang_items} (\code{item_id},
+#'   \code{definition}, \code{uni_lemma}, \code{lexical_category},
+#'   \code{lexical_class}).
 #'
 #' @examples
 #' \dontrun{
-#' crossling_words <- match_crossling_items(unilemmas = c("hat", "nose"))
+#' italian_dog <- get_item_data(language = "Italian", form = "WG") %>%
+#'   filter(uni_lemma == "dog")
+#' italian_dog_summary <- summarise_items(italian_dog)
 #' }
 #' @export
-match_crossling_items <- function(unilemmas, mode = "remote") {
+summarise_items <- function(lang_items, mode = "remote") {
+  message(sprintf("Getting data for %s...", unique(lang_items$language)))
+
+  get_instrument_data(language = unique(lang_items$language),
+                      form = unique(lang_items$form),
+                      items = lang_items$item_id,
+                      administrations = TRUE,
+                      iteminfo = lang_items,
+                      mode = mode) %>%
+    dplyr::mutate(understands = !is.na(.data$value) &
+                    .data$value %in% c("understands", "produces"),
+                  produces = !is.na(.data$value) &
+                    .data$value == "produces") %>%
+    dplyr::group_by(.data$language, .data$item_id, .data$definition,
+                    .data$uni_lemma, .data$lexical_category,
+                    .data$lexical_class, .data$age) %>%
+    dplyr::summarise(
+      n_children = n(),
+      comprehension = sum(.data$understands) / .data$n_children,
+      production = sum(.data$produces) / .data$n_children,
+      comprehension_sd = stats::sd(.data$understands) / .data$n_children,
+      production_sd = stats::sd(.data$produces) / .data$n_children
+    )
+
+}
+
+
+#' Get item-by-age summary statistics for items across languages
+#'
+#' @param uni_lemmas A character vector of uni_lemmas.
+#' @inheritParams connect_to_wordbank
+#' @return A dataframe with a row for each combination of language, item, and
+#'   age, and columns for summary statistics for the group: number of children
+#'   (\code{n_children}), means (\code{comprehension}, \code{production}),
+#'   standard deviations (\code{comprehension_sd}, \code{production_sd}); and
+#'   item-level variables (\code{item_id}, \code{definition}, \code{uni_lemma},
+#'   \code{lexical_category}, \code{lexical_class}).
+
+#' @examples
+#' \dontrun{
+#' crossling_data <- get_crossling_data(uni_lemmas = c("hat", "nose"))
+#' }
+#' @export
+get_crossling_data <- function(uni_lemmas, mode = "remote") {
+
   src <- connect_to_wordbank(mode = mode)
+
   item_data <- get_item_data(mode = mode) %>%
-    dplyr::filter(.data$uni_lemma %in% unilemmas, .data$form == "WG") %>%
+    dplyr::filter(.data$uni_lemma %in% uni_lemmas, .data$form == "WG") %>%
     split(.$language) %>%
-    purrr::map_df(function(x) find_matches(x, mode))
+    purrr::map_df(~summarise_items(.x, mode))
 
   DBI::dbDisconnect(src)
 

@@ -2,11 +2,12 @@
 
 export(fit_aoa)
 export(get_administration_data)
+export(get_crossling_data)
 export(get_crossling_items)
 export(get_instrument_data)
 export(get_instruments)
 export(get_item_data)
 export(get_source_data)
-export(match_crossling_items)
+export(summarise_items)
 importFrom(dplyr,"%>%")
 importFrom(rlang,.data)
