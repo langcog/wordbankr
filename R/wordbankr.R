@@ -1,6 +1,4 @@
-if (getRversion() >= "2.15.1") utils::globalVariables(
-  c(".", "n")
-)
+utils::globalVariables(c(".", "n"))
 
 #' @importFrom dplyr "%>%"
 #' @importFrom rlang .data
@@ -114,7 +112,7 @@ get_instruments <- function(mode = "remote") {
 #' @param language An optional string specifying which language's datasets to
 #'   retrieve.
 #' @param form An optional string specifying which form's datasets to retrieve.
-#' @param administrations A logical indicating whether to include summary-level
+#' @param admin_data A logical indicating whether to include summary-level
 #'   statistics on the administrations within a dataset.
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a particular dataset and its
@@ -129,13 +127,13 @@ get_instruments <- function(mode = "remote") {
 #'
 #' @examples
 #' \dontrun{
-#' english_ws_sources <- get_source_data(language = "English (American)",
-#'                                       form = "WS",
-#'                                       administrations = TRUE)
+#' english_ws_sources <- get_sources(language = "English (American)",
+#'                                   form = "WS",
+#'                                   admin_data = TRUE)
 #' }
 #' @export
-get_source_data <- function(language = NULL, form = NULL,
-                            administrations = FALSE, mode = "remote") {
+get_sources <- function(language = NULL, form = NULL,
+                        admin_data = FALSE, mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
 
@@ -176,12 +174,12 @@ get_source_data <- function(language = NULL, form = NULL,
                                    levels = license_levels,
                                    labels = license_labels))
 
-  if (administrations) {
+  if (admin_data) {
     admins <- get_common_table(src, "administration") %>%
       dplyr::collect() %>%
       dplyr::filter(.data$source_id %in% source_data$source_id) %>%
       dplyr::group_by(.data$source_id) %>%
-      dplyr::summarise(n_children = dplyr::n_distinct(.data$child_id),
+      dplyr::summarise(n_admins = dplyr::n_distinct(.data$data_id),
                        age_min = min(.data$age, na.rm = TRUE),
                        age_max = max(.data$age, na.rm = TRUE))
 

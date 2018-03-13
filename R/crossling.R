@@ -87,8 +87,8 @@ get_crossling_data <- function(uni_lemmas, mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
 
-  item_data <- get_item_data(mode = mode) %>%
-    dplyr::filter(.data$uni_lemma %in% uni_lemmas, .data$form == "WG") %>%
+  item_data <- get_item_data(form = "WG", mode = mode) %>%
+    dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
     split(.$language) %>%
     purrr::map_df(~summarise_items(.x, mode))
 
