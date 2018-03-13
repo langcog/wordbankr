@@ -3,7 +3,7 @@ Type: Package
 Title: Accessing the Wordbank Database
 Description: Tools for connecting to Wordbank, an open repository for
     developmental vocabulary data.
-Version: 0.2.4
+Version: 0.3.0
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
@@ -11,21 +11,21 @@ Authors@R: c(
     person("Danielle", "Kellier", email = "dkellier@stanford.edu", role = "ctb")
     )
 Depends:
-    R (>= 3.3.3)
+    R (>= 3.4.1)
 License: GPL-3
 URL: https://github.com/langcog/wordbankr
 BugReports: http://github.com/langcog/wordbankr/issues
 Imports:
     assertthat (>= 0.2.0),
-    DBI (>= 0.6),
+    DBI (>= 0.7),
     dbplyr (>= 1.1.0),
-    dplyr (>= 0.7.2),
-    purrr (>= 0.2.3),
+    dplyr (>= 0.7.4),
+    purrr (>= 0.2.4),
     rlang (>= 0.1.2),
-    RMySQL (>= 0.10.11),
+    RMySQL (>= 0.10.13),
     robustbase (>= 0.92),
     stringr (>= 1.2.0),
-    tidyr (>= 0.7.0)
+    tidyr (>= 0.7.2)
 Suggests:
     ggplot2,
     knitr,

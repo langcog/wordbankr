@@ -1,23 +1,23 @@
-#' Get the unilemmas available in Wordbank
+#' Get the uni_lemmas available in Wordbank
 #'
 #' @inheritParams connect_to_wordbank
 #' @return A data frame with the column \code{uni_lemma}.
 #'
 #' @examples
 #' \dontrun{
-#' unilemmas <- get_crossling_items()
+#' uni_lemmas <- get_crossling_items()
 #' }
 #' @export
 get_crossling_items <- function(mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
 
-  unilemmas <- get_common_table(src, "itemmap") %>%
+  uni_lemmas <- get_common_table(src, "itemmap") %>%
     dplyr::collect()
 
   DBI::dbDisconnect(src)
 
-  return(unilemmas)
+  return(uni_lemmas)
 }
 
 

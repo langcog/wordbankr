@@ -2,7 +2,7 @@
 % Please edit documentation in R/crossling.R
 \name{get_crossling_items}
 \alias{get_crossling_items}
-\title{Get the unilemmas available in Wordbank}
+\title{Get the uni_lemmas available in Wordbank}
 \usage{
 get_crossling_items(mode = "remote")
 }
@@ -14,10 +14,10 @@ get_crossling_items(mode = "remote")
 A data frame with the column \code{uni_lemma}.
 }
 \description{
-Get the unilemmas available in Wordbank
+Get the uni_lemmas available in Wordbank
 }
 \examples{
 \dontrun{
-unilemmas <- get_crossling_items()
+uni_lemmas <- get_crossling_items()
 }
 }
