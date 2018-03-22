@@ -4,6 +4,52 @@ utils::globalVariables(c(".", "n"))
 #' @importFrom rlang .data
 NULL
 
+find_database <- function(mode = "remote") {
+  db_info = list()
+  if (mode == "remote") {
+    db_info[c("address", "dbname")] = c("server.wordbank.stanford.edu", "wordbank")
+  } else if (mode == "local") {
+    db_info[c("address", "dbname")] = c("localhost", "wordbank")
+  } else {
+    db_info["address"] <- "wordbank-backup.canyiscnpddk.us-west-2.rds.amazonaws.com"
+    mode_date <- tryCatch(lubridate::parse_date_time(mode, orders = c("mdY", "Ymd")),
+                          warning = function(e) {
+                            message("Error parsing date entered in mode variable.")
+                            message("Please enter dates as in 'Ymd' or 'mdY' format.")
+                            message("Grabbing latest archived version of Wordbank.")
+                            lubridate::today()})
+      
+    my_host <- DBI::dbConnect(RMySQL::MySQL(),
+                   host = db_info$address,
+                   user = "wordbank", password = "wordbank")
+    
+    if (mode_date < lubridate::parse_date_time("2017-01-10", "Ymd")) {
+      message("Entered date is earlier than the first archived version of Wordbank.")
+      message("Referring to earliest version of Wordbank archived 2017-01-10.")
+      
+      db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
+        dplyr::collect() %>%
+        dplyr::filter(grepl('wordbank_[0-9]+', .data$Database)) %>%
+        dplyr::mutate(date_archived = lubridate::parse_date_time(gsub("wordbank_", "", .data$Database), "Ymd")) %>%
+        dplyr::filter(.data$date_archived == min(.data$date_archived))
+      
+    } else{
+      
+      db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
+        dplyr::collect() %>%
+        dplyr::filter(grepl('wordbank_[0-9]+', .data$Database)) %>%
+        dplyr::mutate(date_archived = lubridate::parse_date_time(gsub("wordbank_", "", .data$Database), "Ymd")) %>%
+        dplyr::filter(.data$date_archived <= mode_date) %>%
+        dplyr::filter(.data$date_archived == max(.data$date_archived))
+    }
+    
+    db_info["dbname"] <- dplyr::first(db_list$Database)
+    DBI::dbDisconnect(my_host)
+  }
+  
+  return(db_info)
+}
+
 #' Connect to the Wordbank database
 #'
 #' @param mode A string indicating connection mode: one of \code{"local"}, or
@@ -17,14 +63,11 @@ NULL
 #' DBI::dbDisconnect(src)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
-
-  assertthat::assert_that(is.element(mode, c("local", "remote")))
-  address <- switch(mode,
-                    local = "localhost",
-                    remote = "server.wordbank.stanford.edu")
+  
+  db_info <- find_database(mode)
 
   DBI::dbConnect(RMySQL::MySQL(),
-                 host = address, dbname = "wordbank",
+                 host = db_info$address, dbname = db_info$dbname,
                  user = "wordbank", password = "wordbank")
 
 }
@@ -169,10 +212,13 @@ get_sources <- function(language = NULL, form = NULL,
     dplyr::mutate(longitudinal = as.logical(.data$longitudinal),
                   instrument_form = factor(.data$instrument_form,
                                            levels = form_levels,
-                                           labels = form_labels),
-                  license = factor(.data$license,
+                                           labels = form_labels))
+  if ("license" %in% names(source_data)){
+    source_data <- source_data %>%
+    dplyr::mutate(license = factor(.data$license,
                                    levels = license_levels,
                                    labels = license_labels))
+}
 
   if (admin_data) {
     admins <- get_common_table(src, "administration") %>%
@@ -268,7 +314,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     ),
     longitudinal = as.logical(.data$longitudinal)) %>%
     dplyr::select(.data$source_id, .data$longitudinal, .data$source_name,
-                  .data$license)
+                  dplyr::contains("license"))
 
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
