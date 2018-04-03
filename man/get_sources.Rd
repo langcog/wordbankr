@@ -16,8 +16,9 @@ retrieve.}
 \item{admin_data}{A logical indicating whether to include summary-level
 statistics on the administrations within a dataset.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
+\item{mode}{A string indicating connection mode: one of \code{"local"},
+\code{"remote"} (defaults to \code{"remote"}), or a date given in
+\code{"YYYYMMDD"} or \code{"MMDDYYY"} format.}
 }
 \value{
 A data frame where each row is a particular dataset and its

@@ -7,8 +7,9 @@
 get_crossling_items(mode = "remote")
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
+\item{mode}{A string indicating connection mode: one of \code{"local"},
+\code{"remote"} (defaults to \code{"remote"}), or a date given in
+\code{"YYYYMMDD"} or \code{"MMDDYYY"} format.}
 }
 \value{
 A data frame with the column \code{uni_lemma}.

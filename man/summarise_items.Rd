@@ -9,8 +9,9 @@ summarise_items(lang_items, mode = "remote")
 \arguments{
 \item{lang_items}{A dataframe as returned by \code{get_item_data()}.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
+\item{mode}{A string indicating connection mode: one of \code{"local"},
+\code{"remote"} (defaults to \code{"remote"}), or a date given in
+\code{"YYYYMMDD"} or \code{"MMDDYYY"} format.}
 }
 \value{
 A dataframe with a row for each combination of item and age, and

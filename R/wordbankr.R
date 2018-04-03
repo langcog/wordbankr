@@ -4,6 +4,18 @@ utils::globalVariables(c(".", "n"))
 #' @importFrom rlang .data
 NULL
 
+#' Locate Wordbank Database
+#'
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   \code{"remote"} (defaults to \code{"remote"}), or a date given in
+#'   \code{"YYYYMMDD"} or \code{"MMDDYYY"} format.
+#' @return A \code{src} object which is a connection to the Wordbank database.
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' db_info <- find_database("2017-03-22")
+#' }
 find_database <- function(mode = "remote") {
   db_info = list()
   if (mode == "remote") {
@@ -52,8 +64,9 @@ find_database <- function(mode = "remote") {
 
 #' Connect to the Wordbank database
 #'
-#' @param mode A string indicating connection mode: one of \code{"local"}, or
-#'   \code{"remote"} (defaults to \code{"remote"}).
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   \code{"remote"} (defaults to \code{"remote"}), or a date given in
+#'   \code{"YYYYMMDD"} or \code{"MMDDYYY"} format.
 #' @return A \code{src} object which is connection to the Wordbank database.
 #' @keywords internal
 #'
@@ -138,10 +151,16 @@ get_common_table <- function(src, name) {
 get_instruments <- function(mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
-
-  instruments <- get_common_table(src, name = "instrument") %>%
-    dplyr::rename_(instrument_id = "id") %>%
-    dplyr::collect()
+  
+  instruments <-  withCallingHandlers({
+    get_common_table(src, name = "instrument") %>%
+        dplyr::rename_(instrument_id = "id") %>%
+        dplyr::collect()
+  }, warning = function(w) {
+    ## what are you going to do with the warning?
+    if (!grepl('Decimal', w)) {message(conditionMessage(w))}
+    invokeRestart("muffleWarning")
+  })
 
   DBI::dbDisconnect(src)
 
