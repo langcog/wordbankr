@@ -10,8 +10,9 @@ get_crossling_data(uni_lemmas, mode = "remote")
 \item{uni_lemmas}{A character vector of uni_lemmas.}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"remote"} (defaults to \code{"remote"}), or a date given in
-\code{"YYYYMMDD"} or \code{"MMDDYYY"} format.}
+\code{"remote"} (defaults to \code{"remote"}), or a date given in one
+of the following formats: \code{"YYYY-MM-DD"}, \code{"YYYY/MM/DD"}, 
+\code{"MM-DD-YYYY"}, or \code{"MM/DD/YYYY"}.}
 }
 \value{
 A dataframe with a row for each combination of language, item, and

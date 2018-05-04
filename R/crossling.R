@@ -1,6 +1,6 @@
 #' Get the uni_lemmas available in Wordbank
 #'
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A data frame with the column \code{uni_lemma}.
 #'
 #' @examples
@@ -24,7 +24,7 @@ get_crossling_items <- function(mode = "remote") {
 #' Get item-by-age summary statistics
 #'
 #' @param lang_items A dataframe as returned by \code{get_item_data()}.
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A dataframe with a row for each combination of item and age, and
 #'   columns for summary statistics for the group: number of children
 #'   (\code{n_children}), means (\code{comprehension}, \code{production}),
@@ -70,7 +70,7 @@ summarise_items <- function(lang_items, mode = "remote") {
 #' Get item-by-age summary statistics for items across languages
 #'
 #' @param uni_lemmas A character vector of uni_lemmas.
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A dataframe with a row for each combination of language, item, and
 #'   age, and columns for summary statistics for the group: number of children
 #'   (\code{n_children}), means (\code{comprehension}, \code{production}),

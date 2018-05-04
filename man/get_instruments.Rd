@@ -8,8 +8,9 @@ get_instruments(mode = "remote")
 }
 \arguments{
 \item{mode}{A string indicating connection mode: one of \code{"local"},
-\code{"remote"} (defaults to \code{"remote"}), or a date given in
-\code{"YYYYMMDD"} or \code{"MMDDYYY"} format.}
+\code{"remote"} (defaults to \code{"remote"}), or a date given in one
+of the following formats: \code{"YYYY-MM-DD"}, \code{"YYYY/MM/DD"}, 
+\code{"MM-DD-YYYY"}, or \code{"MM/DD/YYYY"}.}
 }
 \value{
 A data frame where each row is a CDI instrument and each column is a
