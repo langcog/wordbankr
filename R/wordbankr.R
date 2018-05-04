@@ -18,48 +18,51 @@ NULL
 #' db_info <- find_database("2017-03-22")
 #' }
 find_database <- function(mode = "remote") {
-  db_info = list()
+  db_info <- list()
   if (mode == "remote") {
-    db_info[c("address", "dbname")] = c("server.wordbank.stanford.edu", "wordbank")
+    db_info[c("address", "dbname")] <- c(
+      "server.wordbank.stanford.edu", "wordbank"
+      )
   } else if (mode == "local") {
-    db_info[c("address", "dbname")] = c("localhost", "wordbank")
+    db_info[c("address", "dbname")] <- c("localhost", "wordbank")
   } else {
     db_info["address"] <- "wordbank-backup.canyiscnpddk.us-west-2.rds.amazonaws.com"
 
-    mode_date <- tryCatch(lubridate::parse_date_time(mode, orders = c("mdY", "Ymd")),
-                          warning = function(e) {NULL})
-    
-    assertthat::assert_that(!is.null(mode_date), msg = "Cannot parse date entered in 'mode' variable.\nPlease enter dates in one of the following formats:\n'YYYY-MM-DD', 'YYYY/MM/DD', 'MM-DD-YYYY', or 'MM/DD/YYYY'")
-      
+    mode_date <- tryCatch(
+      lubridate::parse_date_time(mode, orders = c("mdY", "Ymd")),
+      warning = function(e) NULL)
+    assertthat::assert_that(!is.null(mode_date), msg = paste(
+      "Cannot parse date entered in 'mode' variable.",
+      "Please enter dates in one of the following formats:",
+      "'YYYY-MM-DD', 'YYYY/MM/DD', 'MM-DD-YYYY', or 'MM/DD/YYYY'.",
+      sep = "\n"))
     my_host <- DBI::dbConnect(RMySQL::MySQL(),
                    host = db_info$address,
                    user = "wordbank", password = "wordbank")
-    
-    if (mode_date < lubridate::parse_date_time("2017-01-10", "Ymd")) {
-      message("Entered date is earlier than the first archived version of Wordbank.")
-      message("Referring to earliest version of Wordbank archived 2017-01-10.")
-      
-      db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
-        dplyr::collect() %>%
-        dplyr::filter(grepl('wordbank_[0-9]+', .data$Database)) %>%
-        dplyr::mutate(date_archived = lubridate::parse_date_time(gsub("wordbank_", "", .data$Database), "Ymd")) %>%
-        dplyr::filter(.data$date_archived == min(.data$date_archived))
-      
-    } else{
-      
-      db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
-        dplyr::collect() %>%
-        dplyr::filter(grepl('wordbank_[0-9]+', .data$Database)) %>%
-        dplyr::mutate(date_archived = lubridate::parse_date_time(gsub("wordbank_", "", .data$Database), "Ymd")) %>%
-        dplyr::filter(.data$date_archived <= mode_date) %>%
-        dplyr::filter(.data$date_archived == max(.data$date_archived))
-    }
+    assertthat::assert_that(
+      mode_date >= lubridate::parse_date_time("2017-01-10", "Ymd"),
+      msg=paste(
+        "Entered date is earlier than the 1st archived version of Wordbank.",
+        sprintf("Please choose a date between 2017-01-10 and %s.",
+                format(lubridate::today(), "%Y-%m-%d")),
+        sep = "\n"))
+
+    db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
+      dplyr::collect() %>%
+      dplyr::filter(grepl("wordbank_[0-9]+", .data$Database)) %>%
+      dplyr::mutate(date_archived = lubridate::parse_date_time(
+        gsub("wordbank_", "", .data$Database), "Ymd")
+        ) %>%
+      dplyr::filter(.data$date_archived <= mode_date) %>%
+      dplyr::filter(.data$date_archived == max(.data$date_archived))
     
     db_info["dbname"] <- dplyr::first(db_list$Database)
-    message(sprintf("Fetching version of Wordbank archived on %s", format(dplyr::first(db_list$date_archived), "%Y-%m-%d")))
+    message(sprintf(
+      "Fetching version of Wordbank archived on %s",
+      format(dplyr::first(db_list$date_archived), "%Y-%m-%d")
+      ))
     DBI::dbDisconnect(my_host)
   }
-  
   return(db_info)
 }
 
@@ -75,7 +78,6 @@ find_database <- function(mode = "remote") {
 #' DBI::dbDisconnect(src)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
-  
   db_info <- find_database(mode)
 
   DBI::dbConnect(RMySQL::MySQL(),
@@ -150,14 +152,14 @@ get_common_table <- function(src, name) {
 get_instruments <- function(mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
-  
   instruments <-  withCallingHandlers({
     get_common_table(src, name = "instrument") %>%
         dplyr::rename_(instrument_id = "id") %>%
         dplyr::collect()
-  }, warning = function(w) {
+  },
+  warning = function(w) {
     ## what are you going to do with the warning?
-    if (!grepl('Decimal', w)) {simpleWarning(conditionMessage(w))}
+    if (!grepl("Decimal", w)) simpleWarning(conditionMessage(w))
     invokeRestart("muffleWarning")
   })
 
