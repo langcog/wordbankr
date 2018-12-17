@@ -4,10 +4,71 @@ utils::globalVariables(c(".", "n"))
 #' @importFrom rlang .data
 NULL
 
+#' Locate Wordbank Database
+#'
+#' @param mode A string indicating connection mode: one of \code{"local"},
+#'   \code{"remote"} (defaults to \code{"remote"}), or a date given in one
+#'   of the following formats: \code{"YYYY-MM-DD"}, \code{"YYYY/MM/DD"}, 
+#'   \code{"MM-DD-YYYY"}, or \code{"MM/DD/YYYY"}.
+#' @return A \code{src} object which is a connection to the Wordbank database.
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' db_info <- find_database("2017-03-22")
+#' }
+find_database <- function(mode = "remote") {
+  db_info <- list()
+  if (mode == "remote") {
+    db_info[c("address", "dbname")] <- c(
+      "server.wordbank.stanford.edu", "wordbank"
+      )
+  } else if (mode == "local") {
+    db_info[c("address", "dbname")] <- c("localhost", "wordbank")
+  } else {
+    db_info["address"] <- "wordbank-backup.canyiscnpddk.us-west-2.rds.amazonaws.com"
+
+    mode_date <- tryCatch(
+      lubridate::parse_date_time(mode, orders = c("mdY", "Ymd")),
+      warning = function(e) NULL)
+    assertthat::assert_that(!is.null(mode_date), msg = paste(
+      "Cannot parse date entered in 'mode' variable.",
+      "Please enter dates in one of the following formats:",
+      "'YYYY-MM-DD', 'YYYY/MM/DD', 'MM-DD-YYYY', or 'MM/DD/YYYY'.",
+      sep = "\n"))
+    my_host <- DBI::dbConnect(RMySQL::MySQL(),
+                   host = db_info$address,
+                   user = "wordbank", password = "wordbank")
+    assertthat::assert_that(
+      mode_date >= lubridate::parse_date_time("2017-01-10", "Ymd"),
+      msg=paste(
+        "Entered date is earlier than the 1st archived version of Wordbank.",
+        sprintf("Please choose a date between 2017-01-10 and %s.",
+                format(lubridate::today(), "%Y-%m-%d")),
+        sep = "\n"))
+
+    db_list <- DBI::dbGetQuery(my_host, "show databases;") %>%
+      dplyr::collect() %>%
+      dplyr::filter(grepl("wordbank_[0-9]+", .data$Database)) %>%
+      dplyr::mutate(date_archived = lubridate::parse_date_time(
+        gsub("wordbank_", "", .data$Database), "Ymd")
+        ) %>%
+      dplyr::filter(.data$date_archived <= mode_date) %>%
+      dplyr::filter(.data$date_archived == max(.data$date_archived))
+    
+    db_info["dbname"] <- dplyr::first(db_list$Database)
+    message(sprintf(
+      "Fetching version of Wordbank archived on %s",
+      format(dplyr::first(db_list$date_archived), "%Y-%m-%d")
+      ))
+    DBI::dbDisconnect(my_host)
+  }
+  return(db_info)
+}
+
 #' Connect to the Wordbank database
 #'
-#' @param mode A string indicating connection mode: one of \code{"local"}, or
-#'   \code{"remote"} (defaults to \code{"remote"}).
+#' @inheritParams find_database
 #' @return A \code{src} object which is connection to the Wordbank database.
 #' @keywords internal
 #'
@@ -17,14 +78,10 @@ NULL
 #' DBI::dbDisconnect(src)
 #' }
 connect_to_wordbank <- function(mode = "remote") {
-
-  assertthat::assert_that(is.element(mode, c("local", "remote")))
-  address <- switch(mode,
-                    local = "localhost",
-                    remote = "server.wordbank.stanford.edu")
+  db_info <- find_database(mode)
 
   DBI::dbConnect(RMySQL::MySQL(),
-                 host = address, dbname = "wordbank",
+                 host = db_info$address, dbname = db_info$dbname,
                  user = "wordbank", password = "wordbank")
 
 }
@@ -85,7 +142,7 @@ get_common_table <- function(src, name) {
 #' @return A data frame where each row is a CDI instrument and each column is a
 #'   variable about the instrument (\code{instrument_id}, \code{language},
 #'   \code{form}, \code{age_min}, \code{age_max}, \code{has_grammar}).
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #'
 #' @examples
 #' \dontrun{
@@ -95,10 +152,16 @@ get_common_table <- function(src, name) {
 get_instruments <- function(mode = "remote") {
 
   src <- connect_to_wordbank(mode = mode)
-
-  instruments <- get_common_table(src, name = "instrument") %>%
-    dplyr::rename_(instrument_id = "id") %>%
-    dplyr::collect()
+  instruments <-  withCallingHandlers({
+    get_common_table(src, name = "instrument") %>%
+        dplyr::rename_(instrument_id = "id") %>%
+        dplyr::collect()
+  },
+  warning = function(w) {
+    ## what are you going to do with the warning?
+    if (!grepl("Decimal", w)) simpleWarning(conditionMessage(w))
+    invokeRestart("muffleWarning")
+  })
 
   DBI::dbDisconnect(src)
 
@@ -114,7 +177,7 @@ get_instruments <- function(mode = "remote") {
 #' @param form An optional string specifying which form's datasets to retrieve.
 #' @param admin_data A logical indicating whether to include summary-level
 #'   statistics on the administrations within a dataset.
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A data frame where each row is a particular dataset and its
 #'   characteristics: dataset id and name (\code{source_id}, \code{name},
 #'   \code{dataset}), language (\code{instrument_language}), form
@@ -169,10 +232,13 @@ get_sources <- function(language = NULL, form = NULL,
     dplyr::mutate(longitudinal = as.logical(.data$longitudinal),
                   instrument_form = factor(.data$instrument_form,
                                            levels = form_levels,
-                                           labels = form_labels),
-                  license = factor(.data$license,
+                                           labels = form_labels))
+  if ("license" %in% names(source_data)){
+    source_data <- source_data %>%
+    dplyr::mutate(license = factor(.data$license,
                                    levels = license_levels,
                                    labels = license_labels))
+}
 
   if (admin_data) {
     admins <- get_common_table(src, "administration") %>%
@@ -227,7 +293,7 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' @param original_ids A logical indicating whether to include the original ids
 #'   provided by data contributors. Wordbank provides no guarantees about the
 #'   structure or uniqueness of these ids. Use at your own risk!
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A data frame where each row is a CDI administration and each column
 #'   is a variable about the administration (\code{data_id}, \code{age},
 #'   \code{comprehension}, \code{production}), its instrument (\code{language},
@@ -268,7 +334,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     ),
     longitudinal = as.logical(.data$longitudinal)) %>%
     dplyr::select(.data$source_id, .data$longitudinal, .data$source_name,
-                  .data$license)
+                  dplyr::contains("license"))
 
   admin_query <- paste(
     "SELECT data_id, age, comprehension, production, language, form,
@@ -326,7 +392,7 @@ strip_item_id <- function(item_id) {
 #' @param language An optional string specifying which language's items to
 #'   retrieve.
 #' @param form An optional string specifying which form's items to retrieve.
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A data frame where each row is a CDI item and each column is a
 #'   variable about it (\code{item_id}, \code{definition}, \code{language},
 #'   \code{form}, \code{type}, \code{category}, \code{lexical_category},
@@ -381,7 +447,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 #'   \code{get_administration_data}).
 #' @param iteminfo Either a logical indicating whether to include item data or a
 #'   data frame of item data (from \code{get_item_data}).
-#' @inheritParams connect_to_wordbank
+#' @inheritParams find_database
 #' @return A data frame where each row is the result (\code{value}) of a given
 #'   item (\code{num_item_id}) for a given administration (\code{data_id}), with
 #'   additional columns of variables about the administration and item, if

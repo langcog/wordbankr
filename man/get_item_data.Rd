@@ -12,8 +12,10 @@ retrieve.}
 
 \item{form}{An optional string specifying which form's items to retrieve.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
+\item{mode}{A string indicating connection mode: one of \code{"local"},
+\code{"remote"} (defaults to \code{"remote"}), or a date given in one
+of the following formats: \code{"YYYY-MM-DD"}, \code{"YYYY/MM/DD"}, 
+\code{"MM-DD-YYYY"}, or \code{"MM/DD/YYYY"}.}
 }
 \value{
 A data frame where each row is a CDI item and each column is a
