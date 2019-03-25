@@ -14,6 +14,10 @@
 #'   (defaults to \code{glm}).
 #' @param proportion A number between 0 and 1 indicating threshold proportion of
 #'   children.
+#' @param age_min The minimum age to allow for an age of acquisition. Defaults
+#'  to the minimum age in \code{instrument_data}
+#' @param age_max The maximum age to allow for an age of acquisition. Defaults
+#'  to the maximum age in \code{instrument_data}
 #'
 #' @return A data frame where every row is an item, the item-level columns from
 #'   the input data are preserved, and the \code{aoa} column contains the age of
@@ -29,10 +33,12 @@
 #' }
 #' @export
 fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
-                    proportion = 0.5) {
+                    proportion = 0.5, age_min = min(instrument_data$age, na.rm = TRUE),
+                    age_max = max(instrument_data$age, na.rm = TRUE)) {
 
   assertthat::assert_that(is.element("age", colnames(instrument_data)))
   assertthat::assert_that(is.element("num_item_id", colnames(instrument_data)))
+  assertthat::assert_that(age_min <= age_max)
 
   instrument_summary <- instrument_data %>%
     dplyr::filter(!is.na(.data$age)) %>%
@@ -51,7 +57,7 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 
   inv_logit <- function(x) 1 / (exp(-x) + 1)
   ages <- dplyr::data_frame(
-    age = min(instrument_summary$age):max(instrument_summary$age)
+    age = age_min:age_max
   )
 
   fit_methods <- list(

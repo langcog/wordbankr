@@ -5,7 +5,8 @@
 \title{Fit age of acquisition estimates for Wordbank data}
 \usage{
 fit_aoa(instrument_data, measure = "produces", method = "glm",
-  proportion = 0.5)
+  proportion = 0.5, age_min = min(instrument_data$age, na.rm = TRUE),
+  age_max = max(instrument_data$age, na.rm = TRUE))
 }
 \arguments{
 \item{instrument_data}{A data frame returned by \code{get_instrument_data},
@@ -20,6 +21,12 @@ logistic linear model, \code{glmrob} a robust logistic linear model
 
 \item{proportion}{A number between 0 and 1 indicating threshold proportion of
 children.}
+
+\item{age_min}{The minimum age to allow for an age of acquisition. Defaults
+to the minimum age in \code{instrument_data}}
+
+\item{age_max}{The maximum age to allow for an age of acquisition. Defaults
+to the maximum age in \code{instrument_data}}
 }
 \value{
 A data frame where every row is an item, the item-level columns from
