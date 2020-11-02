@@ -98,7 +98,7 @@ get_instruments <- function(mode = "remote") {
 
   suppressWarnings(
     instruments <- get_common_table(src, name = "instrument") %>%
-      dplyr::rename_(instrument_id = "id") %>%
+      dplyr::rename(instrument_id = "id") %>%
       dplyr::collect()
   )
 
