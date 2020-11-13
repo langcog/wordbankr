@@ -4,8 +4,7 @@
 \alias{fit_vocab_quantiles}
 \title{Fit quantiles to vocabulary sizes using quantile regression}
 \usage{
-fit_vocab_quantiles(vocab_data, measure, group = NULL,
-  quantiles = "standard")
+fit_vocab_quantiles(vocab_data, measure, group = NULL, quantiles = "standard")
 }
 \arguments{
 \item{vocab_data}{A data frame returned by \code{get_administration_data}.}

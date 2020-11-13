@@ -427,15 +427,6 @@ get_instrument_data <- function(language, form, items = NULL,
       dplyr::filter(.data$language == language, .data$form == form)
   }
 
-  # if ("logical" %in% class(administrations)) {
-  #   if (administrations) {
-  #     administrations <- get_administration_data(language, form, mode = mode)
-  #   }
-  # } else {
-  #   administrations <- administrations %>%
-  #     dplyr::filter(.data$language == language, .data$form == form)
-  # }
-
   if ("logical" %in% class(iteminfo)) {
     if (iteminfo) {
       iteminfo <- get_item_data(language, form, mode = mode)
@@ -449,18 +440,6 @@ get_instrument_data <- function(language, form, items = NULL,
                     is.element(.data$item_id, items)) %>%
       dplyr::select(-.data$language, -.data$form)
   }
-
-  # if ("logical" %in% class(iteminfo)) {
-  #   if (iteminfo) {
-  #     iteminfo <- get_item_data(language, form, mode = mode) %>%
-  #       dplyr::select(-.data$language, -.data$form)
-  #   }
-  # } else {
-  #   iteminfo <- iteminfo %>%
-  #     dplyr::filter(.data$language == language, .data$form == form,
-  #                   is.element(.data$item_id, items)) %>%
-  #     dplyr::select(-.data$language, -.data$form)
-  # }
 
   instrument_data <- instrument_table %>%
     dplyr::select(.data$basetable_ptr_id, !!items_quo) %>%

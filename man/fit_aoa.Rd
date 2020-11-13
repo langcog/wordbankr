@@ -4,9 +4,14 @@
 \alias{fit_aoa}
 \title{Fit age of acquisition estimates for Wordbank data}
 \usage{
-fit_aoa(instrument_data, measure = "produces", method = "glm",
-  proportion = 0.5, age_min = min(instrument_data$age, na.rm = TRUE),
-  age_max = max(instrument_data$age, na.rm = TRUE))
+fit_aoa(
+  instrument_data,
+  measure = "produces",
+  method = "glm",
+  proportion = 0.5,
+  age_min = min(instrument_data$age, na.rm = TRUE),
+  age_max = max(instrument_data$age, na.rm = TRUE)
+)
 }
 \arguments{
 \item{instrument_data}{A data frame returned by \code{get_instrument_data},

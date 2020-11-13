@@ -7,8 +7,8 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Accessing the Wordbank database}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r, include=FALSE}
@@ -21,7 +21,7 @@ theme_set(theme_bw())
 
 The `wordbankr` package allows you to access data in the [Wordbank database](http://wordbank.stanford.edu/) from `R`. This vignette shows some examples of how to use the data loading functions and what the resulting data look like.
 
-There are three different data views that you can pull out of Wordbank: by-administration, by-item, and administration-by-item. Additionally, you can get metadata about the sources and instruments underlying the data. Advanced functionality let's you get estimates of words' age of acquistion and word mappings across languages.
+There are three different data views that you can pull out of Wordbank: by-administration, by-item, and administration-by-item. Additionally, you can get metadata about the sources and instruments underlying the data. Advanced functionality let's you get estimates of words' age of acquisition and word mappings across languages.
 
 
 ## Administrations
@@ -134,4 +134,16 @@ get_crossling_data(uni_lemmas = c("hat", "nose")) %>%
   select(language, uni_lemma, definition, age, n_children, comprehension,
          production, comprehension_sd, production_sd) %>%
   arrange(uni_lemma)
+```
+
+
+## Advanced functionality: Vocabulary quantiles
+
+The function `fit_vocab_quantiles()` uses quantile regression to fit a set of vocabulary size quantiles to a dataset. It takes a data frame return by `get_administration_data()`, and additional arguments specifying which measure column to fit on (`measure`: "production" or "comprehension"), an optional demographic column to group by (`group`), and which type of quantiles to fit (`quantiles`: "standard", "deciles", "quintiles", "quartiles", "median", or a numeric vector of quantile values). Defaults to "standard", which is 0.10, 0.25, 0.50, 0.75, 0.90.
+
+```{r}
+eng_ws <- get_administration_data("English (American)", "WS")
+fit_vocab_quantiles(eng_ws, production)
+fit_vocab_quantiles(eng_ws, production, sex)
+fit_vocab_quantiles(eng_ws, production, quantiles = "quartiles")
 ```

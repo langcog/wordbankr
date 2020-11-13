@@ -4,8 +4,7 @@
 \alias{get_sources}
 \title{Get the Wordbank data sources}
 \usage{
-get_sources(language = NULL, form = NULL, admin_data = FALSE,
-  mode = "remote")
+get_sources(language = NULL, form = NULL, admin_data = FALSE, mode = "remote")
 }
 \arguments{
 \item{language}{An optional string specifying which language's datasets to

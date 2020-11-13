@@ -4,8 +4,14 @@
 \alias{get_instrument_data}
 \title{Get the Wordbank administration-by-item data}
 \usage{
-get_instrument_data(language, form, items = NULL,
-  administrations = FALSE, iteminfo = FALSE, mode = "remote")
+get_instrument_data(
+  language,
+  form,
+  items = NULL,
+  administrations = FALSE,
+  iteminfo = FALSE,
+  mode = "remote"
+)
 }
 \arguments{
 \item{language}{A string of the instrument's language (insensitive to case

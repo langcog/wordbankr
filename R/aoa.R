@@ -33,7 +33,8 @@
 #' }
 #' @export
 fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
-                    proportion = 0.5, age_min = min(instrument_data$age, na.rm = TRUE),
+                    proportion = 0.5,
+                    age_min = min(instrument_data$age, na.rm = TRUE),
                     age_max = max(instrument_data$age, na.rm = TRUE)) {
 
   assertthat::assert_that(is.element("age", colnames(instrument_data)))
@@ -73,9 +74,6 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
       model <- robustbase::glmrob(cbind(num_true, num_false) ~ age, item_data,
                                   family = "binomial")
       ages %>% dplyr::mutate(prop = inv_logit(stats::predict(model, ages)))
-    },
-    "bayes" = function(item_data) {
-      # TODO
     }
   )
 

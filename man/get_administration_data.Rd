@@ -4,8 +4,13 @@
 \alias{get_administration_data}
 \title{Get the Wordbank by-administration data}
 \usage{
-get_administration_data(language = NULL, form = NULL,
-  filter_age = TRUE, original_ids = FALSE, mode = "remote")
+get_administration_data(
+  language = NULL,
+  form = NULL,
+  filter_age = TRUE,
+  original_ids = FALSE,
+  mode = "remote"
+)
 }
 \arguments{
 \item{language}{An optional string specifying which language's
