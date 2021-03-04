@@ -53,7 +53,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
   if (!rlang::quo_is_null(quo_group)) {
     vocab_data <- vocab_data %>%
       dplyr::filter(!is.na(!!quo_group)) %>%
-      dplyr::group_by(!!quo_group, add = TRUE)
+      dplyr::group_by(!!quo_group, .add = TRUE)
   }
 
   vocab_models <- vocab_data %>%
