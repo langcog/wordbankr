@@ -8,6 +8,7 @@ NULL
 #'
 #' @param mode A string indicating connection mode: one of \code{"local"}, or
 #'   \code{"remote"} (defaults to \code{"remote"}).
+#' @param db_args List with host, user, and password defined.
 #' @return A \code{src} object which is connection to the Wordbank database.
 #' @keywords internal
 #'
@@ -16,7 +17,16 @@ NULL
 #' src <- connect_to_wordbank()
 #' DBI::dbDisconnect(src)
 #' }
-connect_to_wordbank <- function(mode = "remote") {
+connect_to_wordbank <- function(mode = "remote", db_args = NULL) {
+
+  if (!is.null(db_args)) {
+    con <- DBI::dbConnect(
+      RMySQL::MySQL(),
+      host = db_args$host, dbname = db_args$dbname,
+      user = db_args$user, password = db_args$password
+    )
+    return(con)
+  }
 
   assertthat::assert_that(is.element(mode, c("local", "remote")))
   address <- switch(mode,
@@ -28,7 +38,6 @@ connect_to_wordbank <- function(mode = "remote") {
                  user = "wordbank", password = "wordbank")
 
 }
-
 
 #' Connect to an instrument's Wordbank table
 #'
@@ -92,9 +101,9 @@ get_common_table <- function(src, name) {
 #' instruments <- get_instruments()
 #' }
 #' @export
-get_instruments <- function(mode = "remote") {
+get_instruments <- function(mode = "remote", db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
   suppressWarnings(
     instruments <- get_common_table(src, name = "instrument") %>%
@@ -134,10 +143,10 @@ get_instruments <- function(mode = "remote") {
 #'                                   admin_data = TRUE)
 #' }
 #' @export
-get_sources <- function(language = NULL, form = NULL,
-                        admin_data = FALSE, mode = "remote") {
+get_sources <- function(language = NULL, form = NULL, admin_data = FALSE,
+                        mode = "remote", db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
   source_data <- get_common_table(src, "source") %>%
     dplyr::collect()
@@ -154,6 +163,7 @@ get_sources <- function(language = NULL, form = NULL,
     assertthat::assert_that(nrow(source_data) > 0)
   }
 
+  # TODO make this not suck
   form_levels <- c("WS", "WG", "TC", "TEDS Twos", "TEDS Threes", "FormA",
                    "FormBOne", "FormBTwo", "FormC", "IC", "Oxford CDI")
   form_labels <- c("Words & Sentences", "Words & Gestures", "Toddler Checklist",
@@ -197,9 +207,9 @@ get_sources <- function(language = NULL, form = NULL,
 
 
 filter_query <- function(filter_language = NULL, filter_form = NULL,
-                         mode = "remote") {
+                         mode = "remote", db_args = NULL) {
   if (!is.null(filter_language) | !is.null(filter_form)) {
-    instruments <- get_instruments(mode = mode)
+    instruments <- get_instruments(mode = mode, db_args = db_args)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
         dplyr::filter(.data$language == filter_language)
@@ -246,10 +256,13 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' }
 #' @export
 get_administration_data <- function(language = NULL, form = NULL,
-                                    filter_age = TRUE, original_ids = FALSE,
-                                    mode = "remote") {
+                                    filter_age = TRUE, #original_ids = FALSE,
+                                    include_birth_info = FALSE,
+                                    include_language_exposure = FALSE,
+                                    include_child_conditions = FALSE,
+                                    mode = "remote", db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
   mom_ed <- get_common_table(src, "momed") %>%
     dplyr::collect() %>%
@@ -267,24 +280,32 @@ get_administration_data <- function(language = NULL, form = NULL,
       nchar(.data$dataset) > 0,
       paste0(.data$name, " (", .data$dataset, ")"),
       .data$name
-    ),
-    longitudinal = as.logical(.data$longitudinal)) %>%
-    dplyr::select(.data$source_id, .data$longitudinal, .data$source_name,
-                  .data$license)
+    )) %>%
+    # longitudinal = as.logical(.data$longitudinal)) %>%
+    dplyr::select(.data$source_id, .data$source_name)
+                  # project_group = .data$project_group_id)
+                  # .data$longitudinal)
+                  # .data$license)
 
-  admin_query <- paste(
-    "SELECT data_id, age, comprehension, production, language, form,
-    birth_order, ethnicity, sex, momed_id, zygosity, study_id as original_id,
-    age_min, age_max, norming, source_id
+  select_cols <- c("data_id", "date_of_test", "age", "language", "form",
+                   "comprehension", "production",
+                   "child_id", "birth_order", "ethnicity", "sex", "momed_id",
+                   "age_min", "age_max", "norming", "source_id")
+  birth_cols <- c("zygosity", "born_early_or_late", "birth_weight", "gestational_age")
+  if (include_birth_info) select_cols <- c(select_cols, birth_cols)
+
+  admin_query <- glue::glue(
+    "SELECT common_administration.id AS admin_id, {paste(select_cols, collapse = ', ')}
     FROM common_administration
     LEFT JOIN common_instrument
     ON common_administration.instrument_id = common_instrument.id
     LEFT JOIN common_child
-    ON common_administration.child_id = common_child.id",
-    filter_query(language, form, mode = mode),
-    sep = "\n")
+    ON common_administration.child_id = common_child.id\n",
+    {filter_query(language, form, mode = mode, db_args = db_args)}
+  )
 
-  admins <- dplyr::tbl(src, dplyr::sql(admin_query)) %>%
+  admins_tbl <- dplyr::tbl(src, dplyr::sql(admin_query))
+  admins <- admins_tbl %>%
     dplyr::collect() %>%
     dplyr::mutate(data_id = as.numeric(.data$data_id),
                   norming = as.logical(.data$norming)) %>%
@@ -303,8 +324,15 @@ get_administration_data <- function(language = NULL, form = NULL,
                                        labels = c("First", "Second", "Third",
                                                   "Fourth", "Fifth", "Sixth",
                                                   "Seventh", "Eighth")))
-  if (!original_ids)
-    admins <- admins %>% dplyr::select(-.data$original_id)
+
+  # TODO: join in language exposures (nested)
+  # TODO: join in child conditions (nested)
+  language_exposures <- get_common_table(src, "languageexposure") %>%
+    inner_join(admins_tbl, by = c("administration_id" = "admin_id"))
+
+
+  # if (!original_ids)
+  #   admins <- admins %>% dplyr::select(-.data$original_id)
 
   DBI::dbDisconnect(src)
 
@@ -341,9 +369,10 @@ strip_item_id <- function(item_id) {
 #' all_items <- get_item_data()
 #' }
 #' @export
-get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
+get_item_data <- function(language = NULL, form = NULL, mode = "remote",
+                          db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
   item_query <- paste(
     "SELECT item_id, definition, language, form, type, name AS category,
@@ -398,11 +427,11 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote") {
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
                                 administrations = FALSE, iteminfo = FALSE,
-                                mode = "remote") {
+                                mode = "remote", db_args = NULL) {
 
   items_quo <- rlang::enquo(items)
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
   instrument_table <- get_instrument_table(src, language, form)
 
   columns <- colnames(instrument_table)
