@@ -256,7 +256,7 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' }
 #' @export
 get_administration_data <- function(language = NULL, form = NULL,
-                                    filter_age = TRUE, #original_ids = FALSE,
+                                    filter_age = TRUE,
                                     include_birth_info = FALSE,
                                     include_language_exposure = FALSE,
                                     include_child_conditions = FALSE,
@@ -281,21 +281,19 @@ get_administration_data <- function(language = NULL, form = NULL,
       paste0(.data$name, " (", .data$dataset, ")"),
       .data$name
     )) %>%
-    # longitudinal = as.logical(.data$longitudinal)) %>%
     dplyr::select(.data$source_id, .data$source_name)
-                  # project_group = .data$project_group_id)
-                  # .data$longitudinal)
-                  # .data$license)
 
   select_cols <- c("data_id", "date_of_test", "age", "language", "form",
                    "comprehension", "production",
                    "child_id", "birth_order", "ethnicity", "sex", "momed_id",
                    "age_min", "age_max", "norming", "source_id")
-  birth_cols <- c("zygosity", "born_early_or_late", "birth_weight", "gestational_age")
+  birth_cols <- c("zygosity", "born_early_or_late", "birth_weight",
+                  "gestational_age")
   if (include_birth_info) select_cols <- c(select_cols, birth_cols)
+  select_str <- paste(select_cols, collapse = ', ')
 
   admin_query <- glue::glue(
-    "SELECT common_administration.id AS admin_id, {paste(select_cols, collapse = ', ')}
+    "SELECT common_administration.id AS admin_id, {select_str}
     FROM common_administration
     LEFT JOIN common_instrument
     ON common_administration.instrument_id = common_instrument.id
@@ -325,22 +323,33 @@ get_administration_data <- function(language = NULL, form = NULL,
                                                   "Fourth", "Fifth", "Sixth",
                                                   "Seventh", "Eighth")))
 
-  # TODO: join in language exposures (nested)
-  # TODO: join in child conditions (nested)
-  language_exposures <- get_common_table(src, "languageexposure") %>%
-    inner_join(admins_tbl, by = c("administration_id" = "admin_id"))
+  if (include_language_exposure) {
+    language_exposures <- get_common_table(src, "languageexposure") %>%
+      dplyr::semi_join(admins_tbl, by = c("administration_id" = "admin_id")) %>%
+      dplyr::select(-id) %>%
+      dplyr::rename(admin_id = administration_id) %>%
+      dplyr::collect() %>%
+      tidyr::nest(language_exposures = -admin_id)
+    admins <- admins %>% dplyr::left_join(language_exposures, by = "admin_id")
+  }
 
-
-  # if (!original_ids)
-  #   admins <- admins %>% dplyr::select(-.data$original_id)
+  if (include_child_conditions) {
+    condition <- get_common_table(src, "condition")
+    child_conditions <- get_common_table(src, "child_conditions") %>%
+      dplyr::semi_join(admins_tbl, by = "child_id") %>%
+      dplyr::left_join(condition, by = c("condition_id" = "id")) %>%
+      dplyr::select(-id, -condition_id) %>%
+      dplyr::collect() %>%
+      tidyr::nest(conditions = -child_id)
+    admins <- admins %>% dplyr::left_join(child_conditions, by = "child_id")
+  }
 
   DBI::dbDisconnect(src)
 
   if (filter_age) admins <- admins %>%
     dplyr::filter(.data$age >= .data$age_min, .data$age <= .data$age_max)
 
-  admins <- admins %>%
-    dplyr::select(-.data$age_min, -.data$age_max)
+  admins <- admins %>% dplyr::select(-.data$age_min, -.data$age_max)
   return(admins)
 
 }
@@ -384,7 +393,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
     ON common_iteminfo.category_id = common_category.id
     LEFT JOIN common_itemmap
     ON common_iteminfo.map_id = common_itemmap.uni_lemma",
-    filter_query(language, form, mode = mode),
+    filter_query(language, form, mode = mode, db_args = db_args),
     sep = "\n")
 
   items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
@@ -446,7 +455,8 @@ get_instrument_data <- function(language, form, items = NULL,
 
   if ("logical" %in% class(administrations)) {
     if (administrations) {
-      administrations <- get_administration_data(language, form, mode = mode)
+      administrations <- get_administration_data(language, form, mode = mode,
+                                                 db_args = db_args)
     } else {
       administrations <- NULL
     }
@@ -458,7 +468,7 @@ get_instrument_data <- function(language, form, items = NULL,
 
   if ("logical" %in% class(iteminfo)) {
     if (iteminfo) {
-      iteminfo <- get_item_data(language, form, mode = mode)
+      iteminfo <- get_item_data(language, form, mode = mode, db_args = db_args)
     } else {
       iteminfo <- NULL
     }

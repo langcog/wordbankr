@@ -8,8 +8,11 @@ get_administration_data(
   language = NULL,
   form = NULL,
   filter_age = TRUE,
-  original_ids = FALSE,
-  mode = "remote"
+  include_birth_info = FALSE,
+  include_language_exposure = FALSE,
+  include_child_conditions = FALSE,
+  mode = "remote",
+  db_args = NULL
 )
 }
 \arguments{
@@ -22,12 +25,14 @@ retrieve.}
 \item{filter_age}{A logical indicating whether to filter the administrations
 to ones in the valid age range for their instrument.}
 
+\item{mode}{A string indicating connection mode: one of \code{"local"}, or
+\code{"remote"} (defaults to \code{"remote"}).}
+
+\item{db_args}{List with host, user, and password defined.}
+
 \item{original_ids}{A logical indicating whether to include the original ids
 provided by data contributors. Wordbank provides no guarantees about the
 structure or uniqueness of these ids. Use at your own risk!}
-
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
 }
 \value{
 A data frame where each row is a CDI administration and each column

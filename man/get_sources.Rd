@@ -4,7 +4,13 @@
 \alias{get_sources}
 \title{Get the Wordbank data sources}
 \usage{
-get_sources(language = NULL, form = NULL, admin_data = FALSE, mode = "remote")
+get_sources(
+  language = NULL,
+  form = NULL,
+  admin_data = FALSE,
+  mode = "remote",
+  db_args = NULL
+)
 }
 \arguments{
 \item{language}{An optional string specifying which language's datasets to
@@ -17,6 +23,8 @@ statistics on the administrations within a dataset.}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"}, or
 \code{"remote"} (defaults to \code{"remote"}).}
+
+\item{db_args}{List with host, user, and password defined.}
 }
 \value{
 A data frame where each row is a particular dataset and its
