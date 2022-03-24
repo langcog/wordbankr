@@ -19,10 +19,11 @@ retrieve.}
 }
 \value{
 A data frame where each row is a CDI item and each column is a
-  variable about it (\code{item_id}, \code{definition}, \code{language},
-  \code{form}, \code{type}, \code{category}, \code{lexical_category},
-  \code{lexical_class}, \code{uni_lemma}, \code{complexity_category},
-  \code{num_item_id}).
+  variable about it: \code{item_id}, \code{item_kind} (e.g. word, gestures,
+  word_endings), \code{item_definition}, \code{english_gloss},
+  \code{language}, \code{form}, \code{form_type}, \code{category}
+  (meaning-based group as shown on the CDI form), \code{lexical_category},
+  \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}).
 }
 \description{
 Get the Wordbank by-item data

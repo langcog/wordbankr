@@ -8,8 +8,8 @@ get_instrument_data(
   language,
   form,
   items = NULL,
-  administrations = FALSE,
-  iteminfo = FALSE,
+  administration_info = FALSE,
+  item_info = FALSE,
   mode = "remote",
   db_args = NULL
 )
@@ -25,12 +25,12 @@ whitespace).}
 items to extract. If not supplied, defaults to all the columns of
 \code{instrument_table}.}
 
-\item{administrations}{Either a logical indicating whether to include
-administration data or a data frame of administration data (from
+\item{administration_info}{Either a logical indicating whether to include
+administration data or a data frame of administration data (as returned by
 \code{get_administration_data}).}
 
-\item{iteminfo}{Either a logical indicating whether to include item data or a
-data frame of item data (from \code{get_item_data}).}
+\item{item_info}{Either a logical indicating whether to include item data or
+a data frame of item data (as returned by \code{get_item_data}).}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"}, or
 \code{"remote"} (defaults to \code{"remote"}).}
@@ -38,10 +38,10 @@ data frame of item data (from \code{get_item_data}).}
 \item{db_args}{List with host, user, and password defined.}
 }
 \value{
-A data frame where each row is the result (\code{value}) of a given
-  item (\code{num_item_id}) for a given administration (\code{data_id}), with
-  additional columns of variables about the administration and item, if
-  specified.
+A data frame where each row contains the values (\code{value},
+  \code{produces}, \code{understands}) of a given item (\code{item_id}) for a
+  given administration (\code{data_id}), with additional columns of variables
+  about the administration and item, as specified.
 }
 \description{
 Get the Wordbank administration-by-item data

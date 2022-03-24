@@ -10,13 +10,13 @@ NULL
 #'   \code{"remote"} (defaults to \code{"remote"}).
 #' @param db_args List with host, user, and password defined.
 #' @return A \code{src} object which is connection to the Wordbank database.
-#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
 #' src <- connect_to_wordbank()
 #' DBI::dbDisconnect(src)
 #' }
+#' @export
 connect_to_wordbank <- function(mode = "remote", db_args = NULL) {
 
   if (!is.null(db_args)) {
@@ -117,7 +117,6 @@ get_instruments <- function(mode = "remote", db_args = NULL) {
 
 }
 
-
 #' Get the Wordbank data sources
 #'
 #' @param language An optional string specifying which language's datasets to
@@ -127,81 +126,73 @@ get_instruments <- function(mode = "remote", db_args = NULL) {
 #'   statistics on the administrations within a dataset.
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a particular dataset and its
-#'   characteristics: dataset id and name (\code{source_id}, \code{name},
-#'   \code{dataset}), language (\code{instrument_language}), form
-#'   (\code{instrument_form}), contributor and affiliated institution
-#'   (\code{contributor}), provided citation (\code{citation}), whether dataset
-#'   includes longitudinal participants (\code{longitudinal}), and licensing
-#'   information (\code{license}). Also includes summary statistics on a dataset
-#'   if the (\code{administrations}) flag is \code{TRUE}: number of children
-#'   (\code{n_children}) and age range (\code{age_min}, \code{age_max}).
+#'   characteristics: \code{dataset_id}, \code{dataset_name},
+#'   \code{dataset_origin_name} (unique identifier for groups of datasets that
+#'   may share children), \code{language}, \code{form}, \code{form_type},
+#'   \code{contributor} (contributor name and affiliated institution),
+#'   \code{citation}, \code{license}, \code{longitudinal} (whether dataset
+#'   includes longitudinal participants). Also includes summary statistics on a
+#'   dataset if the \code{admin_data} flag is \code{TRUE}: number of
+#'   administrations (\code{n_admins}).
 #'
 #' @examples
 #' \dontrun{
-#' english_ws_sources <- get_sources(language = "English (American)",
-#'                                   form = "WS",
-#'                                   admin_data = TRUE)
+#' english_ws_datasets <- get_datasets(language = "English (American)",
+#'                                     form = "WS",
+#'                                     admin_data = TRUE)
 #' }
 #' @export
-get_sources <- function(language = NULL, form = NULL, admin_data = FALSE,
-                        mode = "remote", db_args = NULL) {
+get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
+                         mode = "remote", db_args = NULL) {
 
   src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
-  source_data <- get_common_table(src, "source") %>%
-    dplyr::collect()
+  instruments <- get_instruments(mode = mode, db_args = db_args) %>%
+    dplyr::select(.data$instrument_id, .data$language, .data$form,
+                  .data$form_type)
 
-  if (!is.null(language) | !is.null(form)) {
-    if (!is.null(language)) {
-      source_data <- source_data %>%
-        dplyr::filter(.data$instrument_language == language)
-    }
-    if (!is.null(form)) {
-      source_data <- source_data %>%
-        dplyr::filter(.data$instrument_form == form)
-    }
-    assertthat::assert_that(nrow(source_data) > 0)
-  }
-
-  # TODO make this not suck
-  form_levels <- c("WS", "WG", "TC", "TEDS Twos", "TEDS Threes", "FormA",
-                   "FormBOne", "FormBTwo", "FormC", "IC", "Oxford CDI")
-  form_labels <- c("Words & Sentences", "Words & Gestures", "Toddler Checklist",
-                   "TEDS Twos",  "TEDS Threes", "FormA", "FormBOne", "FormBTwo",
-                   "FormC", "Infant Checklist", "Oxford CDI")
-
-  license_levels <- c("CC-BY", "CC-BY-NC")
-  license_labels <- c(
-    "Creative Commons Attribution 4.0 International",
-    "Creative Commons Attribution-NonCommercial 4.0 International"
+  suppressWarnings(
+    dataset_data <- get_common_table(src, "dataset") %>%
+      dplyr::collect() %>%
+      dplyr::left_join(instruments, by = "instrument_id")
   )
 
-  source_data <- source_data %>%
-    dplyr::rename(source_id = .data$id) %>%
-    dplyr::mutate(longitudinal = as.logical(.data$longitudinal),
-                  instrument_form = factor(.data$instrument_form,
-                                           levels = form_levels,
-                                           labels = form_labels),
-                  license = factor(.data$license,
-                                   levels = license_levels,
-                                   labels = license_labels))
+  input_language <- language
+  input_form <- form
+  if (!is.null(language) | !is.null(form)) {
+    if (!is.null(language)) {
+      dataset_data <- dataset_data %>%
+        dplyr::filter(.data$language == input_language)
+    }
+    if (!is.null(form)) {
+      dataset_data <- dataset_data %>%
+        dplyr::filter(.data$form == input_form)
+    }
+    assertthat::assert_that(nrow(dataset_data) > 0)
+  }
+
+  dataset_data <- dataset_data %>%
+    dplyr::rename(dataset_id = .data$id,
+                  dataset_origin_name = .data$dataset_origin_id) %>%
+    dplyr::mutate(longitudinal = as.logical(.data$longitudinal)) %>%
+    dplyr::select(dplyr::starts_with("dataset"), dplyr::everything()) %>%
+    dplyr::select(-.data$instrument_id)
 
   if (admin_data) {
-    admins <- get_common_table(src, "administration") %>%
-      dplyr::collect() %>%
-      dplyr::filter(.data$source_id %in% source_data$source_id) %>%
-      dplyr::group_by(.data$source_id) %>%
-      dplyr::summarise(n_admins = dplyr::n_distinct(.data$data_id),
-                       age_min = min(.data$age, na.rm = TRUE),
-                       age_max = max(.data$age, na.rm = TRUE))
+    suppressWarnings(
+      admins <- get_common_table(src, "administration") %>%
+        dplyr::group_by(.data$dataset_id) %>%
+        dplyr::summarise(n_admins = dplyr::n_distinct(.data$data_id)) %>%
+        dplyr::collect()
+    )
 
-    source_data <- source_data %>%
-      dplyr::left_join(admins, by = "source_id")
+    dataset_data <- dataset_data %>%
+      dplyr::left_join(admins, by = "dataset_id")
   }
 
   DBI::dbDisconnect(src)
 
-  return(source_data)
+  return(dataset_data)
 
 }
 
@@ -236,18 +227,27 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   retrieve.
 #' @param filter_age A logical indicating whether to filter the administrations
 #'   to ones in the valid age range for their instrument.
-#' @param original_ids A logical indicating whether to include the original ids
-#'   provided by data contributors. Wordbank provides no guarantees about the
-#'   structure or uniqueness of these ids. Use at your own risk!
+#' @param include_demographic_info A logical indicating whether to include the
+#'   child's demographic information (\code{birth_order}, \code{ethnicity},
+#'   \code{sex}, \code{caregiver_education}).
+#' @param include_birth_info A logical indicating whether to include the child's
+#'   birth information (\code{birth_weight}, \code{born_early_or_late},
+#'   \code{gestational_age}, \code{zygosity}).
+#' @param include_health_conditions A logical indicating whether to include the
+#'   child's health condition information (a nested dataframe under
+#'   \code{health_conditions} with the column \code{health_condition_name}).
+#' @param include_language_exposure A logical indicating whether to include the
+#'   child's language exposure information at time of administration (a nested
+#'   dataframe under \code{language_exposures} with the columns \code{language},
+#'   \code{exposure_proportion}, \code{age_of_first_exposure}).
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI administration and each column
-#'   is a variable about the administration (\code{data_id}, \code{age},
-#'   \code{comprehension}, \code{production}), its instrument (\code{language},
-#'   \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
-#'   \code{mom_ed}, \code{zygosity}), and its dataset source
-#'   (\code{source_name}, \code{source_dataset}, \code{norming},
-#'   \code{longitudinal}). Also includes an \code{original_id} column if the
-#'   \code{original_ids} flag is \code{TRUE}.
+#'   is a variable about the administration (\code{data_id},
+#'   \code{date_of_test}, \code{age}, \code{comprehension}, \code{production},
+#'   \code{is_norming}), the dataset it's from (\code{dataset_name},
+#'   \code{dataset_origin_name}, \code{language}, \code{form},
+#'   \code{form_type}), and information about the child as described in the
+#'   parameter specification.
 #'
 #' @examples
 #' \dontrun{
@@ -257,43 +257,33 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #' @export
 get_administration_data <- function(language = NULL, form = NULL,
                                     filter_age = TRUE,
+                                    include_demographic_info = FALSE,
                                     include_birth_info = FALSE,
+                                    include_health_conditions = FALSE,
                                     include_language_exposure = FALSE,
-                                    include_child_conditions = FALSE,
                                     mode = "remote", db_args = NULL) {
 
   src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
-  mom_ed <- get_common_table(src, "momed") %>%
-    dplyr::collect() %>%
-    dplyr::rename(momed_id = .data$id, momed_level = .data$level,
-                  momed_order = .data$order) %>%
-    dplyr::arrange(.data$momed_order) %>%
-    dplyr::transmute(momed_id = as.numeric(.data$momed_id),
-                     mom_ed = factor(.data$momed_level,
-                                     levels = .data$momed_level))
+  datasets <- get_datasets(mode = mode, db_args = db_args) %>%
+    dplyr::select(.data$dataset_id, .data$dataset_name,
+                  .data$dataset_origin_name, .data$language, .data$form,
+                  .data$form_type)
 
-  sources <- get_common_table(src, "source") %>%
-    dplyr::collect() %>%
-    dplyr::rename(source_id = .data$id) %>%
-    dplyr::mutate(source_name = ifelse(
-      nchar(.data$dataset) > 0,
-      paste0(.data$name, " (", .data$dataset, ")"),
-      .data$name
-    )) %>%
-    dplyr::select(.data$source_id, .data$source_name)
+  select_cols <- c("data_id", "date_of_test", "age", "comprehension",
+                   "production", "is_norming",
+                   "child_id", "dataset_id", "age_min", "age_max")
 
-  select_cols <- c("data_id", "date_of_test", "age", "language", "form",
-                   "comprehension", "production",
-                   "child_id", "birth_order", "ethnicity", "sex", "momed_id",
-                   "age_min", "age_max", "norming", "source_id")
-  birth_cols <- c("zygosity", "born_early_or_late", "birth_weight",
-                  "gestational_age")
+  demo_cols <- c("birth_order", "ethnicity", "sex", "caregiver_education_id")
+  if (include_demographic_info) select_cols <- c(select_cols, demo_cols)
+  birth_cols <- c("birth_weight", "born_early_or_late", "gestational_age",
+                  "zygosity")
   if (include_birth_info) select_cols <- c(select_cols, birth_cols)
+
   select_str <- paste(select_cols, collapse = ', ')
 
   admin_query <- glue::glue(
-    "SELECT common_administration.id AS admin_id, {select_str}
+    "SELECT common_administration.id AS administration_id, {select_str}
     FROM common_administration
     LEFT JOIN common_instrument
     ON common_administration.instrument_id = common_instrument.id
@@ -302,46 +292,71 @@ get_administration_data <- function(language = NULL, form = NULL,
     {filter_query(language, form, mode = mode, db_args = db_args)}
   )
 
-  admins_tbl <- dplyr::tbl(src, dplyr::sql(admin_query))
-  admins <- admins_tbl %>%
-    dplyr::collect() %>%
-    dplyr::mutate(data_id = as.numeric(.data$data_id),
-                  norming = as.logical(.data$norming)) %>%
-    dplyr::left_join(mom_ed, by = "momed_id") %>%
-    dplyr::select(-.data$momed_id) %>%
-    dplyr::left_join(sources, by = "source_id") %>%
-    dplyr::select(-.data$source_id) %>%
-    dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
-                               labels = c("Female", "Male", "Other")),
-                  ethnicity = factor(.data$ethnicity,
-                                     levels = c("A", "B", "O", "W", "H"),
-                                     labels = c("Asian", "Black", "Other",
-                                                "White", "Hispanic")),
-                  birth_order = factor(.data$birth_order,
-                                       levels = c(1, 2, 3, 4, 5, 6, 7, 8),
-                                       labels = c("First", "Second", "Third",
-                                                  "Fourth", "Fifth", "Sixth",
-                                                  "Seventh", "Eighth")))
-
-  if (include_language_exposure) {
-    language_exposures <- get_common_table(src, "languageexposure") %>%
-      dplyr::semi_join(admins_tbl, by = c("administration_id" = "admin_id")) %>%
-      dplyr::select(-id) %>%
-      dplyr::rename(admin_id = administration_id) %>%
+  suppressWarnings(
+    admins_tbl <- dplyr::tbl(src, dplyr::sql(admin_query))
+  )
+  suppressWarnings(
+    admins <- admins_tbl %>%
       dplyr::collect() %>%
-      tidyr::nest(language_exposures = -admin_id)
-    admins <- admins %>% dplyr::left_join(language_exposures, by = "admin_id")
+      dplyr::mutate(data_id = as.numeric(.data$data_id),
+                    is_norming = as.logical(.data$is_norming)) %>%
+      dplyr::left_join(datasets, by = "dataset_id") %>%
+      dplyr::select(-.data$dataset_id) %>%
+      dplyr::select(.data$data_id, .data$date_of_test, .data$age,
+                    .data$comprehension, .data$production, .data$is_norming,
+                    dplyr::starts_with("dataset"), .data$language, .data$form,
+                    .data$form_type, dplyr::everything())
+  )
+
+  if (include_demographic_info) {
+    educations <- get_common_table(src, "caregiver_education") %>%
+      dplyr::collect() %>%
+      dplyr::rename(caregiver_education_id = .data$id) %>%
+      dplyr::arrange(.data$education_order) %>%
+      dplyr::mutate(caregiver_education = factor(
+        .data$education_level, levels = .data$education_level)
+      ) %>%
+      dplyr::select(.data$caregiver_education_id, .data$caregiver_education)
+
+    admins <- admins %>%
+      dplyr::left_join(educations, by = "caregiver_education_id") %>%
+      dplyr::select(-.data$caregiver_education_id) %>%
+      dplyr::relocate(.data$caregiver_education, .after = .data$birth_order) %>%
+      dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
+                                 labels = c("Female", "Male", "Other")),
+                    ethnicity = factor(.data$ethnicity,
+                                       levels = c("A", "B", "O", "W", "H"),
+                                       labels = c("Asian", "Black", "Other",
+                                                  "White", "Hispanic")),
+                    birth_order = factor(.data$birth_order,
+                                         levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                                         labels = c("First", "Second", "Third",
+                                                    "Fourth", "Fifth", "Sixth",
+                                                    "Seventh", "Eighth")))
   }
 
-  if (include_child_conditions) {
-    condition <- get_common_table(src, "condition")
-    child_conditions <- get_common_table(src, "child_conditions") %>%
-      dplyr::semi_join(admins_tbl, by = "child_id") %>%
-      dplyr::left_join(condition, by = c("condition_id" = "id")) %>%
-      dplyr::select(-id, -condition_id) %>%
+  if (include_language_exposure) {
+    language_exposures <- get_common_table(src, "language_exposure") %>%
+      dplyr::semi_join(admins_tbl, by = "administration_id") %>%
+      dplyr::select(-.data$id) %>%
       dplyr::collect() %>%
-      tidyr::nest(conditions = -child_id)
-    admins <- admins %>% dplyr::left_join(child_conditions, by = "child_id")
+      tidyr::nest(language_exposures = -.data$administration_id)
+    admins <- admins %>%
+      dplyr::left_join(language_exposures, by = "administration_id")
+  }
+
+  if (include_health_conditions) {
+    health_conditions <- get_common_table(src, "health_condition")
+    child_health_conditions <- get_common_table(src,
+                                                "child_health_conditions") %>% # fix
+      dplyr::semi_join(admins_tbl, by = "child_id") %>%
+      dplyr::left_join(health_conditions,
+                       by = c("healthcondition_id" = "id")) %>% # fix
+      dplyr::select(-.data$id, -.data$healthcondition_id) %>% # fix
+      dplyr::collect() %>%
+      tidyr::nest(health_conditions = -.data$child_id)
+    admins <- admins %>%
+      dplyr::left_join(child_health_conditions, by = "child_id")
   }
 
   DBI::dbDisconnect(src)
@@ -349,7 +364,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (filter_age) admins <- admins %>%
     dplyr::filter(.data$age >= .data$age_min, .data$age <= .data$age_max)
 
-  admins <- admins %>% dplyr::select(-.data$age_min, -.data$age_max)
+  admins <- admins %>%
+    dplyr::select(-.data$age_min, -.data$age_max, -.data$administration_id)
   return(admins)
 
 }
@@ -367,10 +383,11 @@ strip_item_id <- function(item_id) {
 #' @param form An optional string specifying which form's items to retrieve.
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI item and each column is a
-#'   variable about it (\code{item_id}, \code{definition}, \code{language},
-#'   \code{form}, \code{type}, \code{category}, \code{lexical_category},
-#'   \code{lexical_class}, \code{uni_lemma}, \code{complexity_category},
-#'   \code{num_item_id}).
+#'   variable about it: \code{item_id}, \code{item_kind} (e.g. word, gestures,
+#'   word_endings), \code{item_definition}, \code{english_gloss},
+#'   \code{language}, \code{form}, \code{form_type}, \code{category}
+#'   (meaning-based group as shown on the CDI form), \code{lexical_category},
+#'   \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}).
 #'
 #' @examples
 #' \dontrun{
@@ -383,22 +400,23 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
 
   src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
+  item_tbl <- get_common_table(src, "item")
   item_query <- paste(
-    "SELECT item_id, definition, language, form, type, name AS category,
-    lexical_category, lexical_class, uni_lemma, complexity_category
-    FROM common_iteminfo
+    "SELECT item_id, item_kind, item_definition, english_gloss, language, form,
+    form_type, category, lexical_category, lexical_class, complexity_category,
+    uni_lemma
+    FROM common_item
     LEFT JOIN common_instrument
-    ON common_iteminfo.instrument_id = common_instrument.id
-    LEFT JOIN common_category
-    ON common_iteminfo.category_id = common_category.id
-    LEFT JOIN common_itemmap
-    ON common_iteminfo.map_id = common_itemmap.uni_lemma",
+    ON common_item.instrument_id = common_instrument.id
+    LEFT JOIN common_item_category
+    ON common_item.item_category_id = common_item_category.id
+    LEFT JOIN common_uni_lemma
+    ON common_item.uni_lemma_id = common_uni_lemma.id",
     filter_query(language, form, mode = mode, db_args = db_args),
     sep = "\n")
 
   items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
-    dplyr::collect() %>%
-    dplyr::mutate(num_item_id = strip_item_id(.data$item_id))
+    dplyr::collect()
 
   DBI::dbDisconnect(src)
 
@@ -416,16 +434,16 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
 #' @param items A character vector of column names of \code{instrument_table} of
 #'   items to extract. If not supplied, defaults to all the columns of
 #'   \code{instrument_table}.
-#' @param administrations Either a logical indicating whether to include
-#'   administration data or a data frame of administration data (from
+#' @param administration_info Either a logical indicating whether to include
+#'   administration data or a data frame of administration data (as returned by
 #'   \code{get_administration_data}).
-#' @param iteminfo Either a logical indicating whether to include item data or a
-#'   data frame of item data (from \code{get_item_data}).
+#' @param item_info Either a logical indicating whether to include item data or
+#'   a data frame of item data (as returned by \code{get_item_data}).
 #' @inheritParams connect_to_wordbank
-#' @return A data frame where each row is the result (\code{value}) of a given
-#'   item (\code{num_item_id}) for a given administration (\code{data_id}), with
-#'   additional columns of variables about the administration and item, if
-#'   specified.
+#' @return A data frame where each row contains the values (\code{value},
+#'   \code{produces}, \code{understands}) of a given item (\code{item_id}) for a
+#'   given administration (\code{data_id}), with additional columns of variables
+#'   about the administration and item, as specified.
 #'
 #' @examples
 #' \dontrun{
@@ -435,10 +453,12 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
 #' }
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
-                                administrations = FALSE, iteminfo = FALSE,
+                                administration_info = FALSE, item_info = FALSE,
                                 mode = "remote", db_args = NULL) {
 
   items_quo <- rlang::enquo(items)
+  input_language <- language
+  input_form <- form
 
   src <- connect_to_wordbank(mode = mode, db_args = db_args)
   instrument_table <- get_instrument_table(src, language, form)
@@ -453,31 +473,33 @@ get_instrument_data <- function(language, form, items = NULL,
     names(items) <- NULL
   }
 
-  if ("logical" %in% class(administrations)) {
-    if (administrations) {
-      administrations <- get_administration_data(language, form, mode = mode,
-                                                 db_args = db_args)
+  if ("logical" %in% class(administration_info)) {
+    if (administration_info) {
+      administration_info <- get_administration_data(language, form, mode = mode,
+                                                     db_args = db_args)
     } else {
-      administrations <- NULL
+      administration_info <- NULL
     }
   }
-  if (!is.null(administrations)) {
-    administrations <- administrations %>%
-      dplyr::filter(.data$language == language, .data$form == form)
+  if (!is.null(administration_info)) {
+    administration_info <- administration_info %>%
+      dplyr::filter(.data$language == input_language, .data$form == input_form)
   }
 
-  if ("logical" %in% class(iteminfo)) {
-    if (iteminfo) {
-      iteminfo <- get_item_data(language, form, mode = mode, db_args = db_args)
+  if ("logical" %in% class(item_info)) {
+    if (item_info) {
+      item_info <- get_item_data(language, form, mode = mode, db_args = db_args)
     } else {
-      iteminfo <- NULL
+      item_info <- NULL
     }
   }
-  if (!is.null(iteminfo)) {
-    iteminfo <- iteminfo %>%
-      dplyr::filter(.data$language == language, .data$form == form,
+  if (!is.null(item_info)) {
+    item_info <- item_info %>%
+      dplyr::filter(.data$language == input_language, .data$form == input_form,
                     is.element(.data$item_id, items)) %>%
-      dplyr::select(-.data$language, -.data$form)
+      dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
+      dplyr::select(-.data$language, -.data$form, -.data$form_type,
+                    -.data$item_id)
   }
 
   instrument_data <- instrument_table %>%
@@ -487,17 +509,25 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::select(-.data$basetable_ptr_id) %>%
     tidyr::gather("item_id", "value", !!items_quo) %>%
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
-    dplyr::select(-.data$item_id)
+    # dplyr::select(-.data$item_id) %>%
+    dplyr::mutate(produces = .data$value == "produces",
+                  understands = .data$value == "understa" | .data$value == "produces") # fix
+  # valid for non-WG? weird for items that aren't comp/prod?
 
-  if ("data.frame" %in% class(administrations)) {
-    instrument_data <- dplyr::right_join(instrument_data, administrations,
-                                         by = "data_id")
+  # if ("data.frame" %in% class(administrations)) {
+  if (!is.null(administration_info)) {
+    instrument_data <- instrument_data %>%
+      dplyr::right_join(administration_info, by = "data_id")
   }
 
-  if ("data.frame" %in% class(iteminfo)) {
-    instrument_data <- dplyr::right_join(instrument_data, iteminfo,
-                                         by = "num_item_id")
+  # if ("data.frame" %in% class(items)) {
+  if (!is.null(item_info)) {
+    instrument_data <- instrument_data %>%
+      dplyr::right_join(item_info, by = "num_item_id")
   }
+
+  instrument_data <- instrument_data %>%
+    dplyr::select(-.data$num_item_id)
 
   DBI::dbDisconnect(src)
 

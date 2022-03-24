@@ -24,4 +24,3 @@ src <- connect_to_wordbank()
 DBI::dbDisconnect(src)
 }
 }
-\keyword{internal}

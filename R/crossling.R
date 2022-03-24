@@ -46,8 +46,8 @@ summarise_items <- function(lang_items, mode = "remote") {
   get_instrument_data(language = unique(lang_items$language),
                       form = unique(lang_items$form),
                       items = lang_items$item_id,
-                      administrations = TRUE,
-                      iteminfo = lang_items,
+                      administration_info = TRUE,
+                      item_info = lang_items,
                       mode = mode) %>%
     dplyr::mutate(understands = !is.na(.data$value) &
                     .data$value %in% c("understands", "produces"),

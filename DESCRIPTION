@@ -21,6 +21,7 @@ Imports:
     DBI (>= 1.1.1),
     dbplyr (>= 2.1.0),
     dplyr (>= 1.0.4),
+    glue,
     purrr (>= 0.3.4),
     quantregGrowth (>= 1.0),
     rlang (>= 0.4.10),
@@ -33,5 +34,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
