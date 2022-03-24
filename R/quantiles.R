@@ -45,7 +45,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
            paste(names(quantile_opts), collapse = ", "))
     num_quantiles <- quantile_opts[[quantiles]]
   } else {
-    stop("Quantiles must be numberic vector or character vector of length 1")
+    stop("Quantiles must be a numeric vector or a character vector of length 1")
   }
 
   vocab_data <- vocab_data %>% dplyr::group_by(.data$language, .data$form)

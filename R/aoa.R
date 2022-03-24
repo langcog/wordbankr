@@ -28,7 +28,7 @@
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"),
-#'                                    administrations = TRUE)
+#'                                    administration_info = TRUE)
 #' eng_ws_aoa <- fit_aoa(eng_ws_data)
 #' }
 #' @export
@@ -38,16 +38,19 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
                     age_max = max(instrument_data$age, na.rm = TRUE)) {
 
   assertthat::assert_that(is.element("age", colnames(instrument_data)))
-  assertthat::assert_that(is.element("num_item_id", colnames(instrument_data)))
+  assertthat::assert_that(is.element("item_id", colnames(instrument_data)))
   assertthat::assert_that(age_min <= age_max)
+
+  instrument_data <- instrument_data %>%
+    dplyr::mutate(num_item_id = strip_item_id(.data$item_id))
 
   instrument_summary <- instrument_data %>%
     dplyr::filter(!is.na(.data$age)) %>%
-    dplyr::mutate(
-      produces = !is.na(.data$value) & .data$value == "produces",
-      understands = !is.na(.data$value) &
-        (.data$value == "understands" | .data$value == "produces")
-    ) %>%
+    # dplyr::mutate(
+    #   produces = !is.na(.data$value) & .data$value == "produces",
+    #   understands = !is.na(.data$value) &
+    #     (.data$value == "understands" | .data$value == "produces")
+    # ) %>%
     dplyr::select(-.data$value) %>%
     tidyr::gather("measure_name", "value",
                   .data$produces, .data$understands) %>%
@@ -85,6 +88,7 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
   instrument_fits <- instrument_summary %>%
     dplyr::group_by(.data$num_item_id) %>%
     tidyr::nest() %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(fit_data = .data$data %>%
                     purrr::map(fit_methods[[method]]))
 
@@ -92,8 +96,8 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
     dplyr::mutate(aoa = .data$fit_data %>% purrr::map_dbl(compute_aoa)) %>%
     dplyr::select(-.data$data, -.data$fit_data)
 
-  item_cols <- c("num_item_id", "item_id", "definition", "type", "category",
-                 "lexical_category", "lexical_class", "uni_lemma",
+  item_cols <- c("num_item_id", "item_id", "item_kind", "item_definition",
+                 "category", "lexical_category", "lexical_class", "uni_lemma",
                  "complexity_category") %>%
     purrr::keep(~.x %in% colnames(instrument_data))
 
@@ -101,6 +105,8 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
     dplyr::select(!!!item_cols) %>%
     dplyr::distinct()
 
-  instrument_aoa %>% dplyr::left_join(item_data, by = "num_item_id")
+  instrument_aoa %>%
+    dplyr::left_join(item_data, by = "num_item_id") %>%
+    dplyr::select(-.data$num_item_id)
 
 }

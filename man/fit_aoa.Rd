@@ -49,7 +49,7 @@ used can be empirical or first smoothed by a model.
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"),
-                                   administrations = TRUE)
+                                   administration_info = TRUE)
 eng_ws_aoa <- fit_aoa(eng_ws_data)
 }
 }
