@@ -515,7 +515,7 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
     # dplyr::select(-.data$item_id) %>%
     dplyr::mutate(produces = .data$value == "produces",
-                  understands = .data$value == "understa" | .data$value == "produces") # fix
+                  understands = .data$value == "understands" | .data$value == "produces") # fix
   # valid for non-WG? weird for items that aren't comp/prod?
 
   # if ("data.frame" %in% class(administrations)) {
