@@ -8,9 +8,9 @@
 #' uni_lemmas <- get_crossling_items()
 #' }
 #' @export
-get_crossling_items <- function(mode = "remote") {
+get_crossling_items <- function(mode = "remote", db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(mode = mode, db_args = db_args)
 
   uni_lemmas <- get_common_table(src, "uni_lemma") %>%
     dplyr::collect()
