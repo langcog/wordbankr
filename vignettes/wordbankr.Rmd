@@ -15,7 +15,7 @@ vignette: >
 library(wordbankr)
 library(dplyr)
 library(ggplot2)
-knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE, eval = FALSE)
 theme_set(theme_bw())
 ```
 
