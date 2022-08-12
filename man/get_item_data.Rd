@@ -27,7 +27,7 @@ A data frame where each row is a CDI item and each column is a
 Get the Wordbank by-item data
 }
 \examples{
-\dontrun{
+\donttest{
 english_ws_items <- get_item_data("English (American)", "WS")
 all_items <- get_item_data()
 }

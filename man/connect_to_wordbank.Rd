@@ -17,7 +17,7 @@ A \code{src} object which is connection to the Wordbank database.
 Connect to the Wordbank database
 }
 \examples{
-\dontrun{
+\donttest{
 src <- connect_to_wordbank()
 DBI::dbDisconnect(src)
 }

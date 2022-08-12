@@ -24,7 +24,7 @@ A dataframe with a row for each combination of item and age, and
 Get item-by-age summary statistics
 }
 \examples{
-\dontrun{
+\donttest{
 italian_dog <- get_item_data(language = "Italian", form = "WG") \%>\%
   dplyr::filter(uni_lemma == "dog")
 italian_dog_summary <- summarise_items(italian_dog)

@@ -58,7 +58,7 @@ A data frame where each row is a CDI administration and each column
 Get the Wordbank by-administration data
 }
 \examples{
-\dontrun{
+\donttest{
 english_ws_admins <- get_administration_data("English (American)", "WS")
 all_admins <- get_administration_data()
 }

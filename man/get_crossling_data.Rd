@@ -24,7 +24,7 @@ A dataframe with a row for each combination of language, item, and
 Get item-by-age summary statistics for items across languages
 }
 \examples{
-\dontrun{
+\donttest{
 crossling_data <- get_crossling_data(uni_lemmas = c("hat", "nose"))
 }
 }

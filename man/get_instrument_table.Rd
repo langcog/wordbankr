@@ -21,11 +21,4 @@ A \code{tbl} object containing the instrument's data.
 \description{
 Connect to an instrument's Wordbank table
 }
-\examples{
-\dontrun{
-src <- connect_to_wordbank()
-eng_ws <- get_instrument_table(src, "English (American)", "WS")
-DBI::dbDisconnect(src)
-}
-}
 \keyword{internal}

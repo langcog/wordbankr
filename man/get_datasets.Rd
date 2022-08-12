@@ -33,7 +33,7 @@ A data frame where each row is a particular dataset and its
 Get the Wordbank data sources
 }
 \examples{
-\dontrun{
+\donttest{
 english_ws_datasets <- get_datasets(language = "English (American)",
                                     form = "WS",
                                     admin_data = TRUE)

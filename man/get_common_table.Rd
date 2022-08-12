@@ -17,11 +17,4 @@ A \code{tbl} object.
 \description{
 Connect to a single Wordbank common table
 }
-\examples{
-\dontrun{
-src <- connect_to_wordbank()
-instruments <- get_common_table(src, "instrument")
-DBI::dbDisconnect(src)
-}
-}
 \keyword{internal}

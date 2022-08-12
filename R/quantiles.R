@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eng_wg <- get_administration_data("English (American)", "WG", include_demographic_info = TRUE)
 #' fit_vocab_quantiles(eng_wg, production)
 #' fit_vocab_quantiles(eng_wg, production, sex)

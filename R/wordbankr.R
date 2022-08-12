@@ -5,7 +5,7 @@
 #' @return A \code{src} object which is connection to the Wordbank database.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' src <- connect_to_wordbank()
 #' DBI::dbDisconnect(src)
 #' }
@@ -29,20 +29,14 @@ connect_to_wordbank <- function(db_args = NULL) {
 
 #' Connect to an instrument's Wordbank table
 #'
+#' @keywords internal
+#'
 #' @param src A connection to the Wordbank database.
 #' @param language A string of the instrument's language (insensitive to case
 #'   and whitespace).
 #' @param form A string of the instrument's form (insensitive to case and
 #'   whitespace).
 #' @return A \code{tbl} object containing the instrument's data.
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' src <- connect_to_wordbank()
-#' eng_ws <- get_instrument_table(src, "English (American)", "WS")
-#' DBI::dbDisconnect(src)
-#' }
 get_instrument_table <- function(src, language, form) {
   san_string <- function(s) {
     s %>%
@@ -60,17 +54,11 @@ get_instrument_table <- function(src, language, form) {
 
 #' Connect to a single Wordbank common table
 #'
+#' @keywords internal
+#'
 #' @param src A connection to the Wordbank database.
 #' @param name A string indicating the name of a common table.
 #' @return A \code{tbl} object.
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' src <- connect_to_wordbank()
-#' instruments <- get_common_table(src, "instrument")
-#' DBI::dbDisconnect(src)
-#' }
 get_common_table <- function(src, name) {
   common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
   return(common_table)
@@ -85,7 +73,7 @@ get_common_table <- function(src, name) {
 #' @inheritParams connect_to_wordbank
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' instruments <- get_instruments()
 #' }
 #' @export
@@ -124,7 +112,7 @@ get_instruments <- function(db_args = NULL) {
 #'   administrations (\code{n_admins}).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_datasets <- get_datasets(language = "English (American)",
 #'                                     form = "WS",
 #'                                     admin_data = TRUE)
@@ -238,7 +226,7 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   parameter specification.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_admins <- get_administration_data("English (American)", "WS")
 #' all_admins <- get_administration_data()
 #' }
@@ -382,7 +370,7 @@ strip_item_id <- function(item_id) {
 #'   \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_items <- get_item_data("English (American)", "WS")
 #' all_items <- get_item_data()
 #' }
@@ -437,7 +425,7 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #'   about the administration and item, as specified.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"))

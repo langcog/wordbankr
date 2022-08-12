@@ -17,7 +17,7 @@ A data frame with the column \code{uni_lemma}.
 Get the uni_lemmas available in Wordbank
 }
 \examples{
-\dontrun{
+\donttest{
 uni_lemmas <- get_crossling_items()
 }
 }
