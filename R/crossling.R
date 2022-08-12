@@ -87,15 +87,17 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
     dplyr::select(.data$language, .data$form, .data$form_type, .data$item_id,
                   .data$item_definition, .data$uni_lemma,
-                  .data$lexical_category) %>%
-    dplyr::mutate(lang = language, frm = form) %>%
-    tidyr::nest(data = -c(lang, frm)) %>%
-    dplyr::transmute(summary = data %>%
+                  .data$lexical_category)
+
+  item_summary <- item_data %>%
+    dplyr::mutate(lang = .data$language, frm = .data$form) %>%
+    tidyr::nest(df = -c(.data$lang, .data$frm)) %>%
+    dplyr::transmute(summary = .data$df %>%
                        purrr::map(~summarise_items(.x, db_args = db_args))) %>%
-    tidyr::unnest(summary)
+    tidyr::unnest(.data$summary)
 
   DBI::dbDisconnect(src)
 
-  return(item_data)
+  return(item_summary)
 
 }

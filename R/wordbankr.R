@@ -282,7 +282,7 @@ get_administration_data <- function(language = NULL, form = NULL,
   )
 
   suppressWarnings(
-    admins_tbl <- dplyr::tbl(src, dplyr::sql(admin_query))
+    admins_tbl <- dplyr::tbl(src, dbplyr::sql(admin_query))
   )
   suppressWarnings(
     admins <- admins_tbl %>%
@@ -406,7 +406,7 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
     filter_query(language, form, db_args),
     sep = "\n")
 
-  items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
+  items <- dplyr::tbl(src, dbplyr::sql(item_query)) %>%
     dplyr::collect()
 
   DBI::dbDisconnect(src)
