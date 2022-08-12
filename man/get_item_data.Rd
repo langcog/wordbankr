@@ -4,7 +4,7 @@
 \alias{get_item_data}
 \title{Get the Wordbank by-item data}
 \usage{
-get_item_data(language = NULL, form = NULL, mode = "remote", db_args = NULL)
+get_item_data(language = NULL, form = NULL, db_args = NULL)
 }
 \arguments{
 \item{language}{An optional string specifying which language's items to
@@ -12,10 +12,8 @@ retrieve.}
 
 \item{form}{An optional string specifying which form's items to retrieve.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
-
-\item{db_args}{List with host, user, and password defined.}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A data frame where each row is a CDI item and each column is a

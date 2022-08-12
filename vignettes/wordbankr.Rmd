@@ -100,7 +100,7 @@ get_instruments()
 
 The `get_datasets()` function gives information on all the datasets in Wordbank, either for a specific language and/or form or for all instruments. If the `admin_data` argument is set to `TRUE`, the results will also include the number of administrations in the database from that dataset.
 ```{r}
-get_(form = "WG")
+get_datasets(form = "WG")
 get_datasets(language = "Spanish (Mexican)", admin_data = TRUE)
 ```
 
@@ -143,6 +143,6 @@ The function `fit_vocab_quantiles()` uses quantile regression to fit a set of vo
 ```{r}
 eng_ws <- get_administration_data("English (American)", "WS")
 fit_vocab_quantiles(eng_ws, production)
-fit_vocab_quantiles(eng_ws, production, sex)
+# fit_vocab_quantiles(eng_ws, production, sex)
 fit_vocab_quantiles(eng_ws, production, quantiles = "quartiles")
 ```

@@ -6,9 +6,8 @@ NULL
 
 #' Connect to the Wordbank database
 #'
-#' @param mode A string indicating connection mode: one of \code{"local"}, or
-#'   \code{"remote"} (defaults to \code{"remote"}).
-#' @param db_args List with host, user, and password defined.
+#' @param db_args List with arguments to connect to wordbank mysql database
+#'   (host, dbname, user, and password).
 #' @return A \code{src} object which is connection to the Wordbank database.
 #'
 #' @examples
@@ -17,25 +16,18 @@ NULL
 #' DBI::dbDisconnect(src)
 #' }
 #' @export
-connect_to_wordbank <- function(mode = "remote", db_args = NULL) {
+connect_to_wordbank <- function(db_args = NULL) {
 
-  if (!is.null(db_args)) {
-    con <- DBI::dbConnect(
-      RMySQL::MySQL(),
-      host = db_args$host, dbname = db_args$dbname,
-      user = db_args$user, password = db_args$password
-    )
-    return(con)
+  if (is.null(db_args)) {
+    db_args <- list(host = "wordbank2-dev.canyiscnpddk.us-west-2.rds.amazonaws.com",
+                    dbname = "wordbank",
+                    user = "wordbank_reader",
+                    password = "ICanOnlyRead@99")
   }
 
-  assertthat::assert_that(is.element(mode, c("local", "remote")))
-  address <- switch(mode,
-                    local = "localhost",
-                    remote = "server.wordbank.stanford.edu")
-
   DBI::dbConnect(RMySQL::MySQL(),
-                 host = address, dbname = "wordbank",
-                 user = "wordbank", password = "wordbank")
+                 host = db_args$host, dbname = db_args$dbname,
+                 user = db_args$user, password = db_args$password)
 
 }
 
@@ -101,9 +93,9 @@ get_common_table <- function(src, name) {
 #' instruments <- get_instruments()
 #' }
 #' @export
-get_instruments <- function(mode = "remote", db_args = NULL) {
+get_instruments <- function(db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode, db_args = db_args)
+  src <- connect_to_wordbank(db_args)
 
   suppressWarnings(
     instruments <- get_common_table(src, name = "instrument") %>%
@@ -143,11 +135,11 @@ get_instruments <- function(mode = "remote", db_args = NULL) {
 #' }
 #' @export
 get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
-                         mode = "remote", db_args = NULL) {
+                         db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode, db_args = db_args)
+  src <- connect_to_wordbank(db_args)
 
-  instruments <- get_instruments(mode = mode, db_args = db_args) %>%
+  instruments <- get_instruments(db_args = db_args) %>%
     dplyr::select(.data$instrument_id, .data$language, .data$form,
                   .data$form_type)
 
@@ -198,9 +190,9 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
 
 
 filter_query <- function(filter_language = NULL, filter_form = NULL,
-                         mode = "remote", db_args = NULL) {
+                         db_args = NULL) {
   if (!is.null(filter_language) | !is.null(filter_form)) {
-    instruments <- get_instruments(mode = mode, db_args = db_args)
+    instruments <- get_instruments(db_args = db_args)
     if (!is.null(filter_language)) {
       instruments <- instruments %>%
         dplyr::filter(.data$language == filter_language)
@@ -261,11 +253,11 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     include_birth_info = FALSE,
                                     include_health_conditions = FALSE,
                                     include_language_exposure = FALSE,
-                                    mode = "remote", db_args = NULL) {
+                                    db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode, db_args = db_args)
+  src <- connect_to_wordbank(db_args)
 
-  datasets <- get_datasets(mode = mode, db_args = db_args) %>%
+  datasets <- get_datasets(db_args = db_args) %>%
     dplyr::select(.data$dataset_id, .data$dataset_name,
                   .data$dataset_origin_name, .data$language, .data$form,
                   .data$form_type)
@@ -289,7 +281,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     ON common_administration.instrument_id = common_instrument.id
     LEFT JOIN common_child
     ON common_administration.child_id = common_child.id\n",
-    {filter_query(language, form, mode = mode, db_args = db_args)}
+    {filter_query(language, form, db_args)}
   )
 
   suppressWarnings(
@@ -395,10 +387,9 @@ strip_item_id <- function(item_id) {
 #' all_items <- get_item_data()
 #' }
 #' @export
-get_item_data <- function(language = NULL, form = NULL, mode = "remote",
-                          db_args = NULL) {
+get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode, db_args = db_args)
+  src <- connect_to_wordbank(db_args)
 
   item_tbl <- get_common_table(src, "item")
   item_query <- paste(
@@ -412,7 +403,7 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
     ON common_item.item_category_id = common_item_category.id
     LEFT JOIN common_uni_lemma
     ON common_item.uni_lemma_id = common_uni_lemma.id",
-    filter_query(language, form, mode = mode, db_args = db_args),
+    filter_query(language, form, db_args),
     sep = "\n")
 
   items <- dplyr::tbl(src, dplyr::sql(item_query)) %>%
@@ -454,13 +445,13 @@ get_item_data <- function(language = NULL, form = NULL, mode = "remote",
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
                                 administration_info = FALSE, item_info = FALSE,
-                                mode = "remote", db_args = NULL) {
+                                db_args = NULL) {
 
   items_quo <- rlang::enquo(items)
   input_language <- language
   input_form <- form
 
-  src <- connect_to_wordbank(mode = mode, db_args = db_args)
+  src <- connect_to_wordbank(db_args)
   instrument_table <- get_instrument_table(src, language, form)
 
   columns <- colnames(instrument_table)
@@ -475,7 +466,7 @@ get_instrument_data <- function(language, form, items = NULL,
 
   if ("logical" %in% class(administration_info)) {
     if (administration_info) {
-      administration_info <- get_administration_data(language, form, mode = mode,
+      administration_info <- get_administration_data(language, form,
                                                      db_args = db_args)
     } else {
       administration_info <- NULL
@@ -488,7 +479,7 @@ get_instrument_data <- function(language, form, items = NULL,
 
   if ("logical" %in% class(item_info)) {
     if (item_info) {
-      item_info <- get_item_data(language, form, mode = mode, db_args = db_args)
+      item_info <- get_item_data(language, form, db_args = db_args)
     } else {
       item_info <- NULL
     }

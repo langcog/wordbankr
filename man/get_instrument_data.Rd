@@ -10,7 +10,6 @@ get_instrument_data(
   items = NULL,
   administration_info = FALSE,
   item_info = FALSE,
-  mode = "remote",
   db_args = NULL
 )
 }
@@ -32,10 +31,8 @@ administration data or a data frame of administration data (as returned by
 \item{item_info}{Either a logical indicating whether to include item data or
 a data frame of item data (as returned by \code{get_item_data}).}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
-
-\item{db_args}{List with host, user, and password defined.}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A data frame where each row contains the values (\code{value},

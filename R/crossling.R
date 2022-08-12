@@ -8,9 +8,9 @@
 #' uni_lemmas <- get_crossling_items()
 #' }
 #' @export
-get_crossling_items <- function(mode = "remote") {
+get_crossling_items <- function(db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode)
+  src <- connect_to_wordbank(db_args)
 
   uni_lemmas <- get_common_table(src, "uni_lemma") %>%
     dplyr::collect()
@@ -40,7 +40,7 @@ get_crossling_items <- function(mode = "remote") {
 #' italian_dog_summary <- summarise_items(italian_dog)
 #' }
 #' @export
-summarise_items <- function(lang_items, mode = "remote", db_args = NULL) {
+summarise_items <- function(lang_items, db_args = NULL) {
   message(sprintf("Getting data for %s...", unique(lang_items$language)))
 
   get_instrument_data(language = unique(lang_items$language),
@@ -48,7 +48,6 @@ summarise_items <- function(lang_items, mode = "remote", db_args = NULL) {
                       items = lang_items$item_id,
                       administration_info = TRUE,
                       item_info = lang_items,
-                      mode = mode,
                       db_args = db_args) %>%
     # dplyr::mutate(understands = !is.na(.data$value) &
     #                 .data$value %in% c("understands", "produces"),
@@ -85,14 +84,14 @@ summarise_items <- function(lang_items, mode = "remote", db_args = NULL) {
 #' crossling_data <- get_crossling_data(uni_lemmas = c("hat", "nose"))
 #' }
 #' @export
-get_crossling_data <- function(uni_lemmas, mode = "remote", db_args = NULL) {
+get_crossling_data <- function(uni_lemmas, db_args = NULL) {
 
-  src <- connect_to_wordbank(mode = mode, db_args = NULL)
+  src <- connect_to_wordbank(db_args)
 
-  item_data <- get_item_data(form = "WG", mode = mode, db_args = db_args) %>%
+  item_data <- get_item_data(form = "WG", db_args = db_args) %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
     split(.$language) %>%
-    purrr::map_df(~summarise_items(.x, mode, db_args)) %>%
+    purrr::map_df(~summarise_items(.x, db_args = db_args)) %>%
     dplyr::ungroup()
 
   DBI::dbDisconnect(src)
