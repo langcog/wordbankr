@@ -1,9 +1,5 @@
 utils::globalVariables(c(".", "n"))
 
-#' @importFrom dplyr "%>%"
-#' @importFrom rlang .data
-NULL
-
 #' Connect to the Wordbank database
 #'
 #' @param db_args List with arguments to connect to wordbank mysql database

@@ -8,7 +8,6 @@
 #'   "quartiles", "median", or a numeric vector of quantile values.
 #'
 #' @importFrom quantregGrowth ps
-#' @importFrom rlang ":="
 #'
 #' @return A data frame with the columns "language", "form", "age", \code{group}
 #'   (if specified), "quantile", and \code{measure}, where \code{measure} is the
