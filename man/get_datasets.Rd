@@ -4,13 +4,7 @@
 \alias{get_datasets}
 \title{Get the Wordbank data sources}
 \usage{
-get_datasets(
-  language = NULL,
-  form = NULL,
-  admin_data = FALSE,
-  mode = "remote",
-  db_args = NULL
-)
+get_datasets(language = NULL, form = NULL, admin_data = FALSE, db_args = NULL)
 }
 \arguments{
 \item{language}{An optional string specifying which language's datasets to
@@ -21,10 +15,8 @@ retrieve.}
 \item{admin_data}{A logical indicating whether to include summary-level
 statistics on the administrations within a dataset.}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
-
-\item{db_args}{List with host, user, and password defined.}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A data frame where each row is a particular dataset and its

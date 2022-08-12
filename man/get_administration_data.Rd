@@ -12,7 +12,6 @@ get_administration_data(
   include_birth_info = FALSE,
   include_health_conditions = FALSE,
   include_language_exposure = FALSE,
-  mode = "remote",
   db_args = NULL
 )
 }
@@ -28,7 +27,7 @@ to ones in the valid age range for their instrument.}
 
 \item{include_demographic_info}{A logical indicating whether to include the
 child's demographic information (\code{birth_order}, \code{ethnicity},
-\code{sex}, \code{caregiver_education}).}
+\code{race}, \code{sex}, \code{caregiver_education}).}
 
 \item{include_birth_info}{A logical indicating whether to include the child's
 birth information (\code{birth_weight}, \code{born_early_or_late},
@@ -43,10 +42,8 @@ child's language exposure information at time of administration (a nested
 dataframe under \code{language_exposures} with the columns \code{language},
 \code{exposure_proportion}, \code{age_of_first_exposure}).}
 
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
-
-\item{db_args}{List with host, user, and password defined.}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A data frame where each row is a CDI administration and each column

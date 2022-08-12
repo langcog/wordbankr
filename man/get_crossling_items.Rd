@@ -4,11 +4,11 @@
 \alias{get_crossling_items}
 \title{Get the uni_lemmas available in Wordbank}
 \usage{
-get_crossling_items(mode = "remote")
+get_crossling_items(db_args = NULL)
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A data frame with the column \code{uni_lemma}.

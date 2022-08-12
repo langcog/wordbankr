@@ -4,13 +4,11 @@
 \alias{connect_to_wordbank}
 \title{Connect to the Wordbank database}
 \usage{
-connect_to_wordbank(mode = "remote", db_args = NULL)
+connect_to_wordbank(db_args = NULL)
 }
 \arguments{
-\item{mode}{A string indicating connection mode: one of \code{"local"}, or
-\code{"remote"} (defaults to \code{"remote"}).}
-
-\item{db_args}{List with host, user, and password defined.}
+\item{db_args}{List with arguments to connect to wordbank mysql database
+(host, dbname, user, and password).}
 }
 \value{
 A \code{src} object which is connection to the Wordbank database.
