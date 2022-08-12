@@ -27,7 +27,7 @@ to ones in the valid age range for their instrument.}
 
 \item{include_demographic_info}{A logical indicating whether to include the
 child's demographic information (\code{birth_order}, \code{ethnicity},
-\code{sex}, \code{caregiver_education}).}
+\code{race}, \code{sex}, \code{caregiver_education}).}
 
 \item{include_birth_info}{A logical indicating whether to include the child's
 birth information (\code{birth_weight}, \code{born_early_or_late},

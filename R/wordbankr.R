@@ -217,7 +217,7 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   to ones in the valid age range for their instrument.
 #' @param include_demographic_info A logical indicating whether to include the
 #'   child's demographic information (\code{birth_order}, \code{ethnicity},
-#'   \code{sex}, \code{caregiver_education}).
+#'   \code{race}, \code{sex}, \code{caregiver_education}).
 #' @param include_birth_info A logical indicating whether to include the child's
 #'   birth information (\code{birth_weight}, \code{born_early_or_late},
 #'   \code{gestational_age}, \code{zygosity}).
@@ -262,7 +262,8 @@ get_administration_data <- function(language = NULL, form = NULL,
                    "production", "is_norming",
                    "child_id", "dataset_id", "age_min", "age_max")
 
-  demo_cols <- c("birth_order", "ethnicity", "sex", "caregiver_education_id")
+  demo_cols <- c("birth_order", "ethnicity", "race",
+                 "sex", "caregiver_education_id")
   if (include_demographic_info) select_cols <- c(select_cols, demo_cols)
   birth_cols <- c("birth_weight", "born_early_or_late", "gestational_age",
                   "zygosity")
@@ -313,9 +314,12 @@ get_administration_data <- function(language = NULL, form = NULL,
       dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
                                  labels = c("Female", "Male", "Other")),
                     ethnicity = factor(.data$ethnicity,
-                                       levels = c("A", "B", "O", "W", "H"),
+                                  levels = c("H", "N"),
+                                  labels = c("Hispanic", "Non-Hispanic")),
+                    race = factor(.data$race,
+                                       levels = c("A", "B", "O", "W"),
                                        labels = c("Asian", "Black", "Other",
-                                                  "White", "Hispanic")),
+                                                  "White")),
                     birth_order = factor(.data$birth_order,
                                          levels = c(1, 2, 3, 4, 5, 6, 7, 8),
                                          labels = c("First", "Second", "Third",
@@ -498,7 +502,7 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
     # dplyr::select(-.data$item_id) %>%
     dplyr::mutate(produces = .data$value == "produces",
-                  understands = .data$value == "understa" | .data$value == "produces") # fix
+                  understands = .data$value == "understands" | .data$value == "produces") # fix
   # valid for non-WG? weird for items that aren't comp/prod?
 
   # if ("data.frame" %in% class(administrations)) {
