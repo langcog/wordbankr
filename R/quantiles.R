@@ -16,16 +16,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' eng_ws <- get_administration_data("English (American)", "WS")
-#' fit_vocab_quantiles(eng_ws, production)
-#' fit_vocab_quantiles(eng_ws, production, sex)
-#' fit_vocab_quantiles(eng_ws, production, quantiles = "quartiles")
+#' eng_wg <- get_administration_data("English (American)", "WG", include_demographic_info = TRUE)
+#' fit_vocab_quantiles(eng_wg, production)
+#' fit_vocab_quantiles(eng_wg, production, sex)
+#' fit_vocab_quantiles(eng_wg, production, quantiles = "quartiles")
 #' }
-fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
+fit_vocab_quantiles <- function(vocab_data, measure, group,
                                 quantiles = "standard") {
-
-  quo_measure <- rlang::enquo(measure)
-  quo_group <- rlang::enquo(group)
 
   quantile_opts <- list(
     standard = c(0.10, 0.25, 0.50, 0.75, 0.90),
@@ -49,14 +46,14 @@ fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
 
   vocab_data <- vocab_data %>% dplyr::group_by(.data$language, .data$form)
 
-  if (!rlang::quo_is_null(quo_group)) {
+  if (!missing(group)) {
     vocab_data <- vocab_data %>%
-      dplyr::filter(!is.na(!!quo_group)) %>%
-      dplyr::group_by(!!quo_group, .add = TRUE)
+      dplyr::filter_at(vars({{ group }}), ~!is.na(.x)) %>%
+      dplyr::group_by({{ group }}, .add = TRUE)
   }
 
   vocab_models <- vocab_data %>%
-    dplyr::rename(vocab = !!quo_measure) %>%
+    dplyr::rename(vocab = {{ measure }}) %>%
     tidyr::nest() %>%
     dplyr::mutate(model = purrr::pmap(
       list(.data$language, .data$form, .data$data),
@@ -71,7 +68,8 @@ fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
             return(NULL)
           })
       })) %>%
-    dplyr::filter(purrr::map_lgl(.data$model, ~!is.null(.)))
+    dplyr::filter(purrr::map_lgl(.data$model, ~!is.null(.))) %>%
+    dplyr::ungroup()
 
   ages <- data.frame(age = min(vocab_data$age):max(vocab_data$age))
   get_predicted <- function(vocab_model) {
@@ -88,7 +86,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group = NULL,
     dplyr::mutate(predicted = purrr::map(.data$model, get_predicted)) %>%
     dplyr::select(-.data$data, -.data$model) %>%
     tidyr::unnest(cols = .data$predicted) %>%
-    dplyr::rename(!!quo_measure := .data$predicted) %>%
+    dplyr::rename("{{measure}}" := .data$predicted) %>%
     dplyr::mutate(quantile = factor(.data$quantile))
 
   return(vocab_fits)

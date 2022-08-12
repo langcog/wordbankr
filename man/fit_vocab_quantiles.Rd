@@ -4,7 +4,7 @@
 \alias{fit_vocab_quantiles}
 \title{Fit quantiles to vocabulary sizes using quantile regression}
 \usage{
-fit_vocab_quantiles(vocab_data, measure, group = NULL, quantiles = "standard")
+fit_vocab_quantiles(vocab_data, measure, group, quantiles = "standard")
 }
 \arguments{
 \item{vocab_data}{A data frame returned by \code{get_administration_data}.}
@@ -27,9 +27,9 @@ Fit quantiles to vocabulary sizes using quantile regression
 }
 \examples{
 \dontrun{
-eng_ws <- get_administration_data("English (American)", "WS")
-fit_vocab_quantiles(eng_ws, production)
-fit_vocab_quantiles(eng_ws, production, sex)
-fit_vocab_quantiles(eng_ws, production, quantiles = "quartiles")
+eng_wg <- get_administration_data("English (American)", "WG", include_demographic_info = TRUE)
+fit_vocab_quantiles(eng_wg, production)
+fit_vocab_quantiles(eng_wg, production, sex)
+fit_vocab_quantiles(eng_wg, production, quantiles = "quartiles")
 }
 }
