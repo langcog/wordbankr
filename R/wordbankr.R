@@ -1,5 +1,3 @@
-utils::globalVariables(c(".", "n"))
-
 #' Connect to the Wordbank database
 #'
 #' @param db_args List with arguments to connect to wordbank mysql database

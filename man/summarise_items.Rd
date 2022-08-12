@@ -4,10 +4,10 @@
 \alias{summarise_items}
 \title{Get item-by-age summary statistics}
 \usage{
-summarise_items(lang_items, db_args = NULL)
+summarise_items(item_data, db_args = NULL)
 }
 \arguments{
-\item{lang_items}{A dataframe as returned by \code{get_item_data()}.}
+\item{item_data}{A dataframe as returned by \code{get_item_data()}.}
 
 \item{db_args}{List with arguments to connect to wordbank mysql database
 (host, dbname, user, and password).}
@@ -18,8 +18,7 @@ A dataframe with a row for each combination of item and age, and
   (\code{n_children}), means (\code{comprehension}, \code{production}),
   standard deviations (\code{comprehension_sd}, \code{production_sd}); also
   retains item-level variables from \code{lang_items} (\code{item_id},
-  \code{definition}, \code{uni_lemma}, \code{lexical_category},
-  \code{lexical_class}).
+  \code{item_definition}, \code{uni_lemma}, \code{lexical_category}).
 }
 \description{
 Get item-by-age summary statistics

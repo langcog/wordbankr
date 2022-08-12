@@ -23,15 +23,14 @@ get_crossling_items <- function(db_args = NULL) {
 
 #' Get item-by-age summary statistics
 #'
-#' @param lang_items A dataframe as returned by \code{get_item_data()}.
+#' @param item_data A dataframe as returned by \code{get_item_data()}.
 #' @inheritParams connect_to_wordbank
 #' @return A dataframe with a row for each combination of item and age, and
 #'   columns for summary statistics for the group: number of children
 #'   (\code{n_children}), means (\code{comprehension}, \code{production}),
 #'   standard deviations (\code{comprehension_sd}, \code{production_sd}); also
 #'   retains item-level variables from \code{lang_items} (\code{item_id},
-#'   \code{definition}, \code{uni_lemma}, \code{lexical_category},
-#'   \code{lexical_class}).
+#'   \code{item_definition}, \code{uni_lemma}, \code{lexical_category}).
 #'
 #' @examples
 #' \dontrun{
@@ -40,24 +39,20 @@ get_crossling_items <- function(db_args = NULL) {
 #' italian_dog_summary <- summarise_items(italian_dog)
 #' }
 #' @export
-summarise_items <- function(lang_items, db_args = NULL) {
-  message(sprintf("Getting data for %s...", unique(lang_items$language)))
+summarise_items <- function(item_data, db_args = NULL) {
+  message(sprintf("Getting data for %s...", unique(item_data$language)))
 
-  get_instrument_data(language = unique(lang_items$language),
-                      form = unique(lang_items$form),
-                      items = lang_items$item_id,
+  get_instrument_data(language = unique(item_data$language),
+                      form = unique(item_data$form),
+                      items = item_data$item_id,
                       administration_info = TRUE,
-                      item_info = lang_items,
+                      item_info = item_data,
                       db_args = db_args) %>%
-    # dplyr::mutate(understands = !is.na(.data$value) &
-    #                 .data$value %in% c("understands", "produces"),
-    #               produces = !is.na(.data$value) &
-    #                 .data$value == "produces") %>%
-    dplyr::group_by(.data$language, .data$item_id, .data$item_definition,
-                    .data$uni_lemma, .data$lexical_category,
-                    .data$lexical_class, .data$age) %>%
+    dplyr::group_by(.data$language, .data$form, .data$item_id,
+                    .data$item_definition, .data$uni_lemma,
+                    .data$lexical_category, .data$age) %>%
     dplyr::summarise(
-      n_children = n(),
+      n_children = dplyr::n(),
       comprehension = sum(.data$understands) / .data$n_children,
       production = sum(.data$produces) / .data$n_children,
       comprehension_sd = stats::sd(.data$understands) / .data$n_children,
@@ -88,11 +83,16 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
 
-  item_data <- get_item_data(form = "WG", db_args = db_args) %>%
+  item_data <- get_item_data(db_args = db_args) %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
-    split(.$language) %>%
-    purrr::map_df(~summarise_items(.x, db_args = db_args)) %>%
-    dplyr::ungroup()
+    dplyr::select(.data$language, .data$form, .data$form_type, .data$item_id,
+                  .data$item_definition, .data$uni_lemma,
+                  .data$lexical_category) %>%
+    dplyr::mutate(lang = language, frm = form) %>%
+    tidyr::nest(data = -c(lang, frm)) %>%
+    dplyr::transmute(summary = data %>%
+                       purrr::map(~summarise_items(.x, db_args = db_args))) %>%
+    tidyr::unnest(summary)
 
   DBI::dbDisconnect(src)
 
