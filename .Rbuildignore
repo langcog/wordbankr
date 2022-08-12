@@ -2,6 +2,4 @@
 ^renv\.lock$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
-.push_gh_pages.sh
 cran-comments.md
