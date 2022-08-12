@@ -15,7 +15,7 @@ Authors@R: c(
 Depends:
     R (>= 4.0)
 License: GPL-3
-URL: https://langcog.github.io/wordbankr/
+URL: https://langcog.github.io/wordbankr, https://github.com/langcog/wordbankr
 BugReports: https://github.com/langcog/wordbankr/issues
 Imports:
     assertthat (>= 0.2.1),

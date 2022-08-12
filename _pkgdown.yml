@@ -1,4 +1,26 @@
 url: http://langcog.github.io/wordbankr/
 template:
   bootstrap: 5
-
+  bootswatch: cosmo
+reference:
+  - title: Get data
+  - contents:
+    - "connect_to_wordbank"
+    - "get_administration_data"
+    - "get_item_data"
+    - "get_instrument_data"
+  - title: Get metadata
+  - contents:
+    - "get_instruments"
+    - "get_datasets"
+  - title: Age of acquisition
+  - contents:
+    - "fit_aoa"
+  - title: Cross-linguistic data
+  - contents:
+    - "get_crossling_items"
+    - "summarise_items"
+    - "get_crossling_data"
+  - title: Vocabulary quantiles
+  - contents:
+    - "fit_vocab_quantiles"

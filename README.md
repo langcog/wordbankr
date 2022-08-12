@@ -1,7 +1,5 @@
 # wordbankr
 
-[![Travis-CI Build Status](https://travis-ci.org/langcog/wordbankr.svg?branch=master)](https://travis-ci.org/langcog/wordbankr)
-
 R package for accessing the Wordbank database.
 
 Installation
@@ -45,4 +43,4 @@ Get administration-by-item data:
 english_ws_data <- get_instrument_data("English (American)", "WS")
 ```
 
-For more details, see [this vignette](http://langcog.github.io/wordbankr/) and check out [more complicated usages](http://wordbank.stanford.edu/analyses).
+For more details, see [this vignette](https://langcog.github.io/wordbankr/articles/wordbankr.html).
