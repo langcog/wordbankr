@@ -25,9 +25,11 @@ connect_to_wordbank <- function(db_args = NULL) {
                     password = "ICanOnlyRead@99")
   }
 
-  DBI::dbConnect(RMySQL::MySQL(),
-                 host = db_args$host, dbname = db_args$dbname,
-                 user = db_args$user, password = db_args$password)
+  tryCatch({
+    DBI::dbConnect(RMySQL::MySQL(),
+                   host = db_args$host, dbname = db_args$dbname,
+                   user = db_args$user, password = db_args$password)
+  }, error = function(e) message(e))
 
 }
 
