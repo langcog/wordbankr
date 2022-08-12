@@ -24,6 +24,7 @@ Other contributors:
   \item Daniel Yurovsky \email{yurovsky@stanford.edu} [contributor]
   \item Michael Frank \email{mcfrank@stanford.edu} [contributor]
   \item Danielle Kellier \email{dkellier@stanford.edu} [contributor]
+  \item Alvin Tan \email{tanawm@stanford.edu} [contributor]
 }
 
 }

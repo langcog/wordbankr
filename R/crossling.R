@@ -40,10 +40,12 @@ get_crossling_items <- function(db_args = NULL) {
 #' }
 #' @export
 summarise_items <- function(item_data, db_args = NULL) {
-  message(sprintf("Getting data for %s...", unique(item_data$language)))
+  lang <- unique(item_data$language)
+  frm <- unique(item_data$form)
+  message(glue("Getting data for {lang} {frm}"))
 
-  get_instrument_data(language = unique(item_data$language),
-                      form = unique(item_data$form),
+  get_instrument_data(language = lang,
+                      form = frm,
                       items = item_data$item_id,
                       administration_info = TRUE,
                       item_info = item_data,

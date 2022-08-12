@@ -55,21 +55,24 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
   vocab_models <- vocab_data %>%
     dplyr::rename(vocab = {{ measure }}) %>%
     tidyr::nest() %>%
-    dplyr::mutate(model = purrr::pmap(
-      list(.data$language, .data$form, .data$data),
-      function(lang, frm, df) {
+    dplyr::mutate(group_label = paste(language, form, {{ group }})) %>%
+    dplyr::mutate(model = purrr::map2(
+      .data$group_label, .data$data,
+      function(gl, df) {
         tryCatch(
           suppressWarnings(
             quantregGrowth::gcrq(vocab ~ ps(age, monotone = 1, lambda = 1000),
                                  tau = num_quantiles, data = df)
           ),
           error = function(e) {
-            message(sprintf("Unable to fit model for %s %s", lang, frm))
+            message(glue("Unable to fit model for {gl}"))
             return(NULL)
           })
       })) %>%
+    dplyr::select(-group_label) %>%
     dplyr::filter(purrr::map_lgl(.data$model, ~!is.null(.))) %>%
     dplyr::ungroup()
+  if (nrow(vocab_models) == 0) return(NULL)
 
   ages <- data.frame(age = min(vocab_data$age):max(vocab_data$age))
   get_predicted <- function(vocab_model) {

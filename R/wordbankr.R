@@ -259,7 +259,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 
   select_str <- paste(select_cols, collapse = ', ')
 
-  admin_query <- glue::glue(
+  admin_query <- glue(
     "SELECT common_administration.id AS administration_id, {select_str}
     FROM common_administration
     LEFT JOIN common_instrument
