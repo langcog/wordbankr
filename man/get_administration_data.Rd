@@ -8,8 +8,12 @@ get_administration_data(
   language = NULL,
   form = NULL,
   filter_age = TRUE,
-  original_ids = FALSE,
-  mode = "remote"
+  include_demographic_info = FALSE,
+  include_birth_info = FALSE,
+  include_health_conditions = FALSE,
+  include_language_exposure = FALSE,
+  mode = "remote",
+  db_args = NULL
 )
 }
 \arguments{
@@ -22,22 +26,36 @@ retrieve.}
 \item{filter_age}{A logical indicating whether to filter the administrations
 to ones in the valid age range for their instrument.}
 
-\item{original_ids}{A logical indicating whether to include the original ids
-provided by data contributors. Wordbank provides no guarantees about the
-structure or uniqueness of these ids. Use at your own risk!}
+\item{include_demographic_info}{A logical indicating whether to include the
+child's demographic information (\code{birth_order}, \code{ethnicity},
+\code{sex}, \code{caregiver_education}).}
+
+\item{include_birth_info}{A logical indicating whether to include the child's
+birth information (\code{birth_weight}, \code{born_early_or_late},
+\code{gestational_age}, \code{zygosity}).}
+
+\item{include_health_conditions}{A logical indicating whether to include the
+child's health condition information (a nested dataframe under
+\code{health_conditions} with the column \code{health_condition_name}).}
+
+\item{include_language_exposure}{A logical indicating whether to include the
+child's language exposure information at time of administration (a nested
+dataframe under \code{language_exposures} with the columns \code{language},
+\code{exposure_proportion}, \code{age_of_first_exposure}).}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"}, or
 \code{"remote"} (defaults to \code{"remote"}).}
+
+\item{db_args}{List with host, user, and password defined.}
 }
 \value{
 A data frame where each row is a CDI administration and each column
-  is a variable about the administration (\code{data_id}, \code{age},
-  \code{comprehension}, \code{production}), its instrument (\code{language},
-  \code{form}), its child (\code{birth_order}, \code{ethnicity}, \code{sex},
-  \code{mom_ed}, \code{zygosity}), and its dataset source
-  (\code{source_name}, \code{source_dataset}, \code{norming},
-  \code{longitudinal}). Also includes an \code{original_id} column if the
-  \code{original_ids} flag is \code{TRUE}.
+  is a variable about the administration (\code{data_id},
+  \code{date_of_test}, \code{age}, \code{comprehension}, \code{production},
+  \code{is_norming}), the dataset it's from (\code{dataset_name},
+  \code{dataset_origin_name}, \code{language}, \code{form},
+  \code{form_type}), and information about the child as described in the
+  parameter specification.
 }
 \description{
 Get the Wordbank by-administration data

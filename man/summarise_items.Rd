@@ -4,13 +4,15 @@
 \alias{summarise_items}
 \title{Get item-by-age summary statistics}
 \usage{
-summarise_items(lang_items, mode = "remote")
+summarise_items(lang_items, mode = "remote", db_args = NULL)
 }
 \arguments{
 \item{lang_items}{A dataframe as returned by \code{get_item_data()}.}
 
 \item{mode}{A string indicating connection mode: one of \code{"local"}, or
 \code{"remote"} (defaults to \code{"remote"}).}
+
+\item{db_args}{List with host, user, and password defined.}
 }
 \value{
 A dataframe with a row for each combination of item and age, and

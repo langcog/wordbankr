@@ -21,7 +21,7 @@ theme_set(theme_bw())
 
 The `wordbankr` package allows you to access data in the [Wordbank database](http://wordbank.stanford.edu/) from `R`. This vignette shows some examples of how to use the data loading functions and what the resulting data look like.
 
-There are three different data views that you can pull out of Wordbank: by-administration, by-item, and administration-by-item. Additionally, you can get metadata about the sources and instruments underlying the data. Advanced functionality let's you get estimates of words' age of acquisition and word mappings across languages.
+There are three different data views that you can pull out of Wordbank: by-administration, by-item, and administration-by-item. Additionally, you can get metadata about the datasets and instruments underlying the data. Advanced functionality let's you get estimates of words' age of acquisition and word mappings across languages.
 
 
 ## Administrations
@@ -68,13 +68,13 @@ Then we get the instrument data for those items:
 animal_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = animals$item_id,
-                                   administrations = TRUE)
+                                   administration_info = TRUE)
 ```
 
 Finally, we calculate how many animals words each child produces and the median number of animals of each age bin:
 ```{r, fig.width=6, fig.height=4}
 animal_summary <- animal_data %>%
-  mutate(produces = value == "produces") %>%
+  # mutate(produces = value == "produces") %>%
   group_by(age, data_id) %>%
   summarise(num_animals = sum(produces, na.rm = TRUE)) %>%
   group_by(age) %>%
@@ -96,13 +96,12 @@ get_instruments()
 ```
 
 
-### Sources
+### Datasets
 
-The `get_sources()` function gives information on all the data sources in Wordbank, either for a specific language and/or form or for all instruments. If the `admin_data` argument is set to `TRUE`, the results will also include the number of administrations in the database from that source and the minimum and maximum ages of those administrations.
+The `get_datasets()` function gives information on all the datasets in Wordbank, either for a specific language and/or form or for all instruments. If the `admin_data` argument is set to `TRUE`, the results will also include the number of administrations in the database from that dataset.
 ```{r}
-get_sources(form = "WG")
-get_sources(language = "Spanish (Mexican)", admin_data = TRUE) %>%
-  select(source_id, name, dataset, instrument_form, n_admins, age_min, age_max)
+get_(form = "WG")
+get_datasets(language = "Spanish (Mexican)", admin_data = TRUE)
 ```
 
 
@@ -113,8 +112,8 @@ The `fit_aoa()` function computes estimates of items' age of acquisition (AoA). 
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"),
-                                   administrations = TRUE,
-                                   iteminfo = TRUE)
+                                   administration_info = TRUE,
+                                   item_info = TRUE)
 fit_aoa(eng_ws_data)
 fit_aoa(eng_ws_data, measure = "understands", method = "glmrob", proportion = 0.7)
 ```
@@ -131,7 +130,7 @@ The function `get_crossling_data()` takes a vector of `uni_lemmas` and returns a
 ```{r}
 get_crossling_data(uni_lemmas = c("hat", "nose")) %>%
   ungroup() %>%
-  select(language, uni_lemma, definition, age, n_children, comprehension,
+  select(language, uni_lemma, item_definition, age, n_children, comprehension,
          production, comprehension_sd, production_sd) %>%
   arrange(uni_lemma)
 ```

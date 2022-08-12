@@ -4,7 +4,7 @@ Title: Accessing the Wordbank Database
 Description: Tools for connecting to Wordbank, an open repository for
     developmental vocabulary data. For more information on the
     underlying data, see <http://wordbank.stanford.edu>.
-Version: 0.3.1.9000
+Version: 0.3.1.9001
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
@@ -21,6 +21,7 @@ Imports:
     DBI (>= 1.1.1),
     dbplyr (>= 2.1.0),
     dplyr (>= 1.0.4),
+    glue,
     purrr (>= 0.3.4),
     quantregGrowth (>= 1.0),
     rlang (>= 0.4.10),
@@ -33,5 +34,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
