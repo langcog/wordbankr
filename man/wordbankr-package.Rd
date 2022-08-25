@@ -11,6 +11,7 @@ Tools for connecting to Wordbank, an open repository for developmental vocabular
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://langcog.github.io/wordbankr}
   \item \url{https://github.com/langcog/wordbankr}
   \item Report bugs at \url{https://github.com/langcog/wordbankr/issues}
 }

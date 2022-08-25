@@ -4,7 +4,7 @@ Title: Accessing the Wordbank Database
 Description: Tools for connecting to Wordbank, an open repository for
     developmental vocabulary data. For more information on the
     underlying data, see <http://wordbank.stanford.edu>.
-Version: 0.4.0
+Version: 1.0.0
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
@@ -23,6 +23,8 @@ Imports:
     dbplyr (>= 2.2.1),
     dplyr (>= 1.0.9),
     glue (>= 1.6.2),
+    jsonlite (>= 1.8.0),
+    lifecycle (>= 1.0.1),
     purrr (>= 0.3.4),
     quantregGrowth (>= 1.4),
     rlang (>= 1.0.4),

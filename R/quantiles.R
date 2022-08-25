@@ -24,6 +24,10 @@
 fit_vocab_quantiles <- function(vocab_data, measure, group,
                                 quantiles = "standard") {
 
+  lifecycle::deprecate_warn(
+    when = "1.0.0", what = "fit_vocab_quantiles()",
+    details = "Please use the vocabulary norms shiny app at http://wordbank.stanford.edu/analyses?name=vocab_norms")
+
   quantile_opts <- list(
     standard = c(0.10, 0.25, 0.50, 0.75, 0.90),
     deciles = c(0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90),
@@ -48,14 +52,15 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
 
   if (!missing(group)) {
     vocab_data <- vocab_data %>%
-      dplyr::filter_at(vars({{ group }}), ~!is.na(.x)) %>%
+      # dplyr::filter_at(vars({{ group }}), ~!is.na(.x)) %>%
+      dplyr::filter((dplyr::across(dplyr::vars({{ group }}), ~!is.na(.x)))) %>% # TODO: this?
       dplyr::group_by({{ group }}, .add = TRUE)
   }
 
   vocab_models <- vocab_data %>%
     dplyr::rename(vocab = {{ measure }}) %>%
     tidyr::nest() %>%
-    dplyr::mutate(group_label = paste(language, form, {{ group }})) %>%
+    dplyr::mutate(group_label = paste(.data$language, .data$form, {{ group }})) %>%
     dplyr::mutate(model = purrr::map2(
       .data$group_label, .data$data,
       function(gl, df) {
@@ -69,7 +74,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
             return(NULL)
           })
       })) %>%
-    dplyr::select(-group_label) %>%
+    dplyr::select(-.data$group_label) %>%
     dplyr::filter(purrr::map_lgl(.data$model, ~!is.null(.))) %>%
     dplyr::ungroup()
   if (nrow(vocab_models) == 0) return(NULL)

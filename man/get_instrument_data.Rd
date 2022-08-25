@@ -10,7 +10,8 @@ get_instrument_data(
   items = NULL,
   administration_info = FALSE,
   item_info = FALSE,
-  db_args = NULL
+  db_args = NULL,
+  ...
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ a data frame of item data (as returned by \code{get_item_data}).}
 
 \item{db_args}{List with arguments to connect to wordbank mysql database
 (host, dbname, user, and password).}
+
+\item{...}{<[`dynamic-dots`][rlang::dyn-dots]> Arguments passed to
+\code{get_administration_data()}.}
 }
 \value{
 A data frame where each row contains the values (\code{value},

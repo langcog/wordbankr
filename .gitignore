@@ -4,3 +4,8 @@
 inst/doc
 .DS_Store
 docs
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

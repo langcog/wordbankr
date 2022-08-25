@@ -1,3 +1,22 @@
+#' Get database connection arguments
+#'
+#' @return List of database connection arguments: host, db_name, username, password
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' get_wordbank_args()
+#' }
+get_wordbank_args <- function() {
+  tryCatch(jsonlite::fromJSON("http://wordbank.stanford.edu/db_args"),
+           error = function(e) message(strwrap(
+             prefix = " ", initial = "",
+             "Could not retrieve Wordbank connection information. Please check
+             your internet connection. If this error persists please contact
+             wordbank-contact@stanford.edu."
+           )))
+}
+
 #' Connect to the Wordbank database
 #'
 #' @param db_args List with arguments to connect to wordbank mysql database
@@ -13,10 +32,8 @@
 connect_to_wordbank <- function(db_args = NULL) {
 
   if (is.null(db_args)) {
-    db_args <- list(host = "wordbank2-dev.canyiscnpddk.us-west-2.rds.amazonaws.com",
-                    dbname = "wordbank",
-                    user = "wordbank_reader",
-                    password = "ICanOnlyRead@99")
+    db_args <- get_wordbank_args()
+    if (is.null(db_args)) return()
   }
 
   tryCatch({
@@ -80,6 +97,7 @@ get_common_table <- function(src, name) {
 get_instruments <- function(db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
   suppressWarnings(
     instruments <- get_common_table(src, name = "instrument") %>%
@@ -122,6 +140,7 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
                          db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
   instruments <- get_instruments(db_args = db_args) %>%
     dplyr::select(.data$instrument_id, .data$language, .data$form,
@@ -240,6 +259,7 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
   datasets <- get_datasets(db_args = db_args) %>%
     dplyr::select(.data$dataset_id, .data$dataset_name,
@@ -328,11 +348,11 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (include_health_conditions) {
     health_conditions <- get_common_table(src, "health_condition")
     child_health_conditions <- get_common_table(src,
-                                                "child_health_conditions") %>% # fix
+                                                "child_health_conditions") %>%
       dplyr::semi_join(admins_tbl, by = "child_id") %>%
       dplyr::left_join(health_conditions,
-                       by = c("healthcondition_id" = "id")) %>% # fix
-      dplyr::select(-.data$id, -.data$healthcondition_id) %>% # fix
+                       by = c("healthcondition_id" = "id")) %>%
+      dplyr::select(-.data$id, -.data$healthcondition_id) %>%
       dplyr::collect() %>%
       tidyr::nest(health_conditions = -.data$child_id)
     admins <- admins %>%
@@ -378,6 +398,7 @@ strip_item_id <- function(item_id) {
 get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
   item_tbl <- get_common_table(src, "item")
   item_query <- paste(
@@ -418,6 +439,8 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #'   \code{get_administration_data}).
 #' @param item_info Either a logical indicating whether to include item data or
 #'   a data frame of item data (as returned by \code{get_item_data}).
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Arguments passed to
+#'   \code{get_administration_data()}.
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row contains the values (\code{value},
 #'   \code{produces}, \code{understands}) of a given item (\code{item_id}) for a
@@ -433,15 +456,16 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
                                 administration_info = FALSE, item_info = FALSE,
-                                db_args = NULL) {
+                                db_args = NULL, ...) {
 
   items_quo <- rlang::enquo(items)
   input_language <- language
   input_form <- form
 
   src <- connect_to_wordbank(db_args)
-  instrument_table <- get_instrument_table(src, language, form)
+  if (is.null(src)) return()
 
+  instrument_table <- get_instrument_table(src, language, form)
   columns <- colnames(instrument_table)
 
   if (is.null(items)) {
@@ -455,7 +479,8 @@ get_instrument_data <- function(language, form, items = NULL,
   if ("logical" %in% class(administration_info)) {
     if (administration_info) {
       administration_info <- get_administration_data(language, form,
-                                                     db_args = db_args)
+                                                     db_args = db_args,
+                                                     ...)
     } else {
       administration_info <- NULL
     }
@@ -488,18 +513,15 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::select(-.data$basetable_ptr_id) %>%
     tidyr::gather("item_id", "value", !!items_quo) %>%
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
-    # dplyr::select(-.data$item_id) %>%
     dplyr::mutate(produces = .data$value == "produces",
                   understands = .data$value == "understands" | .data$value == "produces") # fix
   # valid for non-WG? weird for items that aren't comp/prod?
 
-  # if ("data.frame" %in% class(administrations)) {
   if (!is.null(administration_info)) {
     instrument_data <- instrument_data %>%
       dplyr::right_join(administration_info, by = "data_id")
   }
 
-  # if ("data.frame" %in% class(items)) {
   if (!is.null(item_info)) {
     instrument_data <- instrument_data %>%
       dplyr::right_join(item_info, by = "num_item_id")
