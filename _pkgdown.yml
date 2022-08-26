@@ -5,6 +5,7 @@ template:
 reference:
   - title: Get data
   - contents:
+    - "get_wordbank_args"
     - "connect_to_wordbank"
     - "get_administration_data"
     - "get_item_data"
