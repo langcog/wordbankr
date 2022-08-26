@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wordbankr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@
       <img src="" class="logo" alt=""><h1>Accessing the Wordbank database</h1>
                         <h4 data-toc-skip class="author">Mika Braginsky</h4>
             
-            <h4 data-toc-skip class="date">2022-08-12</h4>
+            <h4 data-toc-skip class="date">2022-08-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/langcog/wordbankr/blob/HEAD/vignettes/wordbankr.Rmd" class="external-link"><code>vignettes/wordbankr.Rmd</code></a></small>
       <div class="d-none name"><code>wordbankr.Rmd</code></div>
@@ -102,8 +102,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">245</span>527 1991-10-…    18       7       7 TRUE    Marchm… Marchm… Englis… WS   </span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 7,591 more rows, 2 more variables: form_type &lt;chr&gt;, child_id &lt;int&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   and abbreviated variable names ¹​date_of_test, ²​comprehension, ³​production,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁴​is_norming, ⁵​dataset_name, ⁶​dataset_origin_name, ⁷​language</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁴​is_norming, ⁵​dataset_name, ⁶​dataset_origin_name, ⁷​language</span></span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 90,897 × 12</span></span></span>
@@ -121,8 +120,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>   <span style="text-decoration: underline;">26</span>381 <span style="color: #BB0000;">NA</span>           16     241      68 TRUE    CLEX    CLEX__… Croati… WG   </span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 90,887 more rows, 2 more variables: form_type &lt;chr&gt;, child_id &lt;int&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   and abbreviated variable names ¹​date_of_test, ²​comprehension, ³​production,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁴​is_norming, ⁵​dataset_name, ⁶​dataset_origin_name, ⁷​language</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁴​is_norming, ⁵​dataset_name, ⁶​dataset_origin_name, ⁷​language</span></span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="items">Items<a class="anchor" aria-label="anchor" href="#items"></a>
@@ -146,8 +144,7 @@
 <span><span class="co">## <span style="color: #949494;"># … with 495 more rows, 2 more variables: complexity_category &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   uni_lemma &lt;chr&gt;, and abbreviated variable names ¹​item_kind,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   ²​item_definition, ³​english_gloss, ⁴​language, ⁵​form_type, ⁶​category,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁷​lexical_category, ⁸​lexical_class</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁷​lexical_category, ⁸​lexical_class</span></span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_item_data.html">get_item_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 40,959 × 12</span></span></span>
@@ -166,8 +163,7 @@
 <span><span class="co">## <span style="color: #949494;"># … with 40,949 more rows, 2 more variables: complexity_category &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   uni_lemma &lt;chr&gt;, and abbreviated variable names ¹​item_kind,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   ²​item_definition, ³​english_gloss, ⁴​language, ⁵​form_type, ⁶​category,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁷​lexical_category, ⁸​lexical_class</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁷​lexical_category, ⁸​lexical_class</span></span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="administrations-x-items">Administrations x Items<a class="anchor" aria-label="anchor" href="#administrations-x-items"></a>
@@ -192,8 +188,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">245</span>525 item_26 <span style="color: #949494;">"</span>produces<span style="color: #949494;">"</span> TRUE     TRUE       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">245</span>526 item_26 <span style="color: #949494;">"</span>produces<span style="color: #949494;">"</span> TRUE     TRUE       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">245</span>527 item_26 <span style="color: #949494;">""</span>         FALSE    FALSE      </span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 17,088 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># … with 17,088 more rows</span></span></span></code></pre>
 <p>By default <code><a href="../reference/get_instrument_table.html">get_instrument_table()</a></code> returns a data frame with columns of the administration’s <code>data_id</code>, the item’s <code>num_item_id</code> (numerical <code>item_id</code>), and the corresponding value. To include administration information, you can set the <code>administrations</code> argument to <code>TRUE</code>, or pass the result of <code><a href="../reference/get_administration_data.html">get_administration_data()</a></code> as <code>administrations</code> (that way you can prevent the administration data from being loaded multiple times). Similarly, you can set the <code>iteminfo</code> argument to <code>TRUE</code>, or pass it result of <code><a href="../reference/get_item_data.html">get_item_data()</a></code>.</p>
 <p>Loading the data is fast if you need only a handful of items, but the time scales about linearly with the number of items, and can get quite slow if you need many or all of them. So, it’s a good idea to filter down to only the items you need before calling <code><a href="../reference/get_instrument_data.html">get_instrument_data()</a></code>.</p>
 <p>As an example, let’s say we want to look at the production of animal words on English Words &amp; Sentences over age. First we get the items we want:</p>
@@ -243,8 +238,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>             9 French (Quebecoi… WG    WG            8      16       0       1</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>            10 French (Quebecoi… WS    WS           16      30       1       1</span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 68 more rows, and abbreviated variable names ¹​form_type, ²​has_grammar,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ³​unilemma_coverage</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ³​unilemma_coverage</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a>
@@ -267,8 +261,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>      23 Shalev  Shalev… Hila G… <span style="color: #949494;">"</span>Gendl… CC-BY   FALSE   Hebrew  WG    WG     </span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 27 more rows, and abbreviated variable names ¹​dataset_id,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   ²​dataset_name, ³​dataset_origin_name, ⁴​contributor, ⁵​citation,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁶​longitudinal, ⁷​language, ⁸​form_type</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁶​longitudinal, ⁷​language, ⁸​form_type</span></span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_datasets.html">get_datasets</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"Spanish (Mexican)"</span>, admin_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
@@ -282,8 +275,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;">6</span>       87 Hoff    Hoff_E… Hoff, E Hoff, … CC-BY   TRUE    Spanis… WS    WS     </span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 1 more variable: n_admins &lt;dbl&gt;, and abbreviated variable names</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   ¹​dataset_id, ²​dataset_name, ³​dataset_origin_name, ⁴​contributor, ⁵​citation,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁶​longitudinal, ⁷​language, ⁸​form_type</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁶​longitudinal, ⁷​language, ⁸​form_type</span></span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -333,72 +325,13 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>272 [possessive]             </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>593 [to splash in the water?]</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>951 1PL                      </span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 2,542 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># … with 2,542 more rows</span></span></span></code></pre>
 <p>The function <code><a href="../reference/get_crossling_data.html">get_crossling_data()</a></code> takes a vector of <code>uni_lemmas</code> and returns a data frame of summary statistics for each item mapped to that uni_lemma in any language (on <code>WG</code> forms). Each row is combination of item and age, and the columns indicate the number of children (<code>n_children</code>), means (<code>comprehension</code>, <code>production</code>), standard deviations (<code>comprehension_sd</code>, <code>production_sd</code>), and item-level fields.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_crossling_data.html">get_crossling_data</a></span><span class="op">(</span>uni_lemmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hat"</span>, <span class="st">"nose"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">language</span>, <span class="va">uni_lemma</span>, <span class="va">item_definition</span>, <span class="va">age</span>, <span class="va">n_children</span>, <span class="va">comprehension</span>,</span>
 <span>         <span class="va">production</span>, <span class="va">comprehension_sd</span>, <span class="va">production_sd</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">uni_lemma</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="advanced-functionality-vocabulary-quantiles">Advanced functionality: Vocabulary quantiles<a class="anchor" aria-label="anchor" href="#advanced-functionality-vocabulary-quantiles"></a>
-</h2>
-<p>The function <code><a href="../reference/fit_vocab_quantiles.html">fit_vocab_quantiles()</a></code> uses quantile regression to fit a set of vocabulary size quantiles to a dataset. It takes a data frame return by <code><a href="../reference/get_administration_data.html">get_administration_data()</a></code>, and additional arguments specifying which measure column to fit on (<code>measure</code>: “production” or “comprehension”), an optional demographic column to group by (<code>group</code>), and which type of quantiles to fit (<code>quantiles</code>: “standard”, “deciles”, “quintiles”, “quartiles”, “median”, or a numeric vector of quantile values). Defaults to “standard”, which is 0.10, 0.25, 0.50, 0.75, 0.90.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">eng_ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="st">"English (American)"</span>, <span class="st">"WS"</span>,</span>
-<span>                                  include_demographic_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/fit_vocab_quantiles.html">fit_vocab_quantiles</a></span><span class="op">(</span><span class="va">eng_ws</span>, <span class="va">production</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 75 × 5</span></span></span>
-<span><span class="co">##    language           form    age quantile production</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> English (American) WS       16 0.1          -<span style="color: #BB0000;">11.4</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> English (American) WS       17 0.1           -<span style="color: #BB0000;">3.46</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> English (American) WS       18 0.1            5.01</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> English (American) WS       19 0.1           14.0 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> English (American) WS       20 0.1           23.5 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> English (American) WS       21 0.1           33.5 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> English (American) WS       22 0.1           44.0 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> English (American) WS       23 0.1           55.1 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> English (American) WS       24 0.1           66.6 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> English (American) WS       25 0.1           78.7 </span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 65 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_vocab_quantiles.html">fit_vocab_quantiles</a></span><span class="op">(</span><span class="va">eng_ws</span>, <span class="va">production</span>, <span class="va">sex</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 150 × 6</span></span></span>
-<span><span class="co">##    language           form  sex      age quantile production</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> English (American) WS    Female    16 0.1          -<span style="color: #BB0000;">19.5</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> English (American) WS    Female    17 0.1           -<span style="color: #BB0000;">7.64</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> English (American) WS    Female    18 0.1            4.52</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> English (American) WS    Female    19 0.1           17.0 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> English (American) WS    Female    20 0.1           29.8 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> English (American) WS    Female    21 0.1           42.9 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> English (American) WS    Female    22 0.1           56.4 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> English (American) WS    Female    23 0.1           70.2 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> English (American) WS    Female    24 0.1           84.3 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> English (American) WS    Female    25 0.1           98.7 </span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 140 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_vocab_quantiles.html">fit_vocab_quantiles</a></span><span class="op">(</span><span class="va">eng_ws</span>, <span class="va">production</span>, quantiles <span class="op">=</span> <span class="st">"quartiles"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 45 × 5</span></span></span>
-<span><span class="co">##    language           form    age quantile production</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> English (American) WS       16 0.25          -<span style="color: #BB0000;">6.86</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> English (American) WS       17 0.25           5.52</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> English (American) WS       18 0.25          20.0 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> English (American) WS       19 0.25          36.6 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> English (American) WS       20 0.25          55.3 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> English (American) WS       21 0.25          76.1 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> English (American) WS       22 0.25          99.0 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> English (American) WS       23 0.25         124.  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> English (American) WS       24 0.25         151.  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> English (American) WS       25 0.25         180.  </span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 35 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

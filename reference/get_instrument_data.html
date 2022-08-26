@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wordbankr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,8 @@
 <span>  items <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  administration_info <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  item_info <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  db_args <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  db_args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,6 +97,11 @@ a data frame of item data (as returned by <code>get_item_data</code>).</p></dd>
 <dt>db_args</dt>
 <dd><p>List with arguments to connect to wordbank mysql database
 (host, dbname, user, and password).</p></dd>
+
+
+<dt>...</dt>
+<dd><p>&lt;[`dynamic-dots`][rlang::dyn-dots]&gt; Arguments passed to
+<code><a href="get_administration_data.html">get_administration_data()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
