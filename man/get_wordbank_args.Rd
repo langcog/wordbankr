@@ -7,7 +7,8 @@
 get_wordbank_args()
 }
 \value{
-List of database connection arguments: host, db_name, username, password
+List of database connection arguments: host, db_name, username,
+  password
 }
 \description{
 Get database connection arguments

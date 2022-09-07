@@ -88,7 +88,7 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
   item_data <- get_item_data(db_args = db_args) %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
     dplyr::select(.data$language, .data$form, .data$form_type, .data$item_id,
-                  .data$item_definition, .data$uni_lemma,
+                  .data$item_kind, .data$item_definition, .data$uni_lemma,
                   .data$lexical_category)
 
   item_summary <- item_data %>%

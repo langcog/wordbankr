@@ -72,13 +72,13 @@ Then we get the instrument data for those items:
 animal_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = animals$item_id,
-                                   administration_info = TRUE)
+                                   administration_info = TRUE,
+                                   item_info = TRUE)
 ```
 
 Finally, we calculate how many animals words each child produces and the median number of animals of each age bin:
 ```{r, fig.width=6, fig.height=4}
 animal_summary <- animal_data %>%
-  # mutate(produces = value == "produces") %>%
   group_by(age, data_id) %>%
   summarise(num_animals = sum(produces, na.rm = TRUE)) %>%
   group_by(age) %>%
@@ -113,13 +113,8 @@ get_datasets(language = "Spanish (Mexican)", admin_data = TRUE)
 
 The `fit_aoa()` function computes estimates of items' age of acquisition (AoA). It needs to be provided with a data frame returned by `get_instrument_data()` -- one row per administration x item combination, and minimally the columns `age` and `num_item_id`. It returns a data frame with one row per item and an `aoa` column with the estimate, preserving and item-level columns in the input data. The AoA is estimated by computing the proportion of administrations for which the child understands/produces (`measure`) each word, smoothing the proportion using `method`, and taking the age at which the smoothed value is greater than `proportion`.
 ```{r}
-eng_ws_data <- get_instrument_data(language = "English (American)",
-                                   form = "WS",
-                                   items = c("item_1", "item_42"),
-                                   administration_info = TRUE,
-                                   item_info = TRUE)
-fit_aoa(eng_ws_data)
-fit_aoa(eng_ws_data, measure = "understands", method = "glmrob", proportion = 0.7)
+fit_aoa(animal_data)
+fit_aoa(animal_data, method = "glmrob", proportion = 1/3)
 ```
 
 

@@ -51,6 +51,7 @@ Get the Wordbank administration-by-item data
 \donttest{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
-                                   items = c("item_1", "item_42"))
+                                   items = c("item_1", "item_42"),
+                                   item_info = TRUE)
 }
 }

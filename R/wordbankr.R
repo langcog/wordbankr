@@ -406,9 +406,8 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 
   item_tbl <- get_common_table(src, "item")
   item_query <- paste(
-    "SELECT item_id, item_kind, item_definition, english_gloss, language, form,
-    form_type, category, lexical_category, lexical_class, complexity_category,
-    uni_lemma
+    "SELECT item_id, language, form, form_type, item_kind, category,
+    item_definition, english_gloss, uni_lemma, lexical_category, complexity_category
     FROM common_item
     LEFT JOIN common_instrument
     ON common_item.instrument_id = common_instrument.id
@@ -455,7 +454,8 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #' \donttest{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
-#'                                    items = c("item_1", "item_42"))
+#'                                    items = c("item_1", "item_42"),
+#'                                    item_info = TRUE)
 #' }
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
@@ -491,24 +491,24 @@ get_instrument_data <- function(language, form, items = NULL,
   }
   if (!is.null(administration_info)) {
     administration_info <- administration_info %>%
-      dplyr::filter(.data$language == input_language, .data$form == input_form)
+      dplyr::filter(.data$language == input_language,
+                    .data$form == input_form) %>%
+      dplyr::select(-.data$language, -.data$form, -.data$form_type)
   }
 
   if ("logical" %in% class(item_info)) {
-    if (item_info) {
-      item_info <- get_item_data(language, form, db_args = db_args)
-    } else {
-      item_info <- NULL
-    }
+    item_data <- get_item_data(language, form, db_args = db_args)
+  } else {
+    item_data <- item_info
   }
-  if (!is.null(item_info)) {
-    item_info <- item_info %>%
-      dplyr::filter(.data$language == input_language, .data$form == input_form,
-                    is.element(.data$item_id, items)) %>%
-      dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
-      dplyr::select(-.data$language, -.data$form, -.data$form_type,
-                    -.data$item_id)
-  }
+
+  item_data <- item_data %>%
+    dplyr::filter(.data$language == input_language, .data$form == input_form,
+                  is.element(.data$item_id, items)) %>%
+    dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
+    dplyr::select(-.data$item_id)
+
+  item_data_cols <- colnames(item_data)
 
   instrument_data <- instrument_table %>%
     dplyr::select(.data$basetable_ptr_id, !!items_quo) %>%
@@ -517,22 +517,29 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::select(-.data$basetable_ptr_id) %>%
     tidyr::gather("item_id", "value", !!items_quo) %>%
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
-    dplyr::mutate(produces = .data$value == "produces",
-                  understands = .data$value == "understands" | .data$value == "produces") # fix
-  # valid for non-WG? weird for items that aren't comp/prod?
+    dplyr::left_join(item_data, by = "num_item_id") %>%
+    dplyr::mutate(
+      .after = .data$value,
+      # code value as produces only for words
+      produces = .data$value == "produces",
+      produces = dplyr::if_else(.data$item_kind == "word", .data$produces, NA),
+      # code value as understands only for words in WG-type forms
+      understands = .data$value == "understands" | .data$value == "produces",
+      understands = dplyr::if_else(
+        .data$form_type == "WG" & .data$item_kind == "word", .data$understands, NA
+      )
+    )
 
   if (!is.null(administration_info)) {
     instrument_data <- instrument_data %>%
       dplyr::right_join(administration_info, by = "data_id")
   }
 
-  if (!is.null(item_info)) {
-    instrument_data <- instrument_data %>%
-      dplyr::right_join(item_info, by = "num_item_id")
+  if ("logical" %in% class(item_info) && !item_info) {
+    instrument_data <- instrument_data %>% dplyr::select(-{{ item_data_cols }})
+  } else {
+    instrument_data <- instrument_data %>% dplyr::select(-.data$num_item_id)
   }
-
-  instrument_data <- instrument_data %>%
-    dplyr::select(-.data$num_item_id)
 
   DBI::dbDisconnect(src)
 
