@@ -11,9 +11,9 @@
 get_crossling_items <- function(db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
-  uni_lemmas <- get_common_table(src, "uni_lemma") %>%
-    dplyr::collect()
+  uni_lemmas <- get_common_table(src, "uni_lemma") %>% dplyr::collect()
 
   DBI::dbDisconnect(src)
 
@@ -35,8 +35,10 @@ get_crossling_items <- function(db_args = NULL) {
 #' @examples
 #' \donttest{
 #' italian_items <- get_item_data(language = "Italian", form = "WG")
-#' italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")
-#' italian_dog_summary <- summarise_items(italian_dog)
+#' if (!is.null(italian_items)) {
+#'   italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")
+#'   italian_dog_summary <- summarise_items(italian_dog)
+#' }
 #' }
 #' @export
 summarise_items <- function(item_data, db_args = NULL) {
@@ -44,12 +46,15 @@ summarise_items <- function(item_data, db_args = NULL) {
   frm <- unique(item_data$form)
   message(glue("Getting data for {lang} {frm}"))
 
-  get_instrument_data(language = lang,
-                      form = frm,
-                      items = item_data$item_id,
-                      administration_info = TRUE,
-                      item_info = item_data,
-                      db_args = db_args) %>%
+  src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
+
+  item_summary <- get_instrument_data(language = lang,
+                                      form = frm,
+                                      items = item_data$item_id,
+                                      administration_info = TRUE,
+                                      item_info = item_data,
+                                      db_args = db_args) %>%
     dplyr::group_by(.data$language, .data$form, .data$item_id,
                     .data$item_definition, .data$uni_lemma,
                     .data$lexical_category, .data$age) %>%
@@ -61,6 +66,10 @@ summarise_items <- function(item_data, db_args = NULL) {
       production_sd = stats::sd(.data$produces) / .data$n_children
     ) %>%
     dplyr::ungroup()
+
+  DBI::dbDisconnect(src)
+
+  return(item_summary)
 
 }
 
@@ -78,12 +87,13 @@ summarise_items <- function(item_data, db_args = NULL) {
 
 #' @examples
 #' \donttest{
-#' crossling_data <- get_crossling_data(uni_lemmas = c("hat", "nose"))
+#' crossling_data <- get_crossling_data(uni_lemmas = "dog")
 #' }
 #' @export
 get_crossling_data <- function(uni_lemmas, db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
+  if (is.null(src)) return()
 
   item_data <- get_item_data(db_args = db_args) %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
@@ -99,7 +109,6 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
     tidyr::unnest(.data$summary)
 
   DBI::dbDisconnect(src)
-
   return(item_summary)
 
 }

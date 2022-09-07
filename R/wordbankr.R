@@ -27,7 +27,6 @@ get_wordbank_args <- function() {
 #' @examples
 #' \donttest{
 #' src <- connect_to_wordbank()
-#' DBI::dbDisconnect(src)
 #' }
 #' @export
 connect_to_wordbank <- function(db_args = NULL) {

@@ -27,9 +27,13 @@ Fit quantiles to vocabulary sizes using quantile regression
 }
 \examples{
 \donttest{
-eng_wg <- get_administration_data("English (American)", "WG", include_demographic_info = TRUE)
-fit_vocab_quantiles(eng_wg, production)
-fit_vocab_quantiles(eng_wg, production, sex)
-fit_vocab_quantiles(eng_wg, production, quantiles = "quartiles")
+eng_wg <- get_administration_data(language = "English (American)",
+                                  form = "WG",
+                                  include_demographic_info = TRUE)
+if (!is.null(eng_wg)) {
+  vocab_quantiles <- fit_vocab_quantiles(eng_wg, production)
+  vocab_quantiles_sex <- fit_vocab_quantiles(eng_wg, production, sex)
+  vocab_quartiles <- fit_vocab_quantiles(eng_wg, production, quantiles = "quartiles")
+}
 }
 }

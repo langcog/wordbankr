@@ -25,6 +25,6 @@ Get item-by-age summary statistics for items across languages
 }
 \examples{
 \donttest{
-crossling_data <- get_crossling_data(uni_lemmas = c("hat", "nose"))
+crossling_data <- get_crossling_data(uni_lemmas = "dog")
 }
 }

@@ -19,6 +19,5 @@ Connect to the Wordbank database
 \examples{
 \donttest{
 src <- connect_to_wordbank()
-DBI::dbDisconnect(src)
 }
 }
