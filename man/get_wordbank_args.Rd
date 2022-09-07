@@ -13,7 +13,7 @@ List of database connection arguments: host, db_name, username, password
 Get database connection arguments
 }
 \examples{
-\dontrun{
+\donttest{
 get_wordbank_args()
 }
 }

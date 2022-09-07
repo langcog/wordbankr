@@ -1,10 +1,11 @@
 #' Get database connection arguments
 #'
-#' @return List of database connection arguments: host, db_name, username, password
+#' @return List of database connection arguments: host, db_name, username,
+#'   password
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get_wordbank_args()
 #' }
 get_wordbank_args <- function() {
@@ -36,11 +37,14 @@ connect_to_wordbank <- function(db_args = NULL) {
     if (is.null(db_args)) return()
   }
 
-  tryCatch({
-    DBI::dbConnect(RMySQL::MySQL(),
-                   host = db_args$host, dbname = db_args$dbname,
-                   user = db_args$user, password = db_args$password)
-  }, error = function(e) message(e))
+  tryCatch(error = function(e) message(e), {
+    src <- DBI::dbConnect(RMySQL::MySQL(),
+                          host = db_args$host, dbname = db_args$dbname,
+                          user = db_args$user, password = db_args$password)
+    enc <- DBI::dbGetQuery(src, "SELECT @@character_set_database")
+    DBI::dbSendQuery(src, glue::glue("SET CHARACTER SET {enc}"))
+    return(src)
+  })
 
 }
 
