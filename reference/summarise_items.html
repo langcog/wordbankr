@@ -84,11 +84,10 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">italian_dog</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_item_data.html">get_item_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"Italian"</span>, form <span class="op">=</span> <span class="st">"WG"</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">uni_lemma</span> <span class="op">==</span> <span class="st">"dog"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_item_data(language = "Italian", form = "WG") %&gt;% dplyr::filter(uni_lemma ==     "dog"):</span> could not find function "%&gt;%"</span>
+<span class="r-in"><span><span class="va">italian_items</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_item_data.html">get_item_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"Italian"</span>, form <span class="op">=</span> <span class="st">"WG"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">italian_dog</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">italian_items</span>, <span class="va">uni_lemma</span> <span class="op">==</span> <span class="st">"dog"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">italian_dog_summary</span> <span class="op">&lt;-</span> <span class="fu">summarise_items</span><span class="op">(</span><span class="va">italian_dog</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in unique(item_data$language):</span> object 'italian_dog' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Italian WG</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
