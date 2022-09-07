@@ -52,8 +52,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
 
   if (!missing(group)) {
     vocab_data <- vocab_data %>%
-      # dplyr::filter_at(vars({{ group }}), ~!is.na(.x)) %>%
-      dplyr::filter((dplyr::across(dplyr::vars({{ group }}), ~!is.na(.x)))) %>% # TODO: this?
+      dplyr::filter((dplyr::if_any({{ group }}, ~!is.na(.x)))) %>%
       dplyr::group_by({{ group }}, .add = TRUE)
   }
 
