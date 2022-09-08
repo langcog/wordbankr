@@ -91,56 +91,18 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">eng_wg</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="st">"English (American)"</span>, <span class="st">"WG"</span>, include_demographic_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">eng_wg</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_administration_data.html">get_administration_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>,</span></span>
+<span class="r-in"><span>                                  form <span class="op">=</span> <span class="st">"WG"</span>,</span></span>
+<span class="r-in"><span>                                  include_demographic_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">eng_wg</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">vocab_quantiles</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">vocab_quantiles_sex</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, <span class="va">sex</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">vocab_quartiles</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, quantiles <span class="op">=</span> <span class="st">"quartiles"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`fit_vocab_quantiles()` was deprecated in wordbankr 1.0.0.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Please use the vocabulary norms shiny app at http://wordbank.stanford.edu/analyses?name=vocab_norms</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> This warning is displayed once every 8 hours.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 55 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    language           form    age quantile production</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> English (American) WG        8 0.1       -<span style="color: #BB0000;">1.12</span><span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> English (American) WG        9 0.1       -<span style="color: #BB0000;">8.96</span><span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> English (American) WG       10 0.1       -<span style="color: #BB0000;">4.75</span><span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> English (American) WG       11 0.1       -<span style="color: #BB0000;">6.92</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> English (American) WG       12 0.1        5.30<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> English (American) WG       13 0.1        1.11<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> English (American) WG       14 0.1        1.75<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> English (American) WG       15 0.1        2.45<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> English (American) WG       16 0.1        3.20<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> English (American) WG       17 0.1        4.00<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 45 more rows</span></span>
-<span class="r-in"><span><span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, <span class="va">sex</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 110 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    language           form  sex      age quantile production</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> English (American) WG    Female     8 0.1       -<span style="color: #BB0000;">1.40</span><span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> English (American) WG    Female     9 0.1       -<span style="color: #BB0000;">1.14</span><span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> English (American) WG    Female    10 0.1       -<span style="color: #BB0000;">6.17</span><span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> English (American) WG    Female    11 0.1       -<span style="color: #BB0000;">1.25</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> English (American) WG    Female    12 0.1        7.12<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> English (American) WG    Female    13 0.1        1.52<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> English (American) WG    Female    14 0.1        2.42<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> English (American) WG    Female    15 0.1        3.42<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> English (American) WG    Female    16 0.1        4.52<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> English (American) WG    Female    17 0.1        5.71<span style="color: #949494;">e</span>+ 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 100 more rows</span></span>
-<span class="r-in"><span><span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, quantiles <span class="op">=</span> <span class="st">"quartiles"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 33 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    language           form    age quantile production</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> English (American) WG        8 0.25        -<span style="color: #BB0000;">0.963</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> English (American) WG        9 0.25        -<span style="color: #BB0000;">0.701</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> English (American) WG       10 0.25        -<span style="color: #BB0000;">0.015</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> English (American) WG       11 0.25         1.00  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> English (American) WG       12 0.25         2.34  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> English (American) WG       13 0.25         4.02  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> English (American) WG       14 0.25         6.02  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> English (American) WG       15 0.25         8.35  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> English (American) WG       16 0.25        11.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> English (American) WG       17 0.25        14.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 23 more rows</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
