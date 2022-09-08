@@ -7,4 +7,3 @@ cran-comments.md
 ^docs$
 ^pkgdown$
 ^\.github$
-.elasticbeanstalk/
