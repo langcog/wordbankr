@@ -22,4 +22,6 @@ Possibly misspelled words in DESCRIPTION:
   Wordbank (3:22, 4:38)
 ```
 
-This package is being reinstated. This is not a misspelling.
+This package is being reinstated (the issue for which it was archived has been solved).
+
+This is not a misspelling.

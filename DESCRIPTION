@@ -1,9 +1,9 @@
 Package: wordbankr
 Type: Package
 Title: Accessing the Wordbank Database
-Description: Tools for connecting to Wordbank, an open repository for
-    developmental vocabulary data. For more information on the
-    underlying data, see <http://wordbank.stanford.edu>.
+Description: Connecting to Wordbank, an open repository for developmental
+    vocabulary data. For more information on the underlying data, see
+    <http://wordbank.stanford.edu>.
 Version: 1.0.0
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
