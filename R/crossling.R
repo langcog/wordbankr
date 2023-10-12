@@ -49,25 +49,27 @@ summarise_items <- function(item_data, db_args = NULL) {
   src <- connect_to_wordbank(db_args)
   if (is.null(src)) return()
 
-  item_summary <- get_instrument_data(language = lang,
+  instrument_data <- get_instrument_data(language = lang,
                                       form = frm,
                                       items = item_data$item_id,
                                       administration_info = TRUE,
                                       item_info = item_data,
-                                      db_args = db_args) %>%
+                                      db_args = db_args)
+  comp <- !all(is.na(instrument_data$understands))
+  item_summary <- instrument_data %>%
     dplyr::group_by(.data$language, .data$form, .data$item_id,
                     .data$item_definition, .data$uni_lemma,
                     .data$lexical_category, .data$age) %>%
     dplyr::summarise(
       n_children = dplyr::n(),
-      comprehension = sum(.data$understands) / .data$n_children,
-      production = sum(.data$produces) / .data$n_children,
-      comprehension_sd = stats::sd(.data$understands) / .data$n_children,
-      production_sd = stats::sd(.data$produces) / .data$n_children
+      comprehension = if (comp) sum(.data$understands, na.rm = TRUE) / .data$n_children else NA,
+      production = sum(.data$produces, na.rm = TRUE) / .data$n_children,
+      comprehension_sd = if (comp) stats::sd(.data$understands, na.rm = TRUE) / .data$n_children else NA,
+      production_sd = stats::sd(.data$produces, na.rm = TRUE) / .data$n_children
     ) %>%
     dplyr::ungroup()
 
-  DBI::dbDisconnect(src)
+  suppressWarnings(DBI::dbDisconnect(src))
 
   return(item_summary)
 
@@ -100,15 +102,22 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
     dplyr::select(.data$language, .data$form, .data$form_type, .data$item_id,
                   .data$item_kind, .data$item_definition, .data$uni_lemma,
                   .data$lexical_category)
+  if (nrow(item_data) == 0) {
+    message("No items found for uni_lemma")
+    return()
+  }
+
+  safe_summarise_items <- purrr::safely(summarise_items, quiet = FALSE,
+                                        otherwise = dplyr::tibble())
 
   item_summary <- item_data %>%
     dplyr::mutate(lang = .data$language, frm = .data$form) %>%
     tidyr::nest(df = -c(.data$lang, .data$frm)) %>%
     dplyr::transmute(summary = .data$df %>%
-                       purrr::map(~summarise_items(.x, db_args = db_args))) %>%
+                       purrr::map(~safe_summarise_items(., db_args)$result)) %>%
     tidyr::unnest(.data$summary)
 
-  DBI::dbDisconnect(src)
+  suppressWarnings(DBI::dbDisconnect(src))
   return(item_summary)
 
 }
