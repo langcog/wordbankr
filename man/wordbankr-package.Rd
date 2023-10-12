@@ -6,7 +6,7 @@
 \alias{wordbankr-package}
 \title{wordbankr: Accessing the Wordbank Database}
 \description{
-Tools for connecting to Wordbank, an open repository for developmental vocabulary data. For more information on the underlying data, see \url{http://wordbank.stanford.edu}.
+Connecting to Wordbank, an open repository for developmental vocabulary data. For more information on the underlying data, see \url{http://wordbank.stanford.edu}.
 }
 \seealso{
 Useful links:
