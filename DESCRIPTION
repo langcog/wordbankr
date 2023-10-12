@@ -4,7 +4,7 @@ Title: Accessing the Wordbank Database
 Description: Connecting to Wordbank, an open repository for developmental
     vocabulary data. For more information on the underlying data, see
     <http://wordbank.stanford.edu>.
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: c(
     person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
@@ -20,18 +20,18 @@ BugReports: https://github.com/langcog/wordbankr/issues/
 Imports:
     assertthat (>= 0.2.1),
     DBI (>= 1.1.3),
-    dbplyr (>= 2.2.1),
-    dplyr (>= 1.0.9),
+    dbplyr (>= 2.3.4),
+    dplyr (>= 1.1.3),
     glue (>= 1.6.2),
-    jsonlite (>= 1.8.0),
-    lifecycle (>= 1.0.1),
-    purrr (>= 0.3.4),
-    quantregGrowth (>= 1.4),
-    rlang (>= 1.0.4),
-    RMySQL (>= 0.10.23),
-    robustbase (>= 0.95),
-    stringr (>= 1.4.0),
-    tidyr (>= 1.2.0)
+    jsonlite (>= 1.8.7),
+    lifecycle (>= 1.0.3),
+    purrr (>= 1.0.2),
+    quantregGrowth (>= 1.7-0),
+    rlang (>= 1.1.1),
+    RMySQL (>= 0.10.26),
+    robustbase (>= 0.99-0),
+    stringr (>= 1.5.0),
+    tidyr (>= 1.3.0)
 Suggests:
     ggplot2,
     knitr,
