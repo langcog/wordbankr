@@ -77,7 +77,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
             return(NULL)
           })
       })) %>%
-    dplyr::select(-.data$group_label) %>%
+    dplyr::select(-"group_label") %>%
     dplyr::filter(purrr::map_lgl(.data$model, ~!is.null(.))) %>%
     dplyr::ungroup()
   if (nrow(vocab_models) == 0) return(NULL)
@@ -95,8 +95,8 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
 
   vocab_fits <- vocab_models %>%
     dplyr::mutate(predicted = purrr::map(.data$model, get_predicted)) %>%
-    dplyr::select(-.data$data, -.data$model) %>%
-    tidyr::unnest(cols = .data$predicted) %>%
+    dplyr::select(-"data", -"model") %>%
+    tidyr::unnest(cols = "predicted") %>%
     dplyr::rename("{{measure}}" := .data$predicted) %>%
     dplyr::mutate(quantile = factor(.data$quantile))
 

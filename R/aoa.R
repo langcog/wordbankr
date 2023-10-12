@@ -51,7 +51,7 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
     #   understands = !is.na(.data$value) &
     #     (.data$value == "understands" | .data$value == "produces")
     # ) %>%
-    dplyr::select(-.data$value) %>%
+    dplyr::select(-"value") %>%
     tidyr::gather("measure_name", "value",
                   .data$produces, .data$understands) %>%
     dplyr::filter(.data$measure_name == measure) %>%
@@ -94,7 +94,7 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 
   instrument_aoa <- instrument_fits %>%
     dplyr::mutate(aoa = .data$fit_data %>% purrr::map_dbl(compute_aoa)) %>%
-    dplyr::select(-.data$data, -.data$fit_data)
+    dplyr::select(-"data", -"fit_data")
 
   item_cols <- c("num_item_id", "item_id", "item_kind", "item_definition",
                  "category", "lexical_category", "lexical_class", "uni_lemma",
@@ -107,6 +107,6 @@ fit_aoa <- function(instrument_data, measure = "produces", method = "glm",
 
   instrument_aoa %>%
     dplyr::left_join(item_data, by = "num_item_id") %>%
-    dplyr::select(-.data$num_item_id)
+    dplyr::select(-"num_item_id")
 
 }

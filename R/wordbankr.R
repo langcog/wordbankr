@@ -146,8 +146,7 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
   if (is.null(src)) return()
 
   instruments <- get_instruments(db_args = db_args) %>%
-    dplyr::select(.data$instrument_id, .data$language, .data$form,
-                  .data$form_type)
+    dplyr::select("instrument_id", "language", "form", "form_type")
 
   suppressWarnings(
     dataset_data <- get_common_table(src, "dataset") %>%
@@ -174,7 +173,7 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
                   dataset_origin_name = .data$dataset_origin_id) %>%
     dplyr::mutate(longitudinal = as.logical(.data$longitudinal)) %>%
     dplyr::select(dplyr::starts_with("dataset"), dplyr::everything()) %>%
-    dplyr::select(-.data$instrument_id)
+    dplyr::select(-"instrument_id")
 
   if (admin_data) {
     suppressWarnings(
@@ -265,9 +264,8 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (is.null(src)) return()
 
   datasets <- get_datasets(db_args = db_args) %>%
-    dplyr::select(.data$dataset_id, .data$dataset_name,
-                  .data$dataset_origin_name, .data$language, .data$form,
-                  .data$form_type)
+    dplyr::select("dataset_id", "dataset_name", "dataset_origin_name",
+                  "language", "form", "form_type")
 
   select_cols <- c("data_id", "date_of_test", "age", "comprehension",
                    "production", "is_norming",
@@ -301,11 +299,10 @@ get_administration_data <- function(language = NULL, form = NULL,
       dplyr::mutate(data_id = as.numeric(.data$data_id),
                     is_norming = as.logical(.data$is_norming)) %>%
       dplyr::left_join(datasets, by = "dataset_id") %>%
-      dplyr::select(-.data$dataset_id) %>%
-      dplyr::select(.data$data_id, .data$date_of_test, .data$age,
-                    .data$comprehension, .data$production, .data$is_norming,
-                    dplyr::starts_with("dataset"), .data$language, .data$form,
-                    .data$form_type, dplyr::everything())
+      dplyr::select(-"dataset_id") %>%
+      dplyr::select("data_id", "date_of_test", "age", "comprehension",
+                    "production", "is_norming", dplyr::starts_with("dataset"),
+                    "language", "form", "form_type", dplyr::everything())
   )
 
   if (include_demographic_info) {
@@ -316,11 +313,11 @@ get_administration_data <- function(language = NULL, form = NULL,
       dplyr::mutate(caregiver_education = factor(
         .data$education_level, levels = .data$education_level)
       ) %>%
-      dplyr::select(.data$caregiver_education_id, .data$caregiver_education)
+      dplyr::select("caregiver_education_id", "caregiver_education")
 
     admins <- admins %>%
       dplyr::left_join(educations, by = "caregiver_education_id") %>%
-      dplyr::select(-.data$caregiver_education_id) %>%
+      dplyr::select(-"caregiver_education_id") %>%
       dplyr::relocate(.data$caregiver_education, .after = .data$birth_order) %>%
       dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
                                  labels = c("Female", "Male", "Other")),
@@ -341,9 +338,9 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (include_language_exposure) {
     language_exposures <- get_common_table(src, "language_exposure") %>%
       dplyr::semi_join(admins_tbl, by = "administration_id") %>%
-      dplyr::select(-.data$id) %>%
+      dplyr::select(-"id") %>%
       dplyr::collect() %>%
-      tidyr::nest(language_exposures = -.data$administration_id)
+      tidyr::nest(language_exposures = -"administration_id")
     admins <- admins %>%
       dplyr::left_join(language_exposures, by = "administration_id")
   }
@@ -355,9 +352,9 @@ get_administration_data <- function(language = NULL, form = NULL,
       dplyr::semi_join(admins_tbl, by = "child_id") %>%
       dplyr::left_join(health_conditions,
                        by = c("healthcondition_id" = "id")) %>%
-      dplyr::select(-.data$id, -.data$healthcondition_id) %>%
+      dplyr::select(-"id", -"healthcondition_id") %>%
       dplyr::collect() %>%
-      tidyr::nest(health_conditions = -.data$child_id)
+      tidyr::nest(health_conditions = -"child_id")
     admins <- admins %>%
       dplyr::left_join(child_health_conditions, by = "child_id")
   }
@@ -368,7 +365,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     dplyr::filter(.data$age >= .data$age_min, .data$age <= .data$age_max)
 
   admins <- admins %>%
-    dplyr::select(-.data$age_min, -.data$age_max, -.data$administration_id)
+    dplyr::select(-"age_min", -"age_max", -"administration_id")
   return(admins)
 
 }
@@ -492,7 +489,7 @@ get_instrument_data <- function(language, form, items = NULL,
     administration_info <- administration_info %>%
       dplyr::filter(.data$language == input_language,
                     .data$form == input_form) %>%
-      dplyr::select(-.data$language, -.data$form, -.data$form_type)
+      dplyr::select(-"language", -"form", -"form_type")
   }
 
   if ("logical" %in% class(item_info)) {
@@ -505,15 +502,15 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::filter(.data$language == input_language, .data$form == input_form,
                   is.element(.data$item_id, items)) %>%
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
-    dplyr::select(-.data$item_id)
+    dplyr::select(-"item_id")
 
   item_data_cols <- colnames(item_data)
 
   instrument_data <- instrument_table %>%
-    dplyr::select(.data$basetable_ptr_id, !!items_quo) %>%
+    dplyr::select("basetable_ptr_id", !!items_quo) %>%
     dplyr::collect() %>%
     dplyr::mutate(data_id = as.numeric(.data$basetable_ptr_id)) %>%
-    dplyr::select(-.data$basetable_ptr_id) %>%
+    dplyr::select(-"basetable_ptr_id") %>%
     tidyr::gather("item_id", "value", !!items_quo) %>%
     dplyr::mutate(num_item_id = strip_item_id(.data$item_id)) %>%
     dplyr::left_join(item_data, by = "num_item_id") %>%
@@ -537,7 +534,7 @@ get_instrument_data <- function(language, form, items = NULL,
   if ("logical" %in% class(item_info) && !item_info) {
     instrument_data <- instrument_data %>% dplyr::select(-{{ item_data_cols }})
   } else {
-    instrument_data <- instrument_data %>% dplyr::select(-.data$num_item_id)
+    instrument_data <- instrument_data %>% dplyr::select(-"num_item_id")
   }
 
   DBI::dbDisconnect(src)

@@ -99,9 +99,8 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
 
   item_data <- get_item_data(db_args = db_args) %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
-    dplyr::select(.data$language, .data$form, .data$form_type, .data$item_id,
-                  .data$item_kind, .data$item_definition, .data$uni_lemma,
-                  .data$lexical_category)
+    dplyr::select("language", "form", "form_type", "item_id", "item_kind",
+                  "item_definition", "uni_lemma", "lexical_category")
   if (nrow(item_data) == 0) {
     message("No items found for uni_lemma")
     return()
@@ -112,10 +111,10 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
 
   item_summary <- item_data %>%
     dplyr::mutate(lang = .data$language, frm = .data$form) %>%
-    tidyr::nest(df = -c(.data$lang, .data$frm)) %>%
+    tidyr::nest(df = -c("lang", "frm")) %>%
     dplyr::transmute(summary = .data$df %>%
                        purrr::map(~safe_summarise_items(., db_args)$result)) %>%
-    tidyr::unnest(.data$summary)
+    tidyr::unnest(cols = "summary")
 
   suppressWarnings(DBI::dbDisconnect(src))
   return(item_summary)
