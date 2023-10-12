@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/langcog/wordbankr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/langcog/wordbankr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # wordbankr
 
 R package for accessing the Wordbank database.
