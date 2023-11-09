@@ -372,7 +372,7 @@ get_administration_data <- function(language = NULL, form = NULL,
     if (is.null(health_condition_tbl)) return()
 
     child_health_conditions_tbl <- get_common_table(src, "child_health_conditions")
-    if (is.null(child_health_condition_tbl)) return()
+    if (is.null(child_health_conditions_tbl)) return()
 
     child_health_conditions <- child_health_conditions_tbl %>%
       dplyr::semi_join(admins_tbl, by = "child_id") %>%
