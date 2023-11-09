@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wordbankr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,14 +94,13 @@
 <span class="r-in"><span><span class="va">eng_wg</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_administration_data.html">get_administration_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>,</span></span>
 <span class="r-in"><span>                                  form <span class="op">=</span> <span class="st">"WG"</span>,</span></span>
 <span class="r-in"><span>                                  include_demographic_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://wordbank.stanford.edu:443/db_args': status was 'SSL peer certificate or SSH remote key was not OK'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Could not retrieve Wordbank connection information. Please check your internet connection. If this error persists please contact wordbank-contact@stanford.edu.</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">eng_wg</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">vocab_quantiles</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">vocab_quantiles_sex</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, <span class="va">sex</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">vocab_quartiles</span> <span class="op">&lt;-</span> <span class="fu">fit_vocab_quantiles</span><span class="op">(</span><span class="va">eng_wg</span>, <span class="va">production</span>, quantiles <span class="op">=</span> <span class="st">"quartiles"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`fit_vocab_quantiles()` was deprecated in wordbankr 1.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the vocabulary norms shiny app at</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   http://wordbank.stanford.edu/analyses?name=vocab_norms</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
