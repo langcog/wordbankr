@@ -50,11 +50,12 @@ summarise_items <- function(item_data, db_args = NULL) {
   if (is.null(src)) return()
 
   instrument_data <- get_instrument_data(language = lang,
-                                      form = frm,
-                                      items = item_data$item_id,
-                                      administration_info = TRUE,
-                                      item_info = item_data,
-                                      db_args = db_args)
+                                         form = frm,
+                                         items = item_data$item_id,
+                                         administration_info = TRUE,
+                                         item_info = item_data,
+                                         db_args = db_args)
+  if (is.null(instrument_data)) return()
   comp <- !all(is.na(instrument_data$understands))
   item_summary <- instrument_data %>%
     dplyr::group_by(.data$language, .data$form, .data$item_id,
@@ -97,7 +98,9 @@ get_crossling_data <- function(uni_lemmas, db_args = NULL) {
   src <- connect_to_wordbank(db_args)
   if (is.null(src)) return()
 
-  item_data <- get_item_data(db_args = db_args) %>%
+  item_data <- get_item_data(db_args = db_args)
+  if (is.null(item_data)) return()
+  item_data <- item_data %>%
     dplyr::filter(.data$uni_lemma %in% uni_lemmas) %>%
     dplyr::select("language", "form", "form_type", "item_id", "item_kind",
                   "item_definition", "uni_lemma", "lexical_category")

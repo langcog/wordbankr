@@ -1,3 +1,11 @@
+handle_con <- function(e) {
+  message(strwrap(
+    prefix = " ", initial = "",
+    "Could not retrieve Wordbank connection information. Please check
+     your internet connection. If this error persists please contact
+     wordbank-contact@stanford.edu."))
+}
+
 #' Get database connection arguments
 #'
 #' @return List of database connection arguments: host, db_name, username,
@@ -10,12 +18,7 @@
 #' }
 get_wordbank_args <- function() {
   tryCatch(jsonlite::fromJSON("http://wordbank.stanford.edu/db_args"),
-           error = function(e) message(strwrap(
-             prefix = " ", initial = "",
-             "Could not retrieve Wordbank connection information. Please check
-             your internet connection. If this error persists please contact
-             wordbank-contact@stanford.edu."
-           )))
+           error = handle_con)
 }
 
 #' Connect to the Wordbank database
@@ -36,7 +39,7 @@ connect_to_wordbank <- function(db_args = NULL) {
     if (is.null(db_args)) return()
   }
 
-  tryCatch(error = function(e) message(e), {
+  tryCatch(error = handle_con, {
     src <- DBI::dbConnect(RMySQL::MySQL(),
                           host = db_args$host, dbname = db_args$dbname,
                           user = db_args$user, password = db_args$password)
@@ -46,6 +49,10 @@ connect_to_wordbank <- function(db_args = NULL) {
   })
 
 }
+
+# safe_tbl <- function(src, ...) {
+#   purrr::safely(dplyr::tbl)
+# }
 
 #' Connect to an instrument's Wordbank table
 #'
@@ -67,8 +74,7 @@ get_instrument_table <- function(src, language, form) {
   }
   table_name <- paste(c("instruments", san_string(language), san_string(form)),
                       collapse = "_")
-  instrument_table <- dplyr::tbl(src, table_name)
-  return(instrument_table)
+  tryCatch(dplyr::tbl(src, table_name), error = handle_con)
 }
 
 
@@ -80,8 +86,10 @@ get_instrument_table <- function(src, language, form) {
 #' @param name A string indicating the name of a common table.
 #' @return A \code{tbl} object.
 get_common_table <- function(src, name) {
-  common_table <- dplyr::tbl(src, paste("common", name, sep = "_"))
-  return(common_table)
+  suppressWarnings(
+    tryCatch(dplyr::tbl(src, paste("common", name, sep = "_")),
+             error = handle_con)
+  )
 }
 
 
@@ -145,14 +153,15 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
   src <- connect_to_wordbank(db_args)
   if (is.null(src)) return()
 
-  instruments <- get_instruments(db_args = db_args) %>%
+  instruments_tbl <- get_instruments(db_args = db_args) %>%
     dplyr::select("instrument_id", "language", "form", "form_type")
+  if (is.null(instruments_tbl)) return()
 
-  suppressWarnings(
-    dataset_data <- get_common_table(src, "dataset") %>%
-      dplyr::collect() %>%
-      dplyr::left_join(instruments, by = "instrument_id")
-  )
+  datasets <- get_common_table(src, "dataset") %>% dplyr::collect()
+  if (is.null(datasets)) return()
+
+  dataset_data <- datasets %>%
+    dplyr::left_join(instruments_tbl, by = "instrument_id")
 
   input_language <- language
   input_form <- form
@@ -176,12 +185,16 @@ get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
     dplyr::select(-"instrument_id")
 
   if (admin_data) {
+    admins_tbl <- get_common_table(src, "administration")
+    if (is.null(admins_tbl)) return()
+
     suppressWarnings(
-      admins <- get_common_table(src, "administration") %>%
+      admins <- admins_tbl %>%
         dplyr::group_by(.data$dataset_id) %>%
         dplyr::summarise(n_admins = dplyr::n_distinct(.data$data_id)) %>%
         dplyr::collect()
     )
+    if (is.null(admins)) return()
 
     dataset_data <- dataset_data %>%
       dplyr::left_join(admins, by = "dataset_id")
@@ -263,9 +276,10 @@ get_administration_data <- function(language = NULL, form = NULL,
   src <- connect_to_wordbank(db_args)
   if (is.null(src)) return()
 
-  datasets <- get_datasets(db_args = db_args) %>%
+  datasets_tbl <- get_datasets(db_args = db_args) %>%
     dplyr::select("dataset_id", "dataset_name", "dataset_origin_name",
                   "language", "form", "form_type")
+  if (is.null(datasets_tbl)) return()
 
   select_cols <- c("data_id", "date_of_test", "age", "comprehension",
                    "production", "is_norming",
@@ -293,12 +307,14 @@ get_administration_data <- function(language = NULL, form = NULL,
   suppressWarnings(
     admins_tbl <- dplyr::tbl(src, dbplyr::sql(admin_query))
   )
+  if (is.null(admins_tbl)) return()
+
   suppressWarnings(
     admins <- admins_tbl %>%
       dplyr::collect() %>%
       dplyr::mutate(data_id = as.numeric(.data$data_id),
                     is_norming = as.logical(.data$is_norming)) %>%
-      dplyr::left_join(datasets, by = "dataset_id") %>%
+      dplyr::left_join(datasets_tbl, by = "dataset_id") %>%
       dplyr::select(-"dataset_id") %>%
       dplyr::select("data_id", "date_of_test", "age", "comprehension",
                     "production", "is_norming", dplyr::starts_with("dataset"),
@@ -306,7 +322,10 @@ get_administration_data <- function(language = NULL, form = NULL,
   )
 
   if (include_demographic_info) {
-    educations <- get_common_table(src, "caregiver_education") %>%
+    caregiver_education_tbl <- get_common_table(src, "caregiver_education")
+    if (is.null(caregiver_education_tbl)) return()
+
+    caregiver_education <- caregiver_education_tbl %>%
       dplyr::collect() %>%
       dplyr::rename(caregiver_education_id = .data$id) %>%
       dplyr::arrange(.data$education_order) %>%
@@ -316,7 +335,7 @@ get_administration_data <- function(language = NULL, form = NULL,
       dplyr::select("caregiver_education_id", "caregiver_education")
 
     admins <- admins %>%
-      dplyr::left_join(educations, by = "caregiver_education_id") %>%
+      dplyr::left_join(caregiver_education, by = "caregiver_education_id") %>%
       dplyr::select(-"caregiver_education_id") %>%
       dplyr::relocate(.data$caregiver_education, .after = .data$birth_order) %>%
       dplyr::mutate(sex = factor(.data$sex, levels = c("F", "M", "O"),
@@ -336,7 +355,10 @@ get_administration_data <- function(language = NULL, form = NULL,
   }
 
   if (include_language_exposure) {
-    language_exposures <- get_common_table(src, "language_exposure") %>%
+    language_exposure_tbl <- get_common_table(src, "language_exposure")
+    if (is.null(language_exposure_tbl)) return()
+
+    language_exposures <- language_exposure_tbl %>%
       dplyr::semi_join(admins_tbl, by = "administration_id") %>%
       dplyr::select(-"id") %>%
       dplyr::collect() %>%
@@ -346,11 +368,15 @@ get_administration_data <- function(language = NULL, form = NULL,
   }
 
   if (include_health_conditions) {
-    health_conditions <- get_common_table(src, "health_condition")
-    child_health_conditions <- get_common_table(src,
-                                                "child_health_conditions") %>%
+    health_condition_tbl <- get_common_table(src, "health_condition")
+    if (is.null(health_condition_tbl)) return()
+
+    child_health_conditions_tbl <- get_common_table(src, "child_health_conditions")
+    if (is.null(child_health_condition_tbl)) return()
+
+    child_health_conditions <- child_health_conditions_tbl %>%
       dplyr::semi_join(admins_tbl, by = "child_id") %>%
-      dplyr::left_join(health_conditions,
+      dplyr::left_join(health_condition_tbl,
                        by = c("healthcondition_id" = "id")) %>%
       dplyr::select(-"id", -"healthcondition_id") %>%
       dplyr::collect() %>%
@@ -401,6 +427,8 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
   if (is.null(src)) return()
 
   item_tbl <- get_common_table(src, "item")
+  if (is.null(item_tbl)) return()
+
   item_query <- paste(
     "SELECT item_id, language, form, form_type, item_kind, category,
     item_definition, english_gloss, uni_lemma, lexical_category, complexity_category
@@ -465,8 +493,9 @@ get_instrument_data <- function(language, form, items = NULL,
   src <- connect_to_wordbank(db_args)
   if (is.null(src)) return()
 
-  instrument_table <- get_instrument_table(src, language, form)
-  columns <- colnames(instrument_table)
+  instrument_tbl <- get_instrument_table(src, language, form)
+  if (is.null(instrument_tbl)) return()
+  columns <- colnames(instrument_tbl)
 
   if (is.null(items)) {
     items <- columns[2:length(columns)]
@@ -506,7 +535,7 @@ get_instrument_data <- function(language, form, items = NULL,
 
   item_data_cols <- colnames(item_data)
 
-  instrument_data <- instrument_table %>%
+  instrument_data <- instrument_tbl %>%
     dplyr::select("basetable_ptr_id", !!items_quo) %>%
     dplyr::collect() %>%
     dplyr::mutate(data_id = as.numeric(.data$basetable_ptr_id)) %>%

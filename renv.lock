@@ -72,11 +72,9 @@
     "RMySQL": {
       "Package": "RMySQL",
       "Version": "0.10.26",
-      "Source": "URL",
+      "Source": "Repository",
       "Repository": "CRAN",
-      "RemoteType": "url",
-      "RemoteUrl": "https://cran.r-project.org/bin/macosx/big-sur-arm64/contrib/4.3/RMySQL_0.10.26.tgz",
-      "Hash": "471ffe498f21c010f5fab8c68f9ea9f3",
+      "Hash": "ee8eb17da2114726c34da8802767a71c",
       "Requirements": [
         "DBI"
       ]
@@ -208,10 +206,10 @@
     },
     "dbplyr": {
       "Package": "dbplyr",
-      "Version": "2.3.4",
+      "Version": "2.4.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "63534894354af6b2587b7aa518a5193a",
+      "Hash": "59351f28a81f0742720b85363c4fdd61",
       "Requirements": [
         "DBI",
         "R6",
@@ -488,10 +486,10 @@
     },
     "lattice": {
       "Package": "lattice",
-      "Version": "0.21-9",
+      "Version": "0.22-5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5558c61e0136e247252f5f952cdaad6a",
+      "Hash": "7c5e89f04e72d6611c77451f6331a091",
       "Requirements": []
     },
     "lifecycle": {
@@ -908,7 +906,7 @@
       "Package": "tinytex",
       "Version": "0.47",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "8d4ccb733843e513c1c1cdd66a759f0d",
       "Requirements": [
         "xfun"
@@ -924,10 +922,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.6.3",
+      "Version": "0.6.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d0ef2856b83dc33ea6e255caf6229ee2",
+      "Hash": "266c1ca411266ba8f365fcc726444b87",
       "Requirements": [
         "cli",
         "glue",
