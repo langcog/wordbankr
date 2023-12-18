@@ -537,6 +537,9 @@ get_instrument_data <- function(language, form, items = NULL,
 
   produces_vals <- c("produces", "p")
   understands_vals <- c("understands", "u")
+  notyet_vals <- c("not yet", "n")
+  sometimes_vals <- c("sometimes", "s")
+  often_vals <- c("often", "o")
   na_vals <- c(NA, "N")
 
   instrument_data <- instrument_tbl %>%
@@ -552,6 +555,9 @@ get_instrument_data <- function(language, form, items = NULL,
       # recode value for single-char values
       value = dplyr::case_when(.data$value %in% produces_vals ~ "produces",
                                .data$value %in% understands_vals ~ "understands",
+                               .data$value %in% notyet_vals ~ "not yet",
+                               .data$value %in% sometimes_vals ~ "sometimes",
+                               .data$value %in% often_vals ~ "often",
                                .data$value %in% na_vals ~ NA,
                                .default = .data$value),
       # code value as produces only for words
