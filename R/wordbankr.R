@@ -555,7 +555,11 @@ get_instrument_data <- function(language, form, items = NULL,
       understands = .data$value %in% understands_vals | .data$value %in% produces_vals,
       understands = dplyr::if_else(
         .data$form_type == "WG" & .data$item_kind == "word", .data$understands, NA
-      )
+      ),
+      # modify value for "u" and "p"
+      value = dplyr::case_when(.data$value == "p" ~ "produces",
+                               .data$value == "u" ~ "understands",
+                               .default = .data$value)
     )
 
   if (!is.null(administration_info)) {
