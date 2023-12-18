@@ -535,6 +535,9 @@ get_instrument_data <- function(language, form, items = NULL,
 
   item_data_cols <- colnames(item_data)
 
+  produces_vals <- c("produces", "p")
+  understands_vals <- c("understands", "u")
+
   instrument_data <- instrument_tbl %>%
     dplyr::select("basetable_ptr_id", !!items_quo) %>%
     dplyr::collect() %>%
@@ -546,10 +549,10 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::mutate(
       .after = .data$value,
       # code value as produces only for words
-      produces = .data$value == "produces",
+      produces = .data$value %in% produces_vals,
       produces = dplyr::if_else(.data$item_kind == "word", .data$produces, NA),
       # code value as understands only for words in WG-type forms
-      understands = .data$value == "understands" | .data$value == "produces",
+      understands = .data$value %in% understands_vals | .data$value %in% produces_vals,
       understands = dplyr::if_else(
         .data$form_type == "WG" & .data$item_kind == "word", .data$understands, NA
       )
