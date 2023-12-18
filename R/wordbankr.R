@@ -537,6 +537,7 @@ get_instrument_data <- function(language, form, items = NULL,
 
   produces_vals <- c("produces", "p")
   understands_vals <- c("understands", "u")
+  na_vals <- c(NA, "N")
 
   instrument_data <- instrument_tbl %>%
     dplyr::select("basetable_ptr_id", !!items_quo) %>%
@@ -548,18 +549,19 @@ get_instrument_data <- function(language, form, items = NULL,
     dplyr::left_join(item_data, by = "num_item_id") %>%
     dplyr::mutate(
       .after = .data$value,
+      # recode value for single-char values
+      value = dplyr::case_when(.data$value %in% produces_vals ~ "produces",
+                               .data$value %in% understands_vals ~ "understands",
+                               .data$value %in% na_vals ~ NA,
+                               .default = .data$value),
       # code value as produces only for words
-      produces = .data$value %in% produces_vals,
+      produces = .data$value == "produces",
       produces = dplyr::if_else(.data$item_kind == "word", .data$produces, NA),
       # code value as understands only for words in WG-type forms
-      understands = .data$value %in% understands_vals | .data$value %in% produces_vals,
+      understands = .data$value == "understands" | .data$value == "produces",
       understands = dplyr::if_else(
         .data$form_type == "WG" & .data$item_kind == "word", .data$understands, NA
-      ),
-      # modify value for "u" and "p"
-      value = dplyr::case_when(.data$value == "p" ~ "produces",
-                               .data$value == "u" ~ "understands",
-                               .default = .data$value)
+      )
     )
 
   if (!is.null(administration_info)) {
