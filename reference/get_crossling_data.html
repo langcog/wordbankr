@@ -85,8 +85,79 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">crossling_data</span> <span class="op">&lt;-</span> <span class="fu">get_crossling_data</span><span class="op">(</span>uni_lemmas <span class="op">=</span> <span class="st">"dog"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://wordbank.stanford.edu:443/db_args': status was 'SSL peer certificate or SSH remote key was not OK'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Could not retrieve Wordbank connection information. Please check your internet connection. If this error persists please contact wordbank-contact@stanford.edu.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for British Sign Language WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Cantonese WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Croatian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Croatian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Danish WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Danish WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (American) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (American) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for French (Quebecois) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for French (Quebecois) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for German WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Hebrew WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Hebrew WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Italian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Italian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Mandarin (Beijing) IC</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Mandarin (Beijing) TC</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Mandarin (Beijing) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Norwegian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Norwegian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Russian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Russian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Slovak WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Slovak WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Mexican) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Mexican) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Swedish WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Swedish WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Turkish WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Turkish WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (British) TEDS Twos</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for American Sign Language FormA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for American Sign Language FormBOne</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for American Sign Language FormBTwo</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for American Sign Language FormC</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Greek (Cypriot) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Kigiriama WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Kigiriama WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Kiswahili WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Kiswahili WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Czech WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (Australian) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (British) Oxford CDI</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Latvian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Latvian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Korean WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Korean WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for French (French) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for French (French) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (European) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (European) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Portuguese (European) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Portuguese (European) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Mandarin (Taiwanese) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Mandarin (Taiwanese) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (Irish) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Irish WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Finnish WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Dutch Swingley</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Dutch WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Dutch WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Dutch FormOne</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Dutch FormTwoA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Hungarian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Argentinian) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for American Sign Language CDITwo</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Chilean) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Peruvian) WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Spanish (Peruvian) WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Persian WS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for Persian WG</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (American) WSShort</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting data for English (American) WGShort</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

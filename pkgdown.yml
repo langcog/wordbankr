@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   wordbankr: wordbankr.html
-last_built: 2023-12-18T19:11Z
+last_built: 2024-01-10T18:16Z
 urls:
   reference: http://langcog.github.io/wordbankr/reference
   article: http://langcog.github.io/wordbankr/articles
