@@ -538,6 +538,7 @@ get_instrument_data <- function(language, form, items = NULL,
   produces_vals <- c("produces", "produce")
   understands_vals <- c("understands", "underst")
   sometimes_vals <- c("sometimes", "sometim")
+  na_vals <- c(NA, "NA")
 
   instrument_data <- instrument_tbl %>%
     dplyr::select("basetable_ptr_id", !!items_quo) %>%
@@ -553,6 +554,7 @@ get_instrument_data <- function(language, form, items = NULL,
       value = dplyr::case_when(.data$value %in% produces_vals ~ "produces",
                                .data$value %in% understands_vals ~ "understands",
                                .data$value %in% sometimes_vals ~ "sometimes",
+                               .data$value %in% na_vals ~ NA,
                                .default = .data$value),
       # code value as produces only for words
       produces = .data$value == "produces",
