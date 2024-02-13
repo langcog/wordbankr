@@ -250,6 +250,8 @@ filter_query <- function(filter_language = NULL, filter_form = NULL,
 #'   child's language exposure information at time of administration (a nested
 #'   dataframe under \code{language_exposures} with the columns \code{language},
 #'   \code{exposure_proportion}, \code{age_of_first_exposure}).
+#' @param include_study_internal_id A logical indicating whether to include
+#'   the child's ID in the original study data.
 #' @inheritParams connect_to_wordbank
 #' @return A data frame where each row is a CDI administration and each column
 #'   is a variable about the administration (\code{data_id},
@@ -271,6 +273,7 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     include_birth_info = FALSE,
                                     include_health_conditions = FALSE,
                                     include_language_exposure = FALSE,
+                                    include_study_internal_id = FALSE,
                                     db_args = NULL) {
 
   src <- connect_to_wordbank(db_args)
@@ -285,9 +288,12 @@ get_administration_data <- function(language = NULL, form = NULL,
                    "production", "is_norming",
                    "child_id", "dataset_id", "age_min", "age_max")
 
+  if (include_study_internal_id) select_cols <- c(select_cols, "study_internal_id")
+
   demo_cols <- c("birth_order", "ethnicity", "race",
                  "sex", "caregiver_education_id")
   if (include_demographic_info) select_cols <- c(select_cols, demo_cols)
+
   birth_cols <- c("birth_weight", "born_early_or_late", "gestational_age",
                   "zygosity")
   if (include_birth_info) select_cols <- c(select_cols, birth_cols)

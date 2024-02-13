@@ -12,6 +12,7 @@ get_administration_data(
   include_birth_info = FALSE,
   include_health_conditions = FALSE,
   include_language_exposure = FALSE,
+  include_study_internal_id = FALSE,
   db_args = NULL
 )
 }
@@ -41,6 +42,9 @@ child's health condition information (a nested dataframe under
 child's language exposure information at time of administration (a nested
 dataframe under \code{language_exposures} with the columns \code{language},
 \code{exposure_proportion}, \code{age_of_first_exposure}).}
+
+\item{include_study_internal_id}{A logical indicating whether to include
+the child's ID in the original study data.}
 
 \item{db_args}{List with arguments to connect to wordbank mysql database
 (host, dbname, user, and password).}
