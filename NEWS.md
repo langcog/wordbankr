@@ -1,3 +1,8 @@
+# wordbankr 1.0.3
+- allow for inclusion of study internal IDs
+- correctly handle new database values
+- minor bug fixes
+
 # wordbankr 1.0.2
 - more graceful failure for connection issues
 
