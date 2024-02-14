@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wordbankr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,7 @@
 <span>  include_birth_info <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_health_conditions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_language_exposure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_study_internal_id <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  db_args <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -106,6 +107,11 @@ child's health condition information (a nested dataframe under
 child's language exposure information at time of administration (a nested
 dataframe under <code>language_exposures</code> with the columns <code>language</code>,
 <code>exposure_proportion</code>, <code>age_of_first_exposure</code>).</p></dd>
+
+
+<dt>include_study_internal_id</dt>
+<dd><p>A logical indicating whether to include
+the child's ID in the original study data.</p></dd>
 
 
 <dt>db_args</dt>
