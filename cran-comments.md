@@ -11,22 +11,17 @@ There were no ERRORs or WARNINGs.
 There were 1 NOTE:
 
 ```
-* checking CRAN incoming feasibility ... [8s] NOTE
+* checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Mika Braginsky <mika.br@gmail.com>'
 
 New submission
 
 Package was archived on CRAN
 
-Possibly misspelled words in DESCRIPTION:
-  Wordbank (3:22, 4:28)
-
 CRAN repository db overrides:
-  X-CRAN-Comment: Archived on 2022-10-24 for repeated policy violation.
+  X-CRAN-Comment: Archived on 2024-01-29 for repeated policy violation.
 
   On Internet access.
 ```
 
 This package is being reinstated (the issue for which it was archived has been solved).
-
-This is not a misspelling.
