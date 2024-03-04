@@ -1,3 +1,5 @@
+# wordbankr (development version)
+
 # wordbankr 1.0.3
 - allow for inclusion of study internal IDs
 - correctly handle new database values
