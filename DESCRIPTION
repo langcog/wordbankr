@@ -35,7 +35,9 @@ Imports:
 Suggests:
     ggplot2,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
 Encoding: UTF-8
+Config/testthat/edition: 3
