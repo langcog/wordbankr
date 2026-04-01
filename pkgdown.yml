@@ -1,10 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   wordbankr: wordbankr.html
-last_built: 2024-03-04T17:31Z
+last_built: 2026-04-01T22:27Z
 urls:
   reference: http://langcog.github.io/wordbankr/reference
   article: http://langcog.github.io/wordbankr/articles
-
