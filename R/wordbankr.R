@@ -1,8 +1,15 @@
-handle_con <- function(e) {
+handle_args <- function(e) {
   message(strwrap(
     prefix = " ", initial = "",
     "Could not retrieve Wordbank connection information. Please check
      your internet connection. If this error persists please contact
+     wordbank-contact@stanford.edu."))
+}
+
+handle_con <- function(e) {
+  message(strwrap(
+    prefix = " ", initial = "",
+    "Could not connect to Wordbank. If this error persists please contact
      wordbank-contact@stanford.edu."))
 }
 
@@ -18,7 +25,7 @@ handle_con <- function(e) {
 #' }
 get_wordbank_args <- function() {
   tryCatch(jsonlite::fromJSON("http://wordbank.stanford.edu/db_args"),
-           error = handle_con)
+           error = handle_args)
 }
 
 #' Connect to the Wordbank database
@@ -42,7 +49,8 @@ connect_to_wordbank <- function(db_args = NULL) {
   tryCatch(error = handle_con, {
     src <- DBI::dbConnect(RMySQL::MySQL(),
                           host = db_args$host, dbname = db_args$dbname,
-                          user = db_args$user, password = db_args$password)
+                          user = db_args$user, password = db_args$password,
+                          default.file = cnf_path)
     enc <- DBI::dbGetQuery(src, "SELECT @@character_set_database")
     DBI::dbSendQuery(src, glue::glue("SET CHARACTER SET {enc}"))
     return(src)
