@@ -20,7 +20,9 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            github::redivis/redivis-r
           needs: check
       - uses: r-lib/actions/check-r-package@v2
         with:
@@ -36,7 +38,10 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::testthat, any::pkgload
+          extra-packages: |
+            any::testthat
+            any::pkgload
+            github::redivis/redivis-r
       - name: Run characterization tests
         env:
           REDIVIS_API_TOKEN: ${{ secrets.REDIVIS_API_TOKEN }}
