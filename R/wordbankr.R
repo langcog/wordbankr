@@ -318,22 +318,31 @@ get_instrument_data <- function(language, form, items = NULL,
     }
   }
 
-  if (isTRUE(administration_info)) {
-    administration_info <- get_administration_data(language, form)
-  }
-  if (is.data.frame(administration_info)) {
-    instrument_data <- dplyr::left_join(instrument_data, administration_info,
-                                        by = "data_id")
-  }
-
+  # legacy join semantics: item metadata attaches first (keeping language,
+  # form, form_type), then administration info right-joins with those
+  # columns dropped
   if (isTRUE(item_info)) {
     item_info <- get_item_data(language, form)
   }
   if (is.data.frame(item_info)) {
     item_join <- item_info |>
-      dplyr::select(-dplyr::any_of(c("language", "form", "form_type")))
+      dplyr::filter(.data$language == !!language, .data$form == !!form)
+    if (!is.null(items)) {
+      item_join <- dplyr::filter(item_join, .data$item_id %in% !!items)
+    }
     instrument_data <- dplyr::left_join(instrument_data, item_join,
                                         by = "item_id")
+  }
+
+  if (isTRUE(administration_info)) {
+    administration_info <- get_administration_data(language, form)
+  }
+  if (is.data.frame(administration_info)) {
+    admin_join <- administration_info |>
+      dplyr::filter(.data$language == !!language, .data$form == !!form) |>
+      dplyr::select(-"language", -"form", -"form_type")
+    instrument_data <- dplyr::right_join(instrument_data, admin_join,
+                                         by = "data_id")
   }
 
   instrument_data
