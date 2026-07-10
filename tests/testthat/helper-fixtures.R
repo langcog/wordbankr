@@ -64,6 +64,6 @@ expect_matches_shape <- function(actual, fixture_name) {
                label = paste0(fixture_name, " n_distinct"))
 }
 
-# fixtures were generated from the database state released as v1.3;
+# fixtures were generated from the database state released as v1.3 (data identical in v1.4, which adds the aoa/item_embeddings tables);
 # pin so the suite stays green regardless of later data releases
-options(wordbankr.dataset_version = "v1.3")
+options(wordbankr.dataset_version = "v1.4")
