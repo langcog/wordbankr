@@ -19,6 +19,9 @@ jobs:
         with:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
+        env:
+          LIBARROW_BINARY: "true"
+          NOT_CRAN: "true"
         with:
           extra-packages: |
             any::rcmdcheck
@@ -37,6 +40,9 @@ jobs:
         with:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
+        env:
+          LIBARROW_BINARY: "true"
+          NOT_CRAN: "true"
         with:
           extra-packages: |
             any::testthat
