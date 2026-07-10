@@ -9,3 +9,8 @@ cran-comments.md
 ^\.github$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^data-raw$
+^fixtures\.log$
+^R/wordbankr\.R\.v1\.bak$
+^renv$
+^renv\.lock$

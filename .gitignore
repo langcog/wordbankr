@@ -3,3 +3,6 @@
 .RData
 .DS_Store
 docs
+fixtures.log
+testrun.log
+R/wordbankr.R.v1.bak
