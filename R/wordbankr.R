@@ -48,18 +48,42 @@ wb_dataset <- function() {
                                                      version = version)
 }
 
+# CRAN policy requires graceful failure on unavailable internet resources:
+# transient errors are retried with backoff, then produce a message and
+# NULL -- never an error
+wb_try <- function(expr, tries = 3) {
+  expr <- substitute(expr)
+  env <- parent.frame()
+  for (i in seq_len(tries)) {
+    result <- tryCatch(eval(expr, env), error = function(e) {
+      if (i < tries) {
+        message("Redivis request failed (attempt ", i, "/", tries,
+                "), retrying...")
+        Sys.sleep(2^i)
+      } else {
+        message("Could not retrieve data from Redivis. Please check your ",
+                "internet connection. If this error persists please contact ",
+                "wordbank-contact@stanford.edu.\n(", conditionMessage(e), ")")
+      }
+      NULL
+    })
+    if (!is.null(result)) return(result)
+  }
+  NULL
+}
+
 # fetch a whole table as a tibble, cached per session + version
 wb_table <- function(name) {
   key <- paste(getOption("wordbankr.dataset_version", "current"), name)
   if (is.null(.wb_env[[key]])) {
-    .wb_env[[key]] <- wb_dataset()$table(name)$to_tibble()
+    .wb_env[[key]] <- wb_try(wb_dataset()$table(name)$to_tibble())
   }
   .wb_env[[key]]
 }
 
 # run a SQL query against the dataset (server-side filtering for big tables)
 wb_query <- function(sql) {
-  wb_dataset()$query(sql)$to_tibble()
+  wb_try(wb_dataset()$query(sql)$to_tibble())
 }
 
 quote_sql <- function(x) paste0("'", gsub("'", "''", x), "'")
@@ -85,8 +109,9 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #' @export
 get_instruments <- function(db_args = NULL) {
   check_db_args(db_args)
-  wb_table("instruments") |>
-    dplyr::arrange(.data$instrument_id)
+  instruments <- wb_table("instruments")
+  if (is.null(instruments)) return(invisible(NULL))
+  dplyr::arrange(instruments, .data$instrument_id)
 }
 
 #' Get the Wordbank data sources
@@ -109,7 +134,9 @@ get_instruments <- function(db_args = NULL) {
 get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
                          db_args = NULL) {
   check_db_args(db_args)
-  datasets <- wb_table("datasets") |>
+  datasets <- wb_table("datasets")
+  if (is.null(datasets)) return(invisible(NULL))
+  datasets <- datasets |>
     filter_language_form(language, form) |>
     dplyr::arrange(.data$dataset_id)
   if (!admin_data) datasets <- dplyr::select(datasets, -"n_admins")
@@ -176,8 +203,9 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     db_args = NULL) {
   check_db_args(db_args)
 
-  admins <- wb_table("administrations") |>
-    filter_language_form(language, form)
+  admins <- wb_table("administrations")
+  if (is.null(admins)) return(invisible(NULL))
+  admins <- filter_language_form(admins, language, form)
 
   if (filter_age) admins <- dplyr::filter(admins, .data$in_age_range)
 
@@ -233,8 +261,9 @@ get_administration_data <- function(language = NULL, form = NULL,
 #' @export
 get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
   check_db_args(db_args)
-  wb_table("items") |>
-    filter_language_form(language, form)
+  items <- wb_table("items")
+  if (is.null(items)) return(invisible(NULL))
+  filter_language_form(items, language, form)
 }
 
 #' Get the Wordbank administration-by-item data
@@ -275,7 +304,9 @@ get_instrument_data <- function(language, form, items = NULL,
     "SELECT data_id, item_id, value, produces, understands
      FROM item_responses
      WHERE language = %s AND form = %s %s",
-    quote_sql(language), quote_sql(form), item_filter)) |>
+    quote_sql(language), quote_sql(form), item_filter))
+  if (is.null(instrument_data)) return(invisible(NULL))
+  instrument_data <- instrument_data |>
     dplyr::mutate(data_id = as.numeric(.data$data_id)) |>
     dplyr::arrange(.data$data_id, strip_item_id(.data$item_id))
 

@@ -3,6 +3,8 @@
 # database (see data-raw/make_fixtures.R).
 
 skip_if_no_redivis <- function() {
+  # network tests never run on CRAN; locally/CI they need a Redivis token
+  skip_on_cran()
   skip_if(Sys.getenv("REDIVIS_API_TOKEN") == "",
           "REDIVIS_API_TOKEN not set")
 }

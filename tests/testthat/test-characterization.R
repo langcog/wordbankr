@@ -70,9 +70,16 @@ test_that("get_instrument_data matches legacy output", {
     "instrdata_danish_ws_shape")
 })
 
-test_that("get_crossling_items matches legacy output", {
+test_that("get_crossling_items covers legacy uni-lemmas", {
   skip_if_no_redivis()
-  expect_matches_fixture(get_crossling_items(), "crossling_items")
+  # DELIBERATE CHANGE in 2.0: returns uni_lemmas derived from items (no
+  # internal id column, no orphan lemmas unattached to any item)
+  new <- get_crossling_items()
+  expect_identical(names(new), "uni_lemma")
+  legacy <- load_fixture("crossling_items")
+  item_lemmas <- unique(get_item_data()$uni_lemma)
+  expect_true(all(new$uni_lemma %in% legacy$uni_lemma))
+  expect_setequal(new$uni_lemma, item_lemmas[!is.na(item_lemmas)])
 })
 
 test_that("get_crossling_data matches legacy output", {
