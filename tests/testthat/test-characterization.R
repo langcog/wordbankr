@@ -103,3 +103,26 @@ test_that("fit_vocab_quantiles matches legacy output", {
   expect_matches_fixture(fit_vocab_quantiles(admins, production, sex),
                          "quantiles_danish_ws_sex")
 })
+
+test_that("get_aoa returns cached estimates", {
+  skip_if_no_redivis()
+  skip_if(is.null(wb_try(wb_dataset()$table("aoa")$get())),
+          "aoa table not yet released")
+  aoa <- get_aoa(language = "Danish", form = "WS", measure = "produces")
+  expect_true(all(c("language", "form", "item_id", "item_definition",
+                    "measure", "aoa") %in% names(aoa)))
+  expect_true(nrow(aoa) > 500)
+  expect_true(all(aoa$language == "Danish"))
+  hund <- aoa$aoa[aoa$item_definition == "hund"]
+  expect_true(is.finite(hund) && hund > 10 && hund < 30)
+})
+
+test_that("get_embeddings returns parsed vectors", {
+  skip_if_no_redivis()
+  skip_if(is.null(wb_try(wb_dataset()$table("item_embeddings")$get())),
+          "item_embeddings table not yet released")
+  emb <- get_embeddings(language = "Danish")
+  expect_true(is.list(emb$embedding))
+  expect_equal(length(emb$embedding[[1]]), 768)
+  expect_true(nrow(emb) > 500)
+})
