@@ -63,3 +63,7 @@ expect_matches_shape <- function(actual, fixture_name) {
                expected$n_distinct,
                label = paste0(fixture_name, " n_distinct"))
 }
+
+# fixtures were generated from the database state released as v1.3;
+# pin so the suite stays green regardless of later data releases
+options(wordbankr.dataset_version = "v1.3")
