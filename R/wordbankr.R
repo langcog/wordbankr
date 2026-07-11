@@ -103,7 +103,7 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #'   \code{has_grammar}, \code{unilemma_coverage}).
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' instruments <- get_instruments()
 #' }
 #' @export
@@ -127,7 +127,7 @@ get_instruments <- function(db_args = NULL) {
 #'   characteristics.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' english_ws_datasets <- get_datasets("English (American)", "WS")
 #' }
 #' @export
@@ -189,7 +189,7 @@ factor_demographics <- function(admins) {
 #'   is a variable about the administration or the corresponding child.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' english_ws_admins <- get_administration_data("English (American)", "WS")
 #' }
 #' @export
@@ -255,7 +255,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 #'   \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' english_ws_items <- get_item_data("English (American)", "WS")
 #' }
 #' @export
@@ -285,7 +285,7 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #'   variables about the administration and item, as specified.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"))

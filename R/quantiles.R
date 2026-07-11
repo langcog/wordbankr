@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' eng_wg <- get_administration_data(language = "English (American)",
 #'                                   form = "WG",
 #'                                   include_demographic_info = TRUE)

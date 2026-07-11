@@ -9,8 +9,7 @@ summarise_items(item_data, db_args = NULL)
 \arguments{
 \item{item_data}{A dataframe as returned by \code{get_item_data()}.}
 
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 }
 \value{
 A dataframe with a row for each combination of item and age, and
@@ -24,7 +23,7 @@ A dataframe with a row for each combination of item and age, and
 Get item-by-age summary statistics
 }
 \examples{
-\donttest{
+\dontrun{
 italian_items <- get_item_data(language = "Italian", form = "WG")
 if (!is.null(italian_items)) {
   italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")

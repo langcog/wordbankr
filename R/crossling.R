@@ -4,7 +4,7 @@
 #' @return A data frame with the column \code{uni_lemma}.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' uni_lemmas <- get_crossling_items()
 #' }
 #' @export
@@ -29,7 +29,7 @@ get_crossling_items <- function(db_args = NULL) {
 #'   \code{item_definition}, \code{uni_lemma}, \code{lexical_category}).
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' italian_items <- get_item_data(language = "Italian", form = "WG")
 #' if (!is.null(italian_items)) {
 #'   italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")
@@ -79,7 +79,7 @@ summarise_items <- function(item_data, db_args = NULL) {
 #'   \code{lexical_category}, \code{lexical_class}).
 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' crossling_data <- get_crossling_data(uni_lemmas = "dog")
 #' }
 #' @export

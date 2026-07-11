@@ -17,7 +17,7 @@
 #'   \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa}.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' danish_aoa <- get_aoa(language = "Danish", form = "WS")
 #' }
 #' @export
@@ -48,7 +48,7 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #'   list-column of numeric vectors).
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' danish_embeddings <- get_embeddings(language = "Danish")
 #' }
 #' @export

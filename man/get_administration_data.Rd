@@ -23,47 +23,41 @@ administrations to retrieve.}
 \item{form}{An optional string specifying which form's administrations to
 retrieve.}
 
-\item{filter_age}{A logical indicating whether to filter the administrations
-to ones in the valid age range for their instrument.}
+\item{filter_age}{A logical indicating whether to filter the
+administrations to ones in the instrument's age range.}
 
 \item{include_demographic_info}{A logical indicating whether to include the
-child's demographic information (\code{birth_order}, \code{ethnicity},
-\code{race}, \code{sex}, \code{caregiver_education}).}
+child's demographic information (\code{birth_order},
+\code{caregiver_education}, \code{ethnicity}, \code{race}, \code{sex}).}
 
-\item{include_birth_info}{A logical indicating whether to include the child's
-birth information (\code{birth_weight}, \code{born_early_or_late},
+\item{include_birth_info}{A logical indicating whether to include the
+child's birth information (\code{birth_weight}, \code{born_early_or_late},
 \code{gestational_age}, \code{zygosity}).}
 
-\item{include_health_conditions}{A logical indicating whether to include the
-child's health condition information (a nested dataframe under
+\item{include_health_conditions}{A logical indicating whether to include
+the child's health condition information (a nested dataframe under
 \code{health_conditions} with the column \code{health_condition_name}).}
 
-\item{include_language_exposure}{A logical indicating whether to include the
-child's language exposure information at time of administration (a nested
-dataframe under \code{language_exposures} with the columns \code{language},
-\code{exposure_proportion}, \code{age_of_first_exposure}).}
+\item{include_language_exposure}{A logical indicating whether to include
+the child's language exposure information at time of administration (a
+nested dataframe under \code{language_exposures} with the columns
+\code{language}, \code{exposure_proportion},
+\code{age_of_first_exposure}).}
 
 \item{include_study_internal_id}{A logical indicating whether to include
 the child's ID in the original study data.}
 
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 }
 \value{
 A data frame where each row is a CDI administration and each column
-  is a variable about the administration (\code{data_id},
-  \code{date_of_test}, \code{age}, \code{comprehension}, \code{production},
-  \code{is_norming}), the dataset it's from (\code{dataset_name},
-  \code{dataset_origin_name}, \code{language}, \code{form},
-  \code{form_type}), and information about the child as described in the
-  parameter specification.
+  is a variable about the administration or the corresponding child.
 }
 \description{
 Get the Wordbank by-administration data
 }
 \examples{
-\donttest{
+\dontrun{
 english_ws_admins <- get_administration_data("English (American)", "WS")
-all_admins <- get_administration_data()
 }
 }

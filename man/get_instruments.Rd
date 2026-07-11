@@ -7,19 +7,19 @@
 get_instruments(db_args = NULL)
 }
 \arguments{
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 }
 \value{
-A data frame where each row is a CDI instrument and each column is a
-  variable about the instrument (\code{instrument_id}, \code{language},
-  \code{form}, \code{age_min}, \code{age_max}, \code{has_grammar}).
+A data frame where each row is a CDI instrument and each column is
+  a variable about the instrument (\code{instrument_id}, \code{language},
+  \code{form}, \code{form_type}, \code{age_min}, \code{age_max},
+  \code{has_grammar}, \code{unilemma_coverage}).
 }
 \description{
 Get the Wordbank instruments
 }
 \examples{
-\donttest{
+\dontrun{
 instruments <- get_instruments()
 }
 }

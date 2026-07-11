@@ -12,23 +12,20 @@ retrieve.}
 
 \item{form}{An optional string specifying which form's items to retrieve.}
 
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 }
 \value{
 A data frame where each row is a CDI item and each column is a
-  variable about it: \code{item_id}, \code{item_kind} (e.g. word, gestures,
-  word_endings), \code{item_definition}, \code{english_gloss},
-  \code{language}, \code{form}, \code{form_type}, \code{category}
-  (meaning-based group as shown on the CDI form), \code{lexical_category},
-  \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}).
+  variable about it: \code{item_id}, \code{item_kind},
+  \code{item_definition}, \code{english_gloss}, \code{language},
+  \code{form}, \code{form_type}, \code{category}, \code{lexical_category},
+  \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}.
 }
 \description{
 Get the Wordbank by-item data
 }
 \examples{
-\donttest{
+\dontrun{
 english_ws_items <- get_item_data("English (American)", "WS")
-all_items <- get_item_data()
 }
 }

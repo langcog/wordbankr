@@ -15,43 +15,37 @@ get_instrument_data(
 )
 }
 \arguments{
-\item{language}{A string of the instrument's language (insensitive to case
-and whitespace).}
+\item{language}{A string of the instrument's language.}
 
-\item{form}{A string of the instrument's form (insensitive to case and
-whitespace).}
+\item{form}{A string of the instrument's form.}
 
-\item{items}{A character vector of column names of \code{instrument_table} of
-items to extract. If not supplied, defaults to all the columns of
-\code{instrument_table}.}
+\item{items}{A character vector of item ids (e.g. \code{"item_42"}) to
+extract. If not supplied, defaults to all the instrument's items.}
 
 \item{administration_info}{Either a logical indicating whether to include
-administration data or a data frame of administration data (as returned by
-\code{get_administration_data}).}
+administration data or a data frame of administration data (as returned
+by \code{get_administration_data}).}
 
-\item{item_info}{Either a logical indicating whether to include item data or
-a data frame of item data (as returned by \code{get_item_data}).}
+\item{item_info}{Either a logical indicating whether to include item data
+or a data frame of item data (as returned by \code{get_item_data}).}
 
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 
-\item{...}{<[`dynamic-dots`][rlang::dyn-dots]> Arguments passed to
-\code{get_administration_data()}.}
+\item{...}{Additional arguments, ignored (for backward compatibility).}
 }
 \value{
 A data frame where each row contains the values (\code{value},
-  \code{produces}, \code{understands}) of a given item (\code{item_id}) for a
-  given administration (\code{data_id}), with additional columns of variables
-  about the administration and item, as specified.
+  \code{produces}, \code{understands}) of a given item (\code{item_id}) for
+  a given administration (\code{data_id}), with additional columns of
+  variables about the administration and item, as specified.
 }
 \description{
 Get the Wordbank administration-by-item data
 }
 \examples{
-\donttest{
+\dontrun{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
-                                   items = c("item_1", "item_42"),
-                                   item_info = TRUE)
+                                   items = c("item_1", "item_42"))
 }
 }

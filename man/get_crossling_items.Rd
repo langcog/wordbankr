@@ -7,8 +7,7 @@
 get_crossling_items(db_args = NULL)
 }
 \arguments{
-\item{db_args}{List with arguments to connect to wordbank mysql database
-(host, dbname, user, and password).}
+\item{db_args}{Deprecated, ignored.}
 }
 \value{
 A data frame with the column \code{uni_lemma}.
@@ -17,7 +16,7 @@ A data frame with the column \code{uni_lemma}.
 Get the uni_lemmas available in Wordbank
 }
 \examples{
-\donttest{
+\dontrun{
 uni_lemmas <- get_crossling_items()
 }
 }
