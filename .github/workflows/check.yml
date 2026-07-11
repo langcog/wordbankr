@@ -27,7 +27,11 @@ jobs:
             any::rcmdcheck
             github::redivis/redivis-r
           needs: check
+      # r-lib's check action sets NOT_CRAN=true by default, which would
+      # re-enable the vignette's network chunks; simulate CRAN faithfully
       - uses: r-lib/actions/check-r-package@v2
+        env:
+          NOT_CRAN: "false"
         with:
           error-on: '"warning"'
 
