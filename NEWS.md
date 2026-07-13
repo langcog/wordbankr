@@ -14,5 +14,8 @@
 * `get_crossling_items()` now returns a single `uni_lemma` column derived
   from item mappings; the internal database `id` column and uni-lemmas
   unattached to any item are no longer included.
+* The `redivis` client is a suggested (not imported) dependency, installable
+  from `https://langcog.r-universe.dev`; wordbankr prompts with the install
+  command if it is missing.
 * All network access retries transient failures and then fails gracefully
   (message + `NULL`), and no test or example requires network access on CRAN.

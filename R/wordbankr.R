@@ -43,6 +43,12 @@ get_wordbank_args <- function() {
 #' @return A redivis dataset reference.
 #' @export
 wb_dataset <- function() {
+  if (!requireNamespace("redivis", quietly = TRUE)) {
+    stop("wordbankr needs the `redivis` package to access Wordbank data.\n",
+         "Install it with:\n",
+         '  install.packages("redivis", repos = c("https://langcog.r-universe.dev", "https://cloud.r-project.org"))',
+         call. = FALSE)
+  }
   version <- getOption("wordbankr.dataset_version", NULL)
   redivis::redivis$organization("datapages")$dataset("wordbank",
                                                      version = version)
