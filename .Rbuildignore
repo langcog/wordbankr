@@ -14,3 +14,4 @@ cran-comments.md
 ^R/wordbankr\.R\.v1\.bak$
 ^renv$
 ^renv\.lock$
+.claude
