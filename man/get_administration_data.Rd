@@ -53,7 +53,8 @@ Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame where each row is a CDI administration and each column
-  is a variable about the administration or the corresponding child.
+  is a variable about the administration or the corresponding child,
+  including which \code{dataset_version} it came from.
 }
 \description{
 Get the Wordbank by-administration data

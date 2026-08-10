@@ -90,7 +90,8 @@ test_that("get_crossling_items covers legacy uni-lemmas", {
   # DELIBERATE CHANGE in 2.0: returns uni_lemmas derived from items (no
   # internal id column, no orphan lemmas unattached to any item)
   new <- get_crossling_items(version = TEST_VERSION)
-  expect_identical(names(new), "uni_lemma")
+  expect_identical(names(new), c("uni_lemma", "dataset_version"))
+  expect_true(all(new$dataset_version == TEST_VERSION))
   legacy <- load_fixture("crossling_items")
   item_lemmas <- unique(get_item_data(version = TEST_VERSION)$uni_lemma)
   expect_true(all(new$uni_lemma %in% legacy$uni_lemma))
@@ -127,7 +128,8 @@ test_that("get_aoa returns cached estimates", {
   aoa <- get_aoa(language = "Danish", form = "WS", measure = "produces",
                  version = TEST_VERSION)
   expect_true(all(c("language", "form", "item_id", "item_definition",
-                    "measure", "aoa") %in% names(aoa)))
+                    "measure", "aoa", "dataset_version") %in% names(aoa)))
+  expect_true(all(aoa$dataset_version == TEST_VERSION))
   expect_true(nrow(aoa) > 500)
   expect_true(all(aoa$language == "Danish"))
   hund <- aoa$aoa[aoa$item_definition == "hund"]

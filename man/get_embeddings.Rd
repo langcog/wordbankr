@@ -16,8 +16,8 @@ Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame with one row per unique item definition:
-  \code{language}, \code{item_definition}, and \code{embedding} (a
-  list-column of numeric vectors).
+  \code{language}, \code{item_definition}, \code{embedding} (a
+  list-column of numeric vectors), and \code{dataset_version}.
 }
 \description{
 Semantic embeddings for every unique word item definition, computed with

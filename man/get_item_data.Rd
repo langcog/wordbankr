@@ -21,7 +21,8 @@ A data frame where each row is a CDI item and each column is a
   variable about it: \code{item_id}, \code{item_kind},
   \code{item_definition}, \code{english_gloss}, \code{language},
   \code{form}, \code{form_type}, \code{category}, \code{lexical_category},
-  \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}.
+  \code{lexical_class}, \code{complexity_category}, \code{uni_lemma},
+  \code{dataset_version}.
 }
 \description{
 Get the Wordbank by-item data

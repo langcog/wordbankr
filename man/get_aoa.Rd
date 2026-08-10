@@ -23,7 +23,8 @@ Defaults to \code{"current"}, the most recent release.}
 \value{
 A data frame with one row per instrument item and measure:
   \code{language}, \code{form}, \code{item_id}, \code{item_definition},
-  \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa}.
+  \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa},
+  \code{dataset_version}.
 }
 \description{
 Age-of-acquisition estimates for every word item on every instrument,

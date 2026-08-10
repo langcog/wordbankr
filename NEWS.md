@@ -5,6 +5,10 @@
   `options(wordbankr.dataset_version = "v1.2")` global option.
 * The `db_args` argument is removed from all `get_*` functions (it was
   already ignored as of 2.0.0).
+* All `get_*` functions now record the data's `dataset_version` in a column
+  of their output; when `version = "current"` (the default), this is
+  resolved to the actual current version tag (e.g. `"v1.5"`) rather than
+  the literal string `"current"`.
 
 # wordbankr 2.0.0
 

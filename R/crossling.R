@@ -1,7 +1,8 @@
 #' Get the uni_lemmas available in Wordbank
 #'
 #' @inheritParams wb_dataset
-#' @return A data frame with the column \code{uni_lemma}.
+#' @return A data frame with the columns \code{uni_lemma} and
+#'   \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{
@@ -11,7 +12,7 @@
 get_crossling_items <- function(version = "current") {
   wb_table("items:1mzm", version) |>
     dplyr::filter(!is.na(.data$uni_lemma)) |>
-    dplyr::distinct(.data$uni_lemma) |>
+    dplyr::distinct(.data$uni_lemma, .data$dataset_version) |>
     dplyr::arrange(.data$uni_lemma)
 }
 
@@ -25,7 +26,8 @@ get_crossling_items <- function(version = "current") {
 #'   (\code{n_children}), means (\code{comprehension}, \code{production}),
 #'   standard deviations (\code{comprehension_sd}, \code{production_sd}); also
 #'   retains item-level variables from \code{lang_items} (\code{item_id},
-#'   \code{item_definition}, \code{uni_lemma}, \code{lexical_category}).
+#'   \code{item_definition}, \code{uni_lemma}, \code{lexical_category}) and
+#'   \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{
@@ -52,7 +54,8 @@ summarise_items <- function(item_data, version = "current") {
   item_summary <- instrument_data %>%
     dplyr::group_by(.data$language, .data$form, .data$item_id,
                     .data$item_definition, .data$uni_lemma,
-                    .data$lexical_category, .data$age) %>%
+                    .data$lexical_category, .data$age,
+                    .data$dataset_version) %>%
     dplyr::summarise(
       n_children = dplyr::n(),
       comprehension = if (comp) sum(.data$understands, na.rm = TRUE) / .data$n_children else NA,
@@ -75,7 +78,7 @@ summarise_items <- function(item_data, version = "current") {
 #'   (\code{n_children}), means (\code{comprehension}, \code{production}),
 #'   standard deviations (\code{comprehension_sd}, \code{production_sd}); and
 #'   item-level variables (\code{item_id}, \code{definition}, \code{uni_lemma},
-#'   \code{lexical_category}, \code{lexical_class}).
+#'   \code{lexical_category}, \code{lexical_class}, \code{dataset_version}).
 
 #' @examples
 #' \dontrun{

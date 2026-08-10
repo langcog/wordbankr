@@ -24,7 +24,17 @@ normalize <- function(x, col_order, sort_cols) {
   x
 }
 
+# fixtures predate the dataset_version column added to every get_* result;
+# check it separately, then drop it so the rest of the comparison is unchanged
+check_and_drop_dataset_version <- function(x, fixture_name) {
+  if (!"dataset_version" %in% names(x)) return(x)
+  expect_true(all(x$dataset_version == TEST_VERSION),
+             label = paste0(fixture_name, " dataset_version"))
+  dplyr::select(x, -"dataset_version")
+}
+
 expect_matches_fixture <- function(actual, fixture_name) {
+  actual <- check_and_drop_dataset_version(actual, fixture_name)
   expected <- load_fixture(fixture_name)
 
   # same columns, in the same order
@@ -54,6 +64,7 @@ expect_matches_fixture <- function(actual, fixture_name) {
 }
 
 expect_matches_shape <- function(actual, fixture_name) {
+  actual <- check_and_drop_dataset_version(actual, fixture_name)
   expected <- load_fixture(fixture_name)
   expect_equal(nrow(actual), expected$nrow,
                label = paste0(fixture_name, " nrow"))

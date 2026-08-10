@@ -14,7 +14,8 @@
 #' @inheritParams wb_dataset
 #' @return A data frame with one row per instrument item and measure:
 #'   \code{language}, \code{form}, \code{item_id}, \code{item_definition},
-#'   \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa}.
+#'   \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa},
+#'   \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{
@@ -43,8 +44,8 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #'   to retrieve.
 #' @inheritParams wb_dataset
 #' @return A data frame with one row per unique item definition:
-#'   \code{language}, \code{item_definition}, and \code{embedding} (a
-#'   list-column of numeric vectors).
+#'   \code{language}, \code{item_definition}, \code{embedding} (a
+#'   list-column of numeric vectors), and \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{

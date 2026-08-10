@@ -39,7 +39,8 @@ Defaults to \code{"current"}, the most recent release.}
 A data frame where each row contains the values (\code{value},
   \code{produces}, \code{understands}) of a given item (\code{item_id}) for
   a given administration (\code{data_id}), with additional columns of
-  variables about the administration and item, as specified.
+  variables about the administration and item, as specified, and
+  \code{dataset_version}.
 }
 \description{
 Get the Wordbank administration-by-item data

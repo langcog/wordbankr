@@ -19,7 +19,8 @@ A dataframe with a row for each combination of item and age, and
   (\code{n_children}), means (\code{comprehension}, \code{production}),
   standard deviations (\code{comprehension_sd}, \code{production_sd}); also
   retains item-level variables from \code{lang_items} (\code{item_id},
-  \code{item_definition}, \code{uni_lemma}, \code{lexical_category}).
+  \code{item_definition}, \code{uni_lemma}, \code{lexical_category}) and
+  \code{dataset_version}.
 }
 \description{
 Get item-by-age summary statistics

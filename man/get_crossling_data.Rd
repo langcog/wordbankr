@@ -19,7 +19,7 @@ A dataframe with a row for each combination of language, item, and
   (\code{n_children}), means (\code{comprehension}, \code{production}),
   standard deviations (\code{comprehension_sd}, \code{production_sd}); and
   item-level variables (\code{item_id}, \code{definition}, \code{uni_lemma},
-  \code{lexical_category}, \code{lexical_class}).
+  \code{lexical_category}, \code{lexical_class}, \code{dataset_version}).
 }
 \description{
 Get item-by-age summary statistics for items across languages

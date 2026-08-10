@@ -77,18 +77,45 @@ wb_try <- function(expr, tries = 3) {
   NULL
 }
 
-# fetch a whole table as a tibble, cached per session + version
+# resolve "current" to the actual current version tag (e.g. "v1.5"), so it
+# can be recorded in the data; concrete tags pass through unchanged. Cached
+# per session since resolving it costs a Redivis request. A single failed
+# attempt falls back to the literal "current" without caching, so later
+# calls can retry once the network is back.
+resolve_version <- function(version) {
+  if (!identical(version, "current")) return(version)
+  if (is.null(.wb_env[["current_version"]])) {
+    resolved <- wb_try({
+      ds <- wb_dataset("current")
+      ds$get()
+      ds$version_tag
+    }, tries = 1)
+    if (is.null(resolved) || !nzchar(resolved)) return("current")
+    .wb_env[["current_version"]] <- resolved
+  }
+  .wb_env[["current_version"]]
+}
+
+# fetch a whole table as a tibble, cached per session + version, stamped
+# with the resolved dataset version
 wb_table <- function(name, version = "current") {
-  key <- paste(version, name)
+  resolved <- resolve_version(version)
+  key <- paste(resolved, name)
   if (is.null(.wb_env[[key]])) {
-    .wb_env[[key]] <- wb_try(wb_dataset(version)$table(name)$to_tibble())
+    tbl <- wb_try(wb_dataset(resolved)$table(name)$to_tibble())
+    if (!is.null(tbl)) tbl <- dplyr::mutate(tbl, dataset_version = resolved)
+    .wb_env[[key]] <- tbl
   }
   .wb_env[[key]]
 }
 
-# run a SQL query against the dataset (server-side filtering for big tables)
+# run a SQL query against the dataset (server-side filtering for big tables),
+# stamped with the resolved dataset version
 wb_query <- function(sql, version = "current") {
-  wb_try(wb_dataset(version)$query(sql)$to_tibble())
+  resolved <- resolve_version(version)
+  tbl <- wb_try(wb_dataset(resolved)$query(sql)$to_tibble())
+  if (!is.null(tbl)) tbl <- dplyr::mutate(tbl, dataset_version = resolved)
+  tbl
 }
 
 quote_sql <- function(x) paste0("'", gsub("'", "''", x), "'")
@@ -105,7 +132,7 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #' @return A data frame where each row is a CDI instrument and each column is
 #'   a variable about the instrument (\code{instrument_id}, \code{language},
 #'   \code{form}, \code{form_type}, \code{age_min}, \code{age_max},
-#'   \code{has_grammar}, \code{unilemma_coverage}).
+#'   \code{has_grammar}, \code{unilemma_coverage}, \code{dataset_version}).
 #'
 #' @examples
 #' \dontrun{
@@ -128,7 +155,7 @@ get_instruments <- function(version = "current") {
 #'   administrations in the dataset.
 #' @inheritParams wb_dataset
 #' @return A data frame where each row is a particular dataset and its
-#'   characteristics.
+#'   characteristics, including which \code{dataset_version} it came from.
 #'
 #' @examples
 #' \dontrun{
@@ -189,7 +216,8 @@ factor_demographics <- function(admins) {
 #'   the child's ID in the original study data.
 #' @inheritParams wb_dataset
 #' @return A data frame where each row is a CDI administration and each column
-#'   is a variable about the administration or the corresponding child.
+#'   is a variable about the administration or the corresponding child,
+#'   including which \code{dataset_version} it came from.
 #'
 #' @examples
 #' \dontrun{
@@ -212,7 +240,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 
   keep <- c("data_id", "date_of_test", "age", "comprehension", "production",
             "is_norming", "dataset_name", "dataset_origin_name", "language",
-            "form", "form_type", "child_id")
+            "form", "form_type", "child_id", "dataset_version")
   if (include_study_internal_id) keep <- c(keep, "study_internal_id")
   if (include_demographic_info) {
     keep <- c(keep, "birth_order", "caregiver_education", "ethnicity", "race",
@@ -228,6 +256,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 
   if (include_language_exposure) {
     language_exposures <- wb_table("language_exposures:wpv7", version) |>
+      dplyr::select(-"dataset_version") |>
       dplyr::semi_join(admins, by = "data_id") |>
       tidyr::nest(language_exposures = -"data_id")
     admins <- dplyr::left_join(admins, language_exposures, by = "data_id")
@@ -235,6 +264,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 
   if (include_health_conditions) {
     health_conditions <- wb_table("health_conditions:dy4k", version) |>
+      dplyr::select(-"dataset_version") |>
       dplyr::semi_join(admins, by = "child_id") |>
       tidyr::nest(health_conditions = -"child_id")
     admins <- dplyr::left_join(admins, health_conditions, by = "child_id")
@@ -253,7 +283,8 @@ get_administration_data <- function(language = NULL, form = NULL,
 #'   variable about it: \code{item_id}, \code{item_kind},
 #'   \code{item_definition}, \code{english_gloss}, \code{language},
 #'   \code{form}, \code{form_type}, \code{category}, \code{lexical_category},
-#'   \code{lexical_class}, \code{complexity_category}, \code{uni_lemma}.
+#'   \code{lexical_class}, \code{complexity_category}, \code{uni_lemma},
+#'   \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{
@@ -282,7 +313,8 @@ get_item_data <- function(language = NULL, form = NULL, version = "current") {
 #' @return A data frame where each row contains the values (\code{value},
 #'   \code{produces}, \code{understands}) of a given item (\code{item_id}) for
 #'   a given administration (\code{data_id}), with additional columns of
-#'   variables about the administration and item, as specified.
+#'   variables about the administration and item, as specified, and
+#'   \code{dataset_version}.
 #'
 #' @examples
 #' \dontrun{
@@ -324,7 +356,8 @@ get_instrument_data <- function(language, form, items = NULL,
   }
   if (is.data.frame(item_info)) {
     item_join <- item_info |>
-      dplyr::filter(.data$language == !!language, .data$form == !!form)
+      dplyr::filter(.data$language == !!language, .data$form == !!form) |>
+      dplyr::select(-dplyr::any_of("dataset_version"))
     if (!is.null(items)) {
       item_join <- dplyr::filter(item_join, .data$item_id %in% !!items)
     }
@@ -339,7 +372,8 @@ get_instrument_data <- function(language, form, items = NULL,
   if (is.data.frame(administration_info)) {
     admin_join <- administration_info |>
       dplyr::filter(.data$language == !!language, .data$form == !!form) |>
-      dplyr::select(-"language", -"form", -"form_type")
+      dplyr::select(-"language", -"form", -"form_type",
+                   -dplyr::any_of("dataset_version"))
     instrument_data <- dplyr::right_join(instrument_data, admin_join,
                                          by = "data_id")
   }

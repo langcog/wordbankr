@@ -27,7 +27,7 @@ Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame where each row is a particular dataset and its
-  characteristics.
+  characteristics, including which \code{dataset_version} it came from.
 }
 \description{
 Get the Wordbank data sources

@@ -15,7 +15,7 @@ Defaults to \code{"current"}, the most recent release.}
 A data frame where each row is a CDI instrument and each column is
   a variable about the instrument (\code{instrument_id}, \code{language},
   \code{form}, \code{form_type}, \code{age_min}, \code{age_max},
-  \code{has_grammar}, \code{unilemma_coverage}).
+  \code{has_grammar}, \code{unilemma_coverage}, \code{dataset_version}).
 }
 \description{
 Get the Wordbank instruments

@@ -12,7 +12,8 @@ to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
 Defaults to \code{"current"}, the most recent release.}
 }
 \value{
-A data frame with the column \code{uni_lemma}.
+A data frame with the columns \code{uni_lemma} and
+  \code{dataset_version}.
 }
 \description{
 Get the uni_lemmas available in Wordbank
