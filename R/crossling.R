@@ -10,7 +10,7 @@
 #' @export
 get_crossling_items <- function(db_args = NULL) {
   check_db_args(db_args)
-  wb_table("items") |>
+  wb_table("items:1mzm") |>
     dplyr::filter(!is.na(.data$uni_lemma)) |>
     dplyr::distinct(.data$uni_lemma) |>
     dplyr::arrange(.data$uni_lemma)

@@ -115,7 +115,7 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #' @export
 get_instruments <- function(db_args = NULL) {
   check_db_args(db_args)
-  instruments <- wb_table("instruments")
+  instruments <- wb_table("instruments:7qxp")
   if (is.null(instruments)) return(invisible(NULL))
   dplyr::arrange(instruments, .data$instrument_id)
 }
@@ -140,7 +140,7 @@ get_instruments <- function(db_args = NULL) {
 get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
                          db_args = NULL) {
   check_db_args(db_args)
-  datasets <- wb_table("datasets")
+  datasets <- wb_table("datasets:newe")
   if (is.null(datasets)) return(invisible(NULL))
   datasets <- datasets |>
     filter_language_form(language, form) |>
@@ -209,7 +209,7 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     db_args = NULL) {
   check_db_args(db_args)
 
-  admins <- wb_table("administrations")
+  admins <- wb_table("administrations:xb60")
   if (is.null(admins)) return(invisible(NULL))
   admins <- filter_language_form(admins, language, form)
 
@@ -232,14 +232,14 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (include_demographic_info) admins <- factor_demographics(admins)
 
   if (include_language_exposure) {
-    language_exposures <- wb_table("language_exposures") |>
+    language_exposures <- wb_table("language_exposures:wpv7") |>
       dplyr::semi_join(admins, by = "data_id") |>
       tidyr::nest(language_exposures = -"data_id")
     admins <- dplyr::left_join(admins, language_exposures, by = "data_id")
   }
 
   if (include_health_conditions) {
-    health_conditions <- wb_table("health_conditions") |>
+    health_conditions <- wb_table("health_conditions:dy4k") |>
       dplyr::semi_join(admins, by = "child_id") |>
       tidyr::nest(health_conditions = -"child_id")
     admins <- dplyr::left_join(admins, health_conditions, by = "child_id")
@@ -267,7 +267,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 #' @export
 get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
   check_db_args(db_args)
-  items <- wb_table("items")
+  items <- wb_table("items:1mzm")
   if (is.null(items)) return(invisible(NULL))
   filter_language_form(items, language, form)
 }

@@ -24,7 +24,7 @@
 get_aoa <- function(language = NULL, form = NULL, measure = NULL,
                     db_args = NULL) {
   check_db_args(db_args)
-  aoa <- wb_table("aoa")
+  aoa <- wb_table("aoa:rac6")
   if (is.null(aoa)) return(invisible(NULL))
   aoa <- filter_language_form(aoa, language, form)
   if (!is.null(measure)) {
@@ -54,7 +54,7 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #' @export
 get_embeddings <- function(language = NULL, db_args = NULL) {
   check_db_args(db_args)
-  emb <- wb_table("item_embeddings")
+  emb <- wb_table("item_embeddings:kww6")
   if (is.null(emb)) return(invisible(NULL))
   if (!is.null(language)) {
     emb <- dplyr::filter(emb, .data$language %in% !!language)
