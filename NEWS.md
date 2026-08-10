@@ -9,6 +9,15 @@
   of their output; when `version = "current"` (the default), this is
   resolved to the actual current version tag (e.g. `"v1.5"`) rather than
   the literal string `"current"`.
+* Breaking (with dataset v2.0+): in `get_administration_data()`,
+  `date_of_test` is now a `Date` (previously a string), and the nested
+  `language_exposures` column `exposure_proportion` is renamed
+  `exposure_percentage` (its values were always percentages, 0-100). ASL
+  CDITwo item ids are normalized from `"Item_N"` to `"item_N"`.
+* The Redivis dataset (v2.0+) uses a normalized schema — child-level
+  variables live in the `children` table and instrument-level variables in
+  `instruments` — but `get_administration_data()` joins these back together,
+  so its flat output shape is unchanged.
 
 # wordbankr 2.0.0
 

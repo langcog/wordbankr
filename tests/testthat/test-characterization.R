@@ -46,8 +46,11 @@ test_that("get_administration_data matches legacy output", {
 
 test_that("get_administration_data full pull has legacy shape", {
   skip_if_no_redivis()
+  # comprehension: 800 -> 685 distinct values after the WS mirroring fix
+  # (langcog/wordbank#333, dataset v1.5) NA'd mirrored WS comprehension
   expect_matches_shape(get_administration_data(version = TEST_VERSION),
-                       "admins_all_shape")
+                       "admins_all_shape",
+                       n_distinct_overrides = c(comprehension = 685L))
 })
 
 test_that("get_item_data matches legacy output", {
@@ -59,8 +62,12 @@ test_that("get_item_data matches legacy output", {
   expect_matches_fixture(
     get_item_data(language = "Danish", form = "WS", version = TEST_VERSION),
     "items_danish_ws")
+  # item_id: 1886 -> 1353 distinct after ASL CDITwo "Item_N" ids were
+  # normalized to "item_N" (dataset v2.0), folding its 533 ids into the
+  # shared item_N space
   expect_matches_shape(get_item_data(version = TEST_VERSION),
-                       "items_all_shape")
+                       "items_all_shape",
+                       n_distinct_overrides = c(item_id = 1353L))
 })
 
 test_that("get_instrument_data matches legacy output", {

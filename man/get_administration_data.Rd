@@ -41,7 +41,7 @@ the child's health condition information (a nested dataframe under
 \item{include_language_exposure}{A logical indicating whether to include
 the child's language exposure information at time of administration (a
 nested dataframe under \code{language_exposures} with the columns
-\code{language}, \code{exposure_proportion},
+\code{language}, \code{exposure_percentage},
 \code{age_of_first_exposure}).}
 
 \item{include_study_internal_id}{A logical indicating whether to include

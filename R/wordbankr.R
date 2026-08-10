@@ -210,7 +210,7 @@ factor_demographics <- function(admins) {
 #' @param include_language_exposure A logical indicating whether to include
 #'   the child's language exposure information at time of administration (a
 #'   nested dataframe under \code{language_exposures} with the columns
-#'   \code{language}, \code{exposure_proportion},
+#'   \code{language}, \code{exposure_percentage},
 #'   \code{age_of_first_exposure}).
 #' @param include_study_internal_id A logical indicating whether to include
 #'   the child's ID in the original study data.
@@ -250,6 +250,39 @@ get_administration_data <- function(language = NULL, form = NULL,
     keep <- c(keep, "birth_weight", "born_early_or_late", "gestational_age",
               "zygosity")
   }
+  # dataset v2.0+ normalized schema: instrument-level (form_type) and
+  # child-level variables live in the instruments/children tables; join them
+  # back to present the flat administration shape (older dataset versions
+  # already carry these columns, so only join what is missing)
+  if (!"form_type" %in% names(admins)) {
+    instruments <- wb_table("instruments:7qxp", version)
+    if (is.null(instruments)) return(invisible(NULL))
+    admins <- dplyr::left_join(
+      admins,
+      dplyr::select(instruments, "language", "form", "form_type"),
+      by = c("language", "form"))
+  }
+  child_cols <- "dataset_origin_name"
+  if (include_study_internal_id) child_cols <- c(child_cols,
+                                                 "study_internal_id")
+  if (include_demographic_info) {
+    child_cols <- c(child_cols, "birth_order", "caregiver_education",
+                    "ethnicity", "race", "sex")
+  }
+  if (include_birth_info) {
+    child_cols <- c(child_cols, "birth_weight", "born_early_or_late",
+                    "gestational_age", "zygosity")
+  }
+  child_cols <- setdiff(child_cols, names(admins))
+  if (length(child_cols) > 0) {
+    children <- wb_table("children:1g7y", version)
+    if (is.null(children)) return(invisible(NULL))
+    admins <- dplyr::left_join(
+      admins,
+      dplyr::select(children, "child_id", dplyr::any_of(child_cols)),
+      by = "child_id")
+  }
+
   admins <- dplyr::select(admins, dplyr::any_of(keep))
 
   if (include_demographic_info) admins <- factor_demographics(admins)
