@@ -4,7 +4,7 @@
 \alias{get_aoa}
 \title{Get cached age-of-acquisition estimates}
 \usage{
-get_aoa(language = NULL, form = NULL, measure = NULL, db_args = NULL)
+get_aoa(language = NULL, form = NULL, measure = NULL, version = "current")
 }
 \arguments{
 \item{language}{An optional string specifying which language's estimates to
@@ -16,7 +16,9 @@ retrieve.}
 \item{measure}{An optional string (\code{"produces"} or
 \code{"understands"}) to filter by measure.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame with one row per instrument item and measure:

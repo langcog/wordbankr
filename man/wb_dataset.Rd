@@ -4,14 +4,17 @@
 \alias{wb_dataset}
 \title{The Wordbank dataset on Redivis}
 \usage{
-wb_dataset()
+wb_dataset(version = "current")
+}
+\arguments{
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A redivis dataset reference.
 }
 \description{
 Returns a reference to the Wordbank Redivis dataset
-(\url{https://redivis.com/datapages/datasets/wordbank}). Set
-`options(wordbankr.dataset_version = "v1.2")` to pin a released version;
-the default is the current release.
+(\url{https://redivis.com/datapages/datasets/wordbank}).
 }

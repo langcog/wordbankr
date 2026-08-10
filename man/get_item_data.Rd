@@ -4,7 +4,7 @@
 \alias{get_item_data}
 \title{Get the Wordbank by-item data}
 \usage{
-get_item_data(language = NULL, form = NULL, db_args = NULL)
+get_item_data(language = NULL, form = NULL, version = "current")
 }
 \arguments{
 \item{language}{An optional string specifying which language's items to
@@ -12,7 +12,9 @@ retrieve.}
 
 \item{form}{An optional string specifying which form's items to retrieve.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame where each row is a CDI item and each column is a

@@ -29,27 +29,26 @@ connect_to_wordbank <- function(db_args = NULL) {
 #' @export
 get_wordbank_args <- function() {
   .Deprecated(msg = "wordbankr now reads from Redivis; see wb_dataset().")
-  list(organization = "datapages", dataset = "wordbank",
-       version = getOption("wordbankr.dataset_version", "current"))
+  list(organization = "datapages", dataset = "wordbank", version = "current")
 }
 
 #' The Wordbank dataset on Redivis
 #'
 #' Returns a reference to the Wordbank Redivis dataset
-#' (\url{https://redivis.com/datapages/datasets/wordbank}). Set
-#' `options(wordbankr.dataset_version = "v1.2")` to pin a released version;
-#' the default is the current release.
+#' (\url{https://redivis.com/datapages/datasets/wordbank}).
 #'
+#' @param version A string specifying which version of the Wordbank dataset
+#'   to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+#'   Defaults to \code{"current"}, the most recent release.
 #' @return A redivis dataset reference.
 #' @export
-wb_dataset <- function() {
+wb_dataset <- function(version = "current") {
   if (!requireNamespace("redivis", quietly = TRUE)) {
     stop("wordbankr needs the `redivis` package to access Wordbank data.\n",
          "Install it with:\n",
          '  install.packages("redivis", repos = c("https://langcog.r-universe.dev", "https://cloud.r-project.org"))',
          call. = FALSE)
   }
-  version <- getOption("wordbankr.dataset_version", NULL)
   redivis::redivis$organization("datapages")$dataset("wordbank:627v",
                                                      version = version)
 }
@@ -79,17 +78,17 @@ wb_try <- function(expr, tries = 3) {
 }
 
 # fetch a whole table as a tibble, cached per session + version
-wb_table <- function(name) {
-  key <- paste(getOption("wordbankr.dataset_version", "current"), name)
+wb_table <- function(name, version = "current") {
+  key <- paste(version, name)
   if (is.null(.wb_env[[key]])) {
-    .wb_env[[key]] <- wb_try(wb_dataset()$table(name)$to_tibble())
+    .wb_env[[key]] <- wb_try(wb_dataset(version)$table(name)$to_tibble())
   }
   .wb_env[[key]]
 }
 
 # run a SQL query against the dataset (server-side filtering for big tables)
-wb_query <- function(sql) {
-  wb_try(wb_dataset()$query(sql)$to_tibble())
+wb_query <- function(sql, version = "current") {
+  wb_try(wb_dataset(version)$query(sql)$to_tibble())
 }
 
 quote_sql <- function(x) paste0("'", gsub("'", "''", x), "'")
@@ -102,7 +101,7 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 
 #' Get the Wordbank instruments
 #'
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame where each row is a CDI instrument and each column is
 #'   a variable about the instrument (\code{instrument_id}, \code{language},
 #'   \code{form}, \code{form_type}, \code{age_min}, \code{age_max},
@@ -113,9 +112,8 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #' instruments <- get_instruments()
 #' }
 #' @export
-get_instruments <- function(db_args = NULL) {
-  check_db_args(db_args)
-  instruments <- wb_table("instruments:7qxp")
+get_instruments <- function(version = "current") {
+  instruments <- wb_table("instruments:7qxp", version)
   if (is.null(instruments)) return(invisible(NULL))
   dplyr::arrange(instruments, .data$instrument_id)
 }
@@ -128,7 +126,7 @@ get_instruments <- function(db_args = NULL) {
 #'   retrieve.
 #' @param admin_data A logical indicating whether to include the number of
 #'   administrations in the dataset.
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame where each row is a particular dataset and its
 #'   characteristics.
 #'
@@ -138,9 +136,8 @@ get_instruments <- function(db_args = NULL) {
 #' }
 #' @export
 get_datasets <- function(language = NULL, form = NULL, admin_data = FALSE,
-                         db_args = NULL) {
-  check_db_args(db_args)
-  datasets <- wb_table("datasets:newe")
+                         version = "current") {
+  datasets <- wb_table("datasets:newe", version)
   if (is.null(datasets)) return(invisible(NULL))
   datasets <- datasets |>
     filter_language_form(language, form) |>
@@ -190,7 +187,7 @@ factor_demographics <- function(admins) {
 #'   \code{age_of_first_exposure}).
 #' @param include_study_internal_id A logical indicating whether to include
 #'   the child's ID in the original study data.
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame where each row is a CDI administration and each column
 #'   is a variable about the administration or the corresponding child.
 #'
@@ -206,10 +203,8 @@ get_administration_data <- function(language = NULL, form = NULL,
                                     include_health_conditions = FALSE,
                                     include_language_exposure = FALSE,
                                     include_study_internal_id = FALSE,
-                                    db_args = NULL) {
-  check_db_args(db_args)
-
-  admins <- wb_table("administrations:xb60")
+                                    version = "current") {
+  admins <- wb_table("administrations:xb60", version)
   if (is.null(admins)) return(invisible(NULL))
   admins <- filter_language_form(admins, language, form)
 
@@ -232,14 +227,14 @@ get_administration_data <- function(language = NULL, form = NULL,
   if (include_demographic_info) admins <- factor_demographics(admins)
 
   if (include_language_exposure) {
-    language_exposures <- wb_table("language_exposures:wpv7") |>
+    language_exposures <- wb_table("language_exposures:wpv7", version) |>
       dplyr::semi_join(admins, by = "data_id") |>
       tidyr::nest(language_exposures = -"data_id")
     admins <- dplyr::left_join(admins, language_exposures, by = "data_id")
   }
 
   if (include_health_conditions) {
-    health_conditions <- wb_table("health_conditions:dy4k") |>
+    health_conditions <- wb_table("health_conditions:dy4k", version) |>
       dplyr::semi_join(admins, by = "child_id") |>
       tidyr::nest(health_conditions = -"child_id")
     admins <- dplyr::left_join(admins, health_conditions, by = "child_id")
@@ -253,7 +248,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 #' @param language An optional string specifying which language's items to
 #'   retrieve.
 #' @param form An optional string specifying which form's items to retrieve.
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame where each row is a CDI item and each column is a
 #'   variable about it: \code{item_id}, \code{item_kind},
 #'   \code{item_definition}, \code{english_gloss}, \code{language},
@@ -265,9 +260,8 @@ get_administration_data <- function(language = NULL, form = NULL,
 #' english_ws_items <- get_item_data("English (American)", "WS")
 #' }
 #' @export
-get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
-  check_db_args(db_args)
-  items <- wb_table("items:1mzm")
+get_item_data <- function(language = NULL, form = NULL, version = "current") {
+  items <- wb_table("items:1mzm", version)
   if (is.null(items)) return(invisible(NULL))
   filter_language_form(items, language, form)
 }
@@ -284,7 +278,7 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #' @param item_info Either a logical indicating whether to include item data
 #'   or a data frame of item data (as returned by \code{get_item_data}).
 #' @param ... Additional arguments, ignored (for backward compatibility).
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame where each row contains the values (\code{value},
 #'   \code{produces}, \code{understands}) of a given item (\code{item_id}) for
 #'   a given administration (\code{data_id}), with additional columns of
@@ -299,9 +293,7 @@ get_item_data <- function(language = NULL, form = NULL, db_args = NULL) {
 #' @export
 get_instrument_data <- function(language, form, items = NULL,
                                 administration_info = FALSE,
-                                item_info = FALSE, db_args = NULL, ...) {
-  check_db_args(db_args)
-
+                                item_info = FALSE, version = "current", ...) {
   item_filter <- if (!is.null(items)) {
     sprintf("AND item_id IN (%s)", paste(quote_sql(items), collapse = ", "))
   } else ""
@@ -310,7 +302,7 @@ get_instrument_data <- function(language, form, items = NULL,
     "SELECT data_id, item_id, value, produces, understands
      FROM item_responses
      WHERE language = %s AND form = %s %s",
-    quote_sql(language), quote_sql(form), item_filter))
+    quote_sql(language), quote_sql(form), item_filter), version)
   if (is.null(instrument_data)) return(invisible(NULL))
   instrument_data <- instrument_data |>
     dplyr::mutate(data_id = as.numeric(.data$data_id)) |>
@@ -328,7 +320,7 @@ get_instrument_data <- function(language, form, items = NULL,
   # form, form_type), then administration info right-joins with those
   # columns dropped
   if (isTRUE(item_info)) {
-    item_info <- get_item_data(language, form)
+    item_info <- get_item_data(language, form, version = version)
   }
   if (is.data.frame(item_info)) {
     item_join <- item_info |>
@@ -341,7 +333,8 @@ get_instrument_data <- function(language, form, items = NULL,
   }
 
   if (isTRUE(administration_info)) {
-    administration_info <- get_administration_data(language, form)
+    administration_info <- get_administration_data(language, form,
+                                                    version = version)
   }
   if (is.data.frame(administration_info)) {
     admin_join <- administration_info |>

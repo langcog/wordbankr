@@ -4,13 +4,15 @@
 \alias{get_embeddings}
 \title{Get multilingual item embeddings}
 \usage{
-get_embeddings(language = NULL, db_args = NULL)
+get_embeddings(language = NULL, version = "current")
 }
 \arguments{
 \item{language}{An optional string specifying which language's embeddings
 to retrieve.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame with one row per unique item definition:

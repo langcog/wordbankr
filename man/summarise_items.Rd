@@ -4,12 +4,14 @@
 \alias{summarise_items}
 \title{Get item-by-age summary statistics}
 \usage{
-summarise_items(item_data, db_args = NULL)
+summarise_items(item_data, version = "current")
 }
 \arguments{
 \item{item_data}{A dataframe as returned by \code{get_item_data()}.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A dataframe with a row for each combination of item and age, and

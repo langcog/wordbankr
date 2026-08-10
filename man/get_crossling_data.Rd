@@ -4,12 +4,14 @@
 \alias{get_crossling_data}
 \title{Get item-by-age summary statistics for items across languages}
 \usage{
-get_crossling_data(uni_lemmas, db_args = NULL)
+get_crossling_data(uni_lemmas, version = "current")
 }
 \arguments{
 \item{uni_lemmas}{A character vector of uni_lemmas.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A dataframe with a row for each combination of language, item, and

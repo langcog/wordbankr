@@ -4,10 +4,12 @@
 \alias{get_crossling_items}
 \title{Get the uni_lemmas available in Wordbank}
 \usage{
-get_crossling_items(db_args = NULL)
+get_crossling_items(version = "current")
 }
 \arguments{
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame with the column \code{uni_lemma}.

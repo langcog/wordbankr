@@ -4,7 +4,12 @@
 \alias{get_datasets}
 \title{Get the Wordbank data sources}
 \usage{
-get_datasets(language = NULL, form = NULL, admin_data = FALSE, db_args = NULL)
+get_datasets(
+  language = NULL,
+  form = NULL,
+  admin_data = FALSE,
+  version = "current"
+)
 }
 \arguments{
 \item{language}{An optional string specifying which language's datasets to
@@ -16,7 +21,9 @@ retrieve.}
 \item{admin_data}{A logical indicating whether to include the number of
 administrations in the dataset.}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 }
 \value{
 A data frame where each row is a particular dataset and its

@@ -34,8 +34,7 @@ Suggests:
     ggplot2,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    withr
+    testthat (>= 3.0.0)
 Additional_repositories: https://langcog.r-universe.dev
 VignetteBuilder: knitr
 Config/testthat/edition: 3

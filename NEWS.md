@@ -1,3 +1,11 @@
+# wordbankr (development version)
+
+* All `get_*` functions (and `summarise_items()`, `wb_dataset()`) gain a
+  `version` argument for pinning a data release, replacing the
+  `options(wordbankr.dataset_version = "v1.2")` global option.
+* The `db_args` argument is removed from all `get_*` functions (it was
+  already ignored as of 2.0.0).
+
 # wordbankr 2.0.0
 
 * Data now come from the versioned Wordbank dataset on Redivis

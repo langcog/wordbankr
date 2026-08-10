@@ -64,12 +64,8 @@ expect_matches_shape <- function(actual, fixture_name) {
                label = paste0(fixture_name, " n_distinct"))
 }
 
-# fixtures were generated from the database state released as v1.3 (data identical in v1.4, which adds the aoa/item_embeddings tables);
-# pin so the suite stays green regardless of later data releases; scoped to the
-# test run (guarded since load_all() also sources helpers, but outside of a
-# test run testthat::teardown_env() hasn't been initialized) so it doesn't
-# leak into interactive devtools::load_all() sessions
-if (testthat::is_testing()) {
-  withr::local_options(list(wordbankr.dataset_version = "v1.4"),
-                        .local_envir = testthat::teardown_env())
-}
+# fixtures were generated from the database state released as v1.3 (data
+# identical in v1.4, which adds the aoa/item_embeddings tables); pin so the
+# suite stays green regardless of later data releases -- pass
+# `version = TEST_VERSION` to every get_* call under test
+TEST_VERSION <- "v1.4"

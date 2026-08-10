@@ -10,7 +10,7 @@ get_instrument_data(
   items = NULL,
   administration_info = FALSE,
   item_info = FALSE,
-  db_args = NULL,
+  version = "current",
   ...
 )
 }
@@ -29,7 +29,9 @@ by \code{get_administration_data}).}
 \item{item_info}{Either a logical indicating whether to include item data
 or a data frame of item data (as returned by \code{get_item_data}).}
 
-\item{db_args}{Deprecated, ignored.}
+\item{version}{A string specifying which version of the Wordbank dataset
+to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.
+Defaults to \code{"current"}, the most recent release.}
 
 \item{...}{Additional arguments, ignored (for backward compatibility).}
 }

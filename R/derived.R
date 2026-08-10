@@ -11,7 +11,7 @@
 #'   retrieve.
 #' @param measure An optional string (\code{"produces"} or
 #'   \code{"understands"}) to filter by measure.
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame with one row per instrument item and measure:
 #'   \code{language}, \code{form}, \code{item_id}, \code{item_definition},
 #'   \code{category}, \code{uni_lemma}, \code{measure}, \code{aoa}.
@@ -22,9 +22,8 @@
 #' }
 #' @export
 get_aoa <- function(language = NULL, form = NULL, measure = NULL,
-                    db_args = NULL) {
-  check_db_args(db_args)
-  aoa <- wb_table("aoa:rac6")
+                    version = "current") {
+  aoa <- wb_table("aoa:rac6", version)
   if (is.null(aoa)) return(invisible(NULL))
   aoa <- filter_language_form(aoa, language, form)
   if (!is.null(measure)) {
@@ -42,7 +41,7 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #'
 #' @param language An optional string specifying which language's embeddings
 #'   to retrieve.
-#' @inheritParams check_db_args
+#' @inheritParams wb_dataset
 #' @return A data frame with one row per unique item definition:
 #'   \code{language}, \code{item_definition}, and \code{embedding} (a
 #'   list-column of numeric vectors).
@@ -52,9 +51,8 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #' danish_embeddings <- get_embeddings(language = "Danish")
 #' }
 #' @export
-get_embeddings <- function(language = NULL, db_args = NULL) {
-  check_db_args(db_args)
-  emb <- wb_table("item_embeddings:kww6")
+get_embeddings <- function(language = NULL, version = "current") {
+  emb <- wb_table("item_embeddings:kww6", version)
   if (is.null(emb)) return(invisible(NULL))
   if (!is.null(language)) {
     emb <- dplyr::filter(emb, .data$language %in% !!language)
