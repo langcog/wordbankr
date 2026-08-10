@@ -24,7 +24,7 @@ theme_set(theme_minimal())
 knitr::opts_chunk$set(eval = identical(Sys.getenv("NOT_CRAN"), "true"))
 ```
 
-The `wordbankr` package allows you to access data in the [Wordbank database](http://wordbank.stanford.edu/) from `R`. This vignette shows some examples of how to use the data loading functions and what the resulting data look like.
+The `wordbankr` package allows you to access data in the [Wordbank database](https://wordbank.stanford.edu/) from `R`. This vignette shows some examples of how to use the data loading functions and what the resulting data look like.
 
 There are three different data views that you can pull out of Wordbank: by-administration, by-item, and administration-by-item. Additionally, you can get metadata about the datasets and instruments underlying the data. Advanced functionality let's you get estimates of words' age of acquisition and word mappings across languages.
 

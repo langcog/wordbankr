@@ -50,7 +50,7 @@ wb_dataset <- function() {
          call. = FALSE)
   }
   version <- getOption("wordbankr.dataset_version", NULL)
-  redivis::redivis$organization("datapages")$dataset("wordbank",
+  redivis::redivis$organization("datapages")$dataset("wordbank:627v",
                                                      version = version)
 }
 

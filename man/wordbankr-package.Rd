@@ -6,7 +6,7 @@
 \alias{wordbankr-package}
 \title{wordbankr: Accessing the Wordbank Database}
 \description{
-Connecting to Wordbank, an open repository for developmental vocabulary data. For more information on the underlying data, see \url{http://wordbank.stanford.edu}.
+Connecting to Wordbank, an open repository for developmental vocabulary data. For more information on the underlying data, see \url{https://wordbank.stanford.edu}.
 }
 \seealso{
 Useful links:
@@ -19,6 +19,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Mika Braginsky \email{mika.br@gmail.com}
+
+Authors:
+\itemize{
+  \item Mika Braginsky \email{mika.br@gmail.com}
+}
 
 Other contributors:
 \itemize{
