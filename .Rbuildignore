@@ -2,7 +2,6 @@
 ^renv\.lock$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-cran-comments.md
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -12,6 +11,7 @@ cran-comments.md
 ^data-raw$
 ^fixtures\.log$
 ^R/wordbankr\.R\.v1\.bak$
-^renv$
-^renv\.lock$
-.claude
+^\.claude$
+^\.git$
+^accessors\.log$
+^testrun.*\.log$
