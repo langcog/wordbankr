@@ -16,5 +16,5 @@ A redivis dataset reference.
 }
 \description{
 Returns a reference to the Wordbank Redivis dataset
-(\url{https://redivis.com/datapages/datasets/wordbank}).
+(\url{https://stanford.redivis.com/datasets/627v-9ewzpdvz0}).
 }

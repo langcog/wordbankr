@@ -18,7 +18,5 @@ export(wb_dataset)
 importFrom(dplyr,"%>%")
 importFrom(glue,glue)
 importFrom(quantregGrowth,ps)
-importFrom(rlang,
-  ":=",
-  .data
-)
+importFrom(rlang,":=")
+importFrom(rlang,.data)

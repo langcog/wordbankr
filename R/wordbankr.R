@@ -35,7 +35,7 @@ get_wordbank_args <- function() {
 #' The Wordbank dataset on Redivis
 #'
 #' Returns a reference to the Wordbank Redivis dataset
-#' (\url{https://redivis.com/datapages/datasets/wordbank}).
+#' (\url{https://stanford.redivis.com/datasets/627v-9ewzpdvz0}).
 #'
 #' @param version A string specifying which version of the Wordbank dataset
 #'   to use, e.g. \code{"v1.2"} to pin a released version for reproducibility.

@@ -20,11 +20,6 @@ Useful links:
 \author{
 \strong{Maintainer}: Mika Braginsky \email{mika.br@gmail.com}
 
-Authors:
-\itemize{
-  \item Mika Braginsky \email{mika.br@gmail.com}
-}
-
 Other contributors:
 \itemize{
   \item Daniel Yurovsky \email{yurovsky@stanford.edu} [contributor]

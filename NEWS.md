@@ -22,7 +22,7 @@
 # wordbankr 2.0.0
 
 * Data now come from the versioned Wordbank dataset on Redivis
-  (https://redivis.com/datapages/datasets/wordbank) instead of the MySQL
+  (https://stanford.redivis.com/datasets/627v-9ewzpdvz0) instead of the MySQL
   database. All `get_*` functions keep their signatures and return the same
   data.
 * New: pin analyses to a data release with
