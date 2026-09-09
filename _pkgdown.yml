@@ -1,4 +1,4 @@
-url: http://langcog.github.io/wordbankr/
+url: https://langcog.github.io/wordbankr/
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -14,9 +14,14 @@ reference:
   - contents:
     - "get_instruments"
     - "get_datasets"
+    - "wb_dataset"
   - title: Age of acquisition
   - contents:
     - "fit_aoa"
+    - "get_aoa"
+  - title: Semantic embeddings
+  - contents:
+    - "get_embeddings"
   - title: Cross-linguistic data
   - contents:
     - "get_crossling_items"
