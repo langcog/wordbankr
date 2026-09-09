@@ -1,6 +1,6 @@
 # wordbankr 2.0.0
 
-This is a resubmission of a package that was archived on 2024-01-29
+This is a resubmission of a package that was archived on 2024-04-04
 ("for repeated policy violation ... On Internet access"). Version 2.0.0 is
 a major rewrite that directly addresses the reason for archival.
 
