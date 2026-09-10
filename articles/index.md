@@ -3,4 +3,4 @@
 ### All vignettes
 
 - [Accessing the Wordbank
-  database](http://langcog.github.io/wordbankr/articles/wordbankr.md):
+  database](https://langcog.github.io/wordbankr/articles/wordbankr.md):

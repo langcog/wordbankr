@@ -14,7 +14,7 @@ get_administration_data(
   include_health_conditions = FALSE,
   include_language_exposure = FALSE,
   include_study_internal_id = FALSE,
-  db_args = NULL
+  version = "current"
 )
 ```
 
@@ -33,13 +33,13 @@ get_administration_data(
 - filter_age:
 
   A logical indicating whether to filter the administrations to ones in
-  the valid age range for their instrument.
+  the instrument's age range.
 
 - include_demographic_info:
 
   A logical indicating whether to include the child's demographic
-  information (`birth_order`, `ethnicity`, `race`, `sex`,
-  `caregiver_education`).
+  information (`birth_order`, `caregiver_education`, `ethnicity`,
+  `race`, `sex`).
 
 - include_birth_info:
 
@@ -57,32 +57,29 @@ get_administration_data(
   A logical indicating whether to include the child's language exposure
   information at time of administration (a nested dataframe under
   `language_exposures` with the columns `language`,
-  `exposure_proportion`, `age_of_first_exposure`).
+  `exposure_percentage`, `age_of_first_exposure`).
 
 - include_study_internal_id:
 
   A logical indicating whether to include the child's ID in the original
   study data.
 
-- db_args:
+- version:
 
-  List with arguments to connect to wordbank mysql database (host,
-  dbname, user, and password).
+  A string specifying which version of the Wordbank dataset to use, e.g.
+  `"v1.2"` to pin a released version for reproducibility. Defaults to
+  `"current"`, the most recent release.
 
 ## Value
 
 A data frame where each row is a CDI administration and each column is a
-variable about the administration (`data_id`, `date_of_test`, `age`,
-`comprehension`, `production`, `is_norming`), the dataset it's from
-(`dataset_name`, `dataset_origin_name`, `language`, `form`,
-`form_type`), and information about the child as described in the
-parameter specification.
+variable about the administration or the corresponding child, including
+which `dataset_version` it came from.
 
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 english_ws_admins <- get_administration_data("English (American)", "WS")
-all_admins <- get_administration_data()
-# }
+} # }
 ```

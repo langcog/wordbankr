@@ -5,7 +5,12 @@ Get the Wordbank data sources
 ## Usage
 
 ``` r
-get_datasets(language = NULL, form = NULL, admin_data = FALSE, db_args = NULL)
+get_datasets(
+  language = NULL,
+  form = NULL,
+  admin_data = FALSE,
+  version = "current"
+)
 ```
 
 ## Arguments
@@ -20,31 +25,24 @@ get_datasets(language = NULL, form = NULL, admin_data = FALSE, db_args = NULL)
 
 - admin_data:
 
-  A logical indicating whether to include summary-level statistics on
-  the administrations within a dataset.
+  A logical indicating whether to include the number of administrations
+  in the dataset.
 
-- db_args:
+- version:
 
-  List with arguments to connect to wordbank mysql database (host,
-  dbname, user, and password).
+  A string specifying which version of the Wordbank dataset to use, e.g.
+  `"v1.2"` to pin a released version for reproducibility. Defaults to
+  `"current"`, the most recent release.
 
 ## Value
 
 A data frame where each row is a particular dataset and its
-characteristics: `dataset_id`, `dataset_name`, `dataset_origin_name`
-(unique identifier for groups of datasets that may share children),
-`language`, `form`, `form_type`, `contributor` (contributor name and
-affiliated institution), `citation`, `license`, `longitudinal` (whether
-dataset includes longitudinal participants). Also includes summary
-statistics on a dataset if the `admin_data` flag is `TRUE`: number of
-administrations (`n_admins`).
+characteristics, including which `dataset_version` it came from.
 
 ## Examples
 
 ``` r
-# \donttest{
-english_ws_datasets <- get_datasets(language = "English (American)",
-                                    form = "WS",
-                                    admin_data = TRUE)
-# }
+if (FALSE) { # \dontrun{
+english_ws_datasets <- get_datasets("English (American)", "WS")
+} # }
 ```

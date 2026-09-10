@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Accessing the Wordbank database • wordbankr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accessing the Wordbank database">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wordbankr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@
                         <h4 data-toc-skip class="author">Mika
 Braginsky</h4>
             
-            <h4 data-toc-skip class="date">2026-04-03</h4>
+            <h4 data-toc-skip class="date">2026-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/langcog/wordbankr/blob/main/vignettes/wordbankr.Rmd" class="external-link"><code>vignettes/wordbankr.Rmd</code></a></small>
       <div class="d-none name"><code>wordbankr.Rmd</code></div>
@@ -64,7 +64,7 @@ Braginsky</h4>
     
     
 <p>The <code>wordbankr</code> package allows you to access data in the
-<a href="http://wordbank.stanford.edu/" class="external-link">Wordbank database</a> from
+<a href="https://wordbank.stanford.edu/" class="external-link">Wordbank database</a> from
 <code>R</code>. This vignette shows some examples of how to use the data
 loading functions and what the resulting data look like.</p>
 <p>There are three different data views that you can pull out of
@@ -80,27 +80,27 @@ by-administration information, either for a specific language and/or
 form or for all instruments.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>, form <span class="op">=</span> <span class="st">"WS"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9,093 × 12</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9,093 × 13</span></span></span>
 <span><span class="co">##    data_id date_of_test   age comprehension production is_norming dataset_name</span></span>
-<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">396</span>587 2010-06-27      25           658        658 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">396</span>588 2010-07-08      26           552        552 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">396</span>589 2010-10-14      24           504        504 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">396</span>590 2010-08-18      26           272        272 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">396</span>591 2010-08-17      24           350        350 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">396</span>592 2010-05-25      25           580        580 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">396</span>593 2010-03-05      22           351        351 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">396</span>594 2010-03-03      24           310        310 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">396</span>595 2010-05-25      25           257        257 FALSE      Marchman    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">396</span>596 2010-07-21      26           188        188 FALSE      Marchman    </span></span>
+<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">402</span>479 <span style="color: #BB0000;">NA</span>              24           166         99 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">402</span>480 <span style="color: #BB0000;">NA</span>              26           310        141 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">402</span>481 <span style="color: #BB0000;">NA</span>              24           653        357 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">402</span>482 <span style="color: #BB0000;">NA</span>              24           680         72 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">402</span>487 <span style="color: #BB0000;">NA</span>              29           680        313 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">402</span>488 <span style="color: #BB0000;">NA</span>              26           441        381 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">402</span>504 <span style="color: #BB0000;">NA</span>              30           334        273 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">402</span>506 <span style="color: #BB0000;">NA</span>              28           678        663 FALSE      Armon-Lotem </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">398</span>966 1989-09-14      20            <span style="color: #BB0000;">NA</span>        252 FALSE      Marchman    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">400</span>314 2000-03-02      27            <span style="color: #BB0000;">NA</span>        548 FALSE      Marchman    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 9,083 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: dataset_origin_name &lt;chr&gt;, language &lt;chr&gt;, form &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   form_type &lt;chr&gt;, child_id &lt;int&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 6 more variables: dataset_origin_name &lt;chr&gt;, language &lt;chr&gt;, form &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   form_type &lt;chr&gt;, child_id &lt;int&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 100,527 × 12</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 100,527 × 13</span></span></span>
 <span><span class="co">##    data_id date_of_test   age comprehension production is_norming dataset_name</span></span>
-<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">277</span>770 <span style="color: #BB0000;">NA</span>              10            31         15 FALSE      Alroqi      </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">277</span>771 <span style="color: #BB0000;">NA</span>              13            28         14 FALSE      Alroqi      </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">277</span>772 <span style="color: #BB0000;">NA</span>              10            12          1 FALSE      Alroqi      </span></span>
@@ -112,8 +112,8 @@ form or for all instruments.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">277</span>778 <span style="color: #BB0000;">NA</span>              10            42          2 FALSE      Alroqi      </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">277</span>780 <span style="color: #BB0000;">NA</span>              11            19          3 FALSE      Alroqi      </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 100,517 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: dataset_origin_name &lt;chr&gt;, language &lt;chr&gt;, form &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   form_type &lt;chr&gt;, child_id &lt;int&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 6 more variables: dataset_origin_name &lt;chr&gt;, language &lt;chr&gt;, form &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   form_type &lt;chr&gt;, child_id &lt;int&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="items">Items<a class="anchor" aria-label="anchor" href="#items"></a>
@@ -122,7 +122,7 @@ form or for all instruments.</p>
 either for a specific language and/or form or for all instruments.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_item_data.html">get_item_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"Italian"</span>, form <span class="op">=</span> <span class="st">"WG"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 505 × 11</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 505 × 12</span></span></span>
 <span><span class="co">##    item_id language form  form_type item_kind   category item_definition        </span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> item_1  Italian  WG    WG        first_signs <span style="color: #BB0000;">NA</span>       Risponde quando è chia…</span></span>
@@ -136,11 +136,11 @@ either for a specific language and/or form or for all instruments.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> item_9  Italian  WG    WG        phrases     <span style="color: #BB0000;">NA</span>       Batti le manine        </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> item_10 Italian  WG    WG        phrases     <span style="color: #BB0000;">NA</span>       Cambiamo il pannolino  </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 495 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: english_gloss &lt;chr&gt;, uni_lemma &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: english_gloss &lt;chr&gt;, uni_lemma &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_item_data.html">get_item_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 46,746 × 11</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 46,746 × 12</span></span></span>
 <span><span class="co">##    item_id language           form  form_type item_kind category item_definition</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> item_1  British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       be careful     </span></span>
@@ -154,8 +154,8 @@ either for a specific language and/or form or for all instruments.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> item_9  British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       give me hug    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> item_10 British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       give me kiss   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 46,736 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: english_gloss &lt;chr&gt;, uni_lemma &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: english_gloss &lt;chr&gt;, uni_lemma &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="administrations-x-items">Administrations x Items<a class="anchor" aria-label="anchor" href="#administrations-x-items"></a>
@@ -173,21 +173,21 @@ language and form, along with a list of items you want to extract (by
 <span>  form <span class="op">=</span> <span class="st">"WS"</span>,</span>
 <span>  items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_26"</span>, <span class="st">"item_46"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 20,296 × 5</span></span></span>
-<span><span class="co">##    data_id item_id value    produces understands</span></span>
-<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">396</span>587 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">396</span>588 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">396</span>589 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">396</span>590 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">396</span>591 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">396</span>592 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">396</span>593 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">396</span>594 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">396</span>595 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">396</span>596 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>         </span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 20,296 × 6</span></span></span>
+<span><span class="co">##    data_id item_id value    produces understands dataset_version</span></span>
+<span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">396</span>587 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">396</span>587 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">396</span>588 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">396</span>588 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">396</span>589 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">396</span>589 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">396</span>590 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">396</span>590 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">396</span>591 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">396</span>591 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v2.0           </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 20,286 more rows</span></span></span></code></pre>
-<p>By default <code><a href="../reference/get_instrument_table.html">get_instrument_table()</a></code> returns a data frame
+<p>By default <code>get_instrument_table()</code> returns a data frame
 with columns of the administration’s <code>data_id</code>, the item’s
 <code>num_item_id</code> (numerical <code>item_id</code>), and the
 corresponding value. To include administration information, you can set
@@ -207,17 +207,15 @@ words on English Words &amp; Sentences over age. First we get the items
 we want:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_item_data.html">get_item_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>, form <span class="op">=</span> <span class="st">"WS"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">items</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">animals</span> <span class="op">&lt;-</span> <span class="va">items</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"animals"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="va">animals</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">items</span><span class="op">)</span><span class="op">)</span> <span class="va">items</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"animals"</span><span class="op">)</span></span></code></pre></div>
 <p>Then we get the instrument data for those items:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">animals</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">animal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_instrument_data.html">get_instrument_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>,</span>
-<span>                                     form <span class="op">=</span> <span class="st">"WS"</span>,</span>
-<span>                                     items <span class="op">=</span> <span class="va">animals</span><span class="op">$</span><span class="va">item_id</span>,</span>
-<span>                                     administration_info <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                     item_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">animal_data</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">animals</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/get_instrument_data.html">get_instrument_data</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"English (American)"</span>,</span>
+<span>                      form <span class="op">=</span> <span class="st">"WS"</span>,</span>
+<span>                      items <span class="op">=</span> <span class="va">animals</span><span class="op">$</span><span class="va">item_id</span>,</span>
+<span>                      administration_info <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                      item_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Finally, we calculate how many animals words each child produces and
 the median number of animals of each age bin:</p>
@@ -245,7 +243,7 @@ the median number of animals of each age bin:</p>
 the CDI instruments in Wordbank.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_instruments.html">get_instruments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 89 × 8</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 89 × 9</span></span></span>
 <span><span class="co">##    instrument_id language            form  form_type age_min age_max has_grammar</span></span>
 <span><span class="co">##            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span>             1 British Sign Langu… WG    WG              8      36           0</span></span>
@@ -259,7 +257,7 @@ the CDI instruments in Wordbank.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>             9 French (Quebecois)  WG    WG              8      16           0</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>            10 French (Quebecois)  WS    WS             16      30           1</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 79 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: unilemma_coverage &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: unilemma_coverage &lt;dbl&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a>
@@ -271,7 +269,7 @@ all instruments. If the <code>admin_data</code> argument is set to
 administrations in the database from that dataset.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_datasets.html">get_datasets</a></span><span class="op">(</span>form <span class="op">=</span> <span class="st">"WG"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 44 × 15</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 44 × 16</span></span></span>
 <span><span class="co">##    dataset_id dataset_name  dataset_origin_name     contributor citation license</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span>          5 Marchman      Marchman_Norming_Engli… Larry Fens… <span style="color: #949494;">"</span>Fenson… CC-BY  </span></span>
@@ -285,12 +283,12 @@ administrations in the database from that dataset.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         21 CLEX          CLEX__Turkish_WG        Aylin Künt… <span style="color: #949494;">"</span>Acarla… CC-BY  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         23 Shalev        Shalev__Hebrew_WG       Hila Gendl… <span style="color: #949494;">"</span>Gendle… CC-BY  </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 34 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 9 more variables: longitudinal &lt;lgl&gt;, source &lt;chr&gt;, date_format &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 10 more variables: longitudinal &lt;lgl&gt;, source &lt;chr&gt;, date_format &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   file_location &lt;chr&gt;, norming &lt;chr&gt;, splitcol &lt;chr&gt;, language &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   form &lt;chr&gt;, form_type &lt;chr&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   form &lt;chr&gt;, form_type &lt;chr&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_datasets.html">get_datasets</a></span><span class="op">(</span>language <span class="op">=</span> <span class="st">"Spanish (Mexican)"</span>, admin_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 7 × 16</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 7 × 17</span></span></span>
 <span><span class="co">##   dataset_id dataset_name dataset_origin_name       contributor citation license</span></span>
 <span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          8 Marchman     Marchman Dallas Bilingual Donna Jack… Marchma… CC-BY  </span></span>
@@ -300,9 +298,9 @@ administrations in the database from that dataset.</p>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span>         76 Marchman     Marchman_Norming_Spanish… Donna Jack… Jackson… CC-BY  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">6</span>         87 Hoff         Hoff_English_Mexican_Bil… Erika Hoff… Hoff, E… CC-BY  </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">7</span>        135 Hoff         Hoff_English_Mexican_Bil… Erika Hoff… Hoff, E… CC-BY  </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 10 more variables: longitudinal &lt;lgl&gt;, source &lt;chr&gt;, date_format &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 11 more variables: longitudinal &lt;lgl&gt;, source &lt;chr&gt;, date_format &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   file_location &lt;chr&gt;, norming &lt;chr&gt;, splitcol &lt;chr&gt;, language &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   form &lt;chr&gt;, form_type &lt;chr&gt;, n_admins &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   form &lt;chr&gt;, form_type &lt;chr&gt;, n_admins &lt;int&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -320,24 +318,10 @@ understands/produces (<code>measure</code>) each word, smoothing the
 proportion using <code>method</code>, and taking the age at which the
 smoothed value is greater than <code>proportion</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_aoa.html">fit_aoa</a></span><span class="op">(</span><span class="va">animal_data</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 43 × 8</span></span></span>
-<span><span class="co">##      aoa item_id item_kind item_definition category lexical_category uni_lemma</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>    26 item_13 word      alligator       animals  nouns            alligator</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>    25 item_14 word      animal          animals  nouns            animal   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>    26 item_15 word      ant             animals  nouns            ant      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>    20 item_16 word      bear            animals  nouns            bear     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>    22 item_17 word      bee             animals  nouns            bee      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>    18 item_18 word      bird            animals  nouns            bird     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>    23 item_19 word      bug             animals  nouns            bug      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>    22 item_20 word      bunny           animals  nouns            bunny    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>    24 item_21 word      butterfly       animals  nouns            butterfly</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>    18 item_22 word      cat             animals  nouns            cat      </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 33 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: complexity_category &lt;chr&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_aoa.html">fit_aoa</a></span><span class="op">(</span><span class="va">animal_data</span>, method <span class="op">=</span> <span class="st">"glmrob"</span>, proportion <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">animal_data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/fit_aoa.html">fit_aoa</a></span><span class="op">(</span><span class="va">animal_data</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit_aoa.html">fit_aoa</a></span><span class="op">(</span><span class="va">animal_data</span>, method <span class="op">=</span> <span class="st">"glmrob"</span>, proportion <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 43 × 8</span></span></span>
 <span><span class="co">##      aoa item_id item_kind item_definition category lexical_category uni_lemma</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
@@ -362,22 +346,22 @@ lemma”), which is intended to be an approximate semantic mapping between
 words across the languages in Wordbank. The function
 <code><a href="../reference/get_crossling_items.html">get_crossling_items()</a></code> simply gives all the available
 <code>uni_lemma</code> values.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_crossling_items.html">get_crossling_items</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2,570 × 2</span></span></span>
-<span><span class="co">##       id uni_lemma                </span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>739 (hair)brush              </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>552 (play)pen                </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>494 (sheep)                  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>783 (to be in) pain          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>777 (to be) hungry           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>775 (to be) thirsty          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>769 (to have) breakfast      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>272 [possessive]             </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>593 [to splash in the water?]</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>951 1PL                      </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 2,560 more rows</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2,125 × 2</span></span></span>
+<span><span class="co">##    uni_lemma dataset_version</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> 1PL       v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 1PL.POSS  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 1PL.REFL  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 1SG       v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 1SG.POSS  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 1SG.REFL  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 2PL       v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 2PL.POSS  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 2PL.REFL  v2.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> 2SG       v2.0           </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 2,115 more rows</span></span></span></code></pre>
 <p>The function <code><a href="../reference/get_crossling_data.html">get_crossling_data()</a></code> takes a vector of
 <code>uni_lemmas</code> and returns a data frame of summary statistics
 for each item mapped to that uni_lemma in any language (on
@@ -386,7 +370,7 @@ columns indicate the number of children (<code>n_children</code>), means
 (<code>comprehension</code>, <code>production</code>), standard
 deviations (<code>comprehension_sd</code>, <code>production_sd</code>),
 and item-level fields.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_crossling_data.html">get_crossling_data</a></span><span class="op">(</span>uni_lemmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hat"</span>, <span class="st">"nose"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">language</span>, <span class="va">uni_lemma</span>, <span class="va">item_definition</span>, <span class="va">age</span>, <span class="va">n_children</span>, <span class="va">comprehension</span>,</span>
 <span>         <span class="va">production</span>, <span class="va">comprehension_sd</span>, <span class="va">production_sd</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
@@ -403,7 +387,7 @@ and item-level fields.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

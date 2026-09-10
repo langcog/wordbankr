@@ -5,24 +5,25 @@ Get the uni_lemmas available in Wordbank
 ## Usage
 
 ``` r
-get_crossling_items(db_args = NULL)
+get_crossling_items(version = "current")
 ```
 
 ## Arguments
 
-- db_args:
+- version:
 
-  List with arguments to connect to wordbank mysql database (host,
-  dbname, user, and password).
+  A string specifying which version of the Wordbank dataset to use, e.g.
+  `"v1.2"` to pin a released version for reproducibility. Defaults to
+  `"current"`, the most recent release.
 
 ## Value
 
-A data frame with the column `uni_lemma`.
+A data frame with the columns `uni_lemma` and `dataset_version`.
 
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 uni_lemmas <- get_crossling_items()
-# }
+} # }
 ```

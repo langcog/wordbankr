@@ -1,57 +1,56 @@
 # Changelog
 
-## wordbankr (development version)
+## wordbankr 2.0.0
 
-## wordbankr 1.0.3
+- [`get_crossling_items()`](https://langcog.github.io/wordbankr/reference/get_crossling_items.md)
+  now fails gracefully (message + `NULL`) when the database is
+  unreachable, like every other data-access function.
+- All `get_*` functions (and
+  [`summarise_items()`](https://langcog.github.io/wordbankr/reference/summarise_items.md),
+  [`wb_dataset()`](https://langcog.github.io/wordbankr/reference/wb_dataset.md))
+  gain a `version` argument for pinning a data release, replacing the
+  `options(wordbankr.dataset_version = "v1.2")` global option.
+- The `db_args` argument is removed from all `get_*` functions (it was
+  already ignored as of 2.0.0).
+- All `get_*` functions now record the data’s `dataset_version` in a
+  column of their output; when `version = "current"` (the default), this
+  is resolved to the actual current version tag (e.g. `"v1.5"`) rather
+  than the literal string `"current"`.
+- Breaking (with dataset v2.0+): in
+  [`get_administration_data()`](https://langcog.github.io/wordbankr/reference/get_administration_data.md),
+  `date_of_test` is now a `Date` (previously a string), and the nested
+  `language_exposures` column `exposure_proportion` is renamed
+  `exposure_percentage` (its values were always percentages, 0-100). ASL
+  CDITwo item ids are normalized from `"Item_N"` to `"item_N"`.
+- The Redivis dataset (v2.0+) uses a normalized schema — child-level
+  variables live in the `children` table and instrument-level variables
+  in `instruments` — but
+  [`get_administration_data()`](https://langcog.github.io/wordbankr/reference/get_administration_data.md)
+  joins these back together, so its flat output shape is unchanged.
 
-CRAN release: 2024-03-01
+## wordbankr 2.0.0
 
-- allow for inclusion of study internal IDs
-- correctly handle new database values
-- minor bug fixes
-
-## wordbankr 1.0.2
-
-CRAN release: 2023-11-09
-
-- more graceful failure for connection issues
-
-## wordbankr 1.0.1
-
-CRAN release: 2023-10-13
-
-- graceful failure for connection issues
-
-## wordbankr 1.0.0
-
-CRAN release: 2022-09-09
-
-- updates for new structure of the Wordbank database, including
-  functionality for data on children’s language exposures and health
-  conditions
-- renaming of fields and arguments for consistency and clarity
-- addition of arguments indicating which sets of child information to
-  include in
-  [`get_administration_data()`](http://langcog.github.io/wordbankr/reference/get_administration_data.md)
-- coding of production/comprehension values in
-  [`get_instrument_data()`](http://langcog.github.io/wordbankr/reference/get_instrument_data.md)
-- graceful failure for connection issues
-- deprecation of quantiles functionality
-
-## wordbankr 0.3.1
-
-CRAN release: 2020-11-13
-
-- new functionality for fitting quantiles of vocabulary sizes
-- compatibility with dplyr 2.0 and tidyr 1.0
-
-## wordbankr 0.3.0
-
-CRAN release: 2018-03-14
-
-- compatibility with tidyeval
-- new functionality for metadata on data sources
-- new functionality for age of acquisition estimates
-- new functionality for cross-linguistic mapping
-- function and argument naming consistency
-- bug fixes and performance improvements
+- Data now come from the versioned Wordbank dataset on Redivis
+  (<https://stanford.redivis.com/datasets/627v-9ewzpdvz0>) instead of
+  the MySQL database. All `get_*` functions keep their signatures and
+  return the same data.
+- New: pin analyses to a data release with
+  `options(wordbankr.dataset_version = "v1.2")` for full
+  reproducibility.
+- `get_administration_data(filter_age = FALSE)` now returns
+  administrations outside the instrument age range flagged by the source
+  data (previously these were only reachable through the age filter’s
+  absence).
+- [`connect_to_wordbank()`](https://langcog.github.io/wordbankr/reference/check_db_args.md),
+  [`get_wordbank_args()`](https://langcog.github.io/wordbankr/reference/check_db_args.md),
+  and the `db_args` argument are deprecated and ignored.
+- [`get_crossling_items()`](https://langcog.github.io/wordbankr/reference/get_crossling_items.md)
+  now returns a single `uni_lemma` column derived from item mappings;
+  the internal database `id` column and uni-lemmas unattached to any
+  item are no longer included.
+- The `redivis` client is a suggested (not imported) dependency,
+  installable from `https://langcog.r-universe.dev`; wordbankr prompts
+  with the install command if it is missing.
+- All network access retries transient failures and then fails
+  gracefully (message + `NULL`), and no test or example requires network
+  access on CRAN.

@@ -11,7 +11,7 @@ get_instrument_data(
   items = NULL,
   administration_info = FALSE,
   item_info = FALSE,
-  db_args = NULL,
+  version = "current",
   ...
 )
 ```
@@ -20,19 +20,16 @@ get_instrument_data(
 
 - language:
 
-  A string of the instrument's language (insensitive to case and
-  whitespace).
+  A string of the instrument's language.
 
 - form:
 
-  A string of the instrument's form (insensitive to case and
-  whitespace).
+  A string of the instrument's form.
 
 - items:
 
-  A character vector of column names of `instrument_table` of items to
-  extract. If not supplied, defaults to all the columns of
-  `instrument_table`.
+  A character vector of item ids (e.g. `"item_42"`) to extract. If not
+  supplied, defaults to all the instrument's items.
 
 - administration_info:
 
@@ -45,30 +42,29 @@ get_instrument_data(
   Either a logical indicating whether to include item data or a data
   frame of item data (as returned by `get_item_data`).
 
-- db_args:
+- version:
 
-  List with arguments to connect to wordbank mysql database (host,
-  dbname, user, and password).
+  A string specifying which version of the Wordbank dataset to use, e.g.
+  `"v1.2"` to pin a released version for reproducibility. Defaults to
+  `"current"`, the most recent release.
 
 - ...:
 
-  \<\[\`dynamic-dots\`\]\[rlang::dyn-dots\]\> Arguments passed to
-  [`get_administration_data()`](http://langcog.github.io/wordbankr/reference/get_administration_data.md).
+  Additional arguments, ignored (for backward compatibility).
 
 ## Value
 
 A data frame where each row contains the values (`value`, `produces`,
 `understands`) of a given item (`item_id`) for a given administration
 (`data_id`), with additional columns of variables about the
-administration and item, as specified.
+administration and item, as specified, and `dataset_version`.
 
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
-                                   items = c("item_1", "item_42"),
-                                   item_info = TRUE)
-# }
+                                   items = c("item_1", "item_42"))
+} # }
 ```

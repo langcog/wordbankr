@@ -2,7 +2,7 @@
 
 Connecting to Wordbank, an open repository for developmental vocabulary
 data. For more information on the underlying data, see
-<http://wordbank.stanford.edu>.
+<https://wordbank.stanford.edu>.
 
 ## See also
 

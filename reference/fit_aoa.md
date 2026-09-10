@@ -58,11 +58,11 @@ acquisition estimates.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"),
                                    administration_info = TRUE)
 if (!is.null(eng_ws_data)) eng_ws_aoa <- fit_aoa(eng_ws_data)
-# }
+} # }
 ```

@@ -37,7 +37,7 @@ vocabulary value for that quantile at that age.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 eng_wg <- get_administration_data(language = "English (American)",
                                   form = "WG",
                                   include_demographic_info = TRUE)
@@ -46,8 +46,5 @@ if (!is.null(eng_wg)) {
   vocab_quantiles_sex <- fit_vocab_quantiles(eng_wg, production, sex)
   vocab_quartiles <- fit_vocab_quantiles(eng_wg, production, quantiles = "quartiles")
 }
-#> Warning: `fit_vocab_quantiles()` was deprecated in wordbankr 1.0.0.
-#> ℹ Please use the vocabulary norms shiny app at
-#>   http://wordbank.stanford.edu/analyses?name=vocab_norms
-# }
+} # }
 ```

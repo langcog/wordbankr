@@ -2,39 +2,48 @@
 
 ## Get data
 
-- [`get_wordbank_args()`](http://langcog.github.io/wordbankr/reference/get_wordbank_args.md)
-  : Get database connection arguments
-- [`connect_to_wordbank()`](http://langcog.github.io/wordbankr/reference/connect_to_wordbank.md)
-  : Connect to the Wordbank database
-- [`get_administration_data()`](http://langcog.github.io/wordbankr/reference/get_administration_data.md)
+- [`check_db_args()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  [`connect_to_wordbank()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  [`get_wordbank_args()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  : Deprecated database arguments
+- [`get_administration_data()`](https://langcog.github.io/wordbankr/reference/get_administration_data.md)
   : Get the Wordbank by-administration data
-- [`get_item_data()`](http://langcog.github.io/wordbankr/reference/get_item_data.md)
+- [`get_item_data()`](https://langcog.github.io/wordbankr/reference/get_item_data.md)
   : Get the Wordbank by-item data
-- [`get_instrument_data()`](http://langcog.github.io/wordbankr/reference/get_instrument_data.md)
+- [`get_instrument_data()`](https://langcog.github.io/wordbankr/reference/get_instrument_data.md)
   : Get the Wordbank administration-by-item data
 
 ## Get metadata
 
-- [`get_instruments()`](http://langcog.github.io/wordbankr/reference/get_instruments.md)
+- [`get_instruments()`](https://langcog.github.io/wordbankr/reference/get_instruments.md)
   : Get the Wordbank instruments
-- [`get_datasets()`](http://langcog.github.io/wordbankr/reference/get_datasets.md)
+- [`get_datasets()`](https://langcog.github.io/wordbankr/reference/get_datasets.md)
   : Get the Wordbank data sources
+- [`wb_dataset()`](https://langcog.github.io/wordbankr/reference/wb_dataset.md)
+  : The Wordbank dataset on Redivis
 
 ## Age of acquisition
 
-- [`fit_aoa()`](http://langcog.github.io/wordbankr/reference/fit_aoa.md)
+- [`fit_aoa()`](https://langcog.github.io/wordbankr/reference/fit_aoa.md)
   : Fit age of acquisition estimates for Wordbank data
+- [`get_aoa()`](https://langcog.github.io/wordbankr/reference/get_aoa.md)
+  : Get cached age-of-acquisition estimates
+
+## Semantic embeddings
+
+- [`get_embeddings()`](https://langcog.github.io/wordbankr/reference/get_embeddings.md)
+  : Get multilingual item embeddings
 
 ## Cross-linguistic data
 
-- [`get_crossling_items()`](http://langcog.github.io/wordbankr/reference/get_crossling_items.md)
+- [`get_crossling_items()`](https://langcog.github.io/wordbankr/reference/get_crossling_items.md)
   : Get the uni_lemmas available in Wordbank
-- [`summarise_items()`](http://langcog.github.io/wordbankr/reference/summarise_items.md)
+- [`summarise_items()`](https://langcog.github.io/wordbankr/reference/summarise_items.md)
   : Get item-by-age summary statistics
-- [`get_crossling_data()`](http://langcog.github.io/wordbankr/reference/get_crossling_data.md)
+- [`get_crossling_data()`](https://langcog.github.io/wordbankr/reference/get_crossling_data.md)
   : Get item-by-age summary statistics for items across languages
 
 ## Vocabulary quantiles
 
-- [`fit_vocab_quantiles()`](http://langcog.github.io/wordbankr/reference/fit_vocab_quantiles.md)
+- [`fit_vocab_quantiles()`](https://langcog.github.io/wordbankr/reference/fit_vocab_quantiles.md)
   : Fit quantiles to vocabulary sizes using quantile regression
