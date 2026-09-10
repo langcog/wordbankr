@@ -65,19 +65,17 @@ Loading the data is fast if you need only a handful of items, but the time scale
 As an example, let's say we want to look at the production of animal words on English Words & Sentences over age. First we get the items we want:
 ```{r, fig.width=6, fig.height=4}
 items <- get_item_data(language = "English (American)", form = "WS")
-if (!is.null(items)) {
-  animals <- items %>% filter(category == "animals")
-}
+animals <- if (!is.null(items)) items %>% filter(category == "animals")
 ```
 
 Then we get the instrument data for those items:
 ```{r}
-if (!is.null(animals)) {
-  animal_data <- get_instrument_data(language = "English (American)",
-                                     form = "WS",
-                                     items = animals$item_id,
-                                     administration_info = TRUE,
-                                     item_info = TRUE)
+animal_data <- if (!is.null(animals)) {
+  get_instrument_data(language = "English (American)",
+                      form = "WS",
+                      items = animals$item_id,
+                      administration_info = TRUE,
+                      item_info = TRUE)
 }
 ```
 
@@ -120,8 +118,10 @@ get_datasets(language = "Spanish (Mexican)", admin_data = TRUE)
 
 The `fit_aoa()` function computes estimates of items' age of acquisition (AoA). It needs to be provided with a data frame returned by `get_instrument_data()` -- one row per administration x item combination, and minimally the columns `age` and `num_item_id`. It returns a data frame with one row per item and an `aoa` column with the estimate, preserving and item-level columns in the input data. The AoA is estimated by computing the proportion of administrations for which the child understands/produces (`measure`) each word, smoothing the proportion using `method`, and taking the age at which the smoothed value is greater than `proportion`.
 ```{r}
-fit_aoa(animal_data)
-fit_aoa(animal_data, method = "glmrob", proportion = 1/3)
+if (!is.null(animal_data)) {
+  fit_aoa(animal_data)
+  fit_aoa(animal_data, method = "glmrob", proportion = 1/3)
+}
 ```
 
 

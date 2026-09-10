@@ -10,7 +10,9 @@
 #' }
 #' @export
 get_crossling_items <- function(version = "current") {
-  wb_table("items:1mzm", version) |>
+  items <- wb_table("items:1mzm", version)
+  if (is.null(items)) return(invisible(NULL))
+  items |>
     dplyr::filter(!is.na(.data$uni_lemma)) |>
     dplyr::distinct(.data$uni_lemma, .data$dataset_version) |>
     dplyr::arrange(.data$uni_lemma)

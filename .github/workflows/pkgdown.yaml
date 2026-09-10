@@ -36,7 +36,12 @@ jobs:
             github::redivis/redivis-r
           needs: website
 
+      # the site's vignette evaluates its data chunks (NOT_CRAN=true), so it
+      # needs the same Redivis token the network-tests job uses
       - name: Build site
+        env:
+          NOT_CRAN: "true"
+          REDIVIS_API_TOKEN: ${{ secrets.REDIVIS_API_TOKEN }}
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 

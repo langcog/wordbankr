@@ -1,5 +1,7 @@
 # wordbankr 2.0.0
 
+* `get_crossling_items()` now fails gracefully (message + `NULL`) when the
+  database is unreachable, like every other data-access function.
 * All `get_*` functions (and `summarise_items()`, `wb_dataset()`) gain a
   `version` argument for pinning a data release, replacing the
   `options(wordbankr.dataset_version = "v1.2")` global option.
