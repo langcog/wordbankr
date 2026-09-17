@@ -51,21 +51,31 @@
 <div class="section level1">
 <div class="page-header"><h1 id="wordbankr">wordbankr<a class="anchor" aria-label="anchor" href="#wordbankr"></a>
 </h1></div>
-<p>R package for accessing the Wordbank database.</p>
+<p>R package for accessing <a href="https://wordbank.stanford.edu/" class="external-link">Wordbank</a>, an open database of children’s vocabulary development built on the MacArthur-Bates Communicative Development Inventories (CDIs).</p>
+<p>As of version 2.0, wordbankr reads the <a href="https://stanford.redivis.com/datasets/627v-9ewzpdvz0" class="external-link">Wordbank dataset on Redivis</a>, a versioned, citable release of the full database, rather than connecting to a MySQL server. The functions and the data they return are the same as in 1.x.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>To install the released version on <a href="https://cran.r-project.org/package=wordbankr" class="external-link">CRAN</a>:</p>
+<p>To install the released version from <a href="https://cran.r-project.org/package=wordbankr" class="external-link">CRAN</a>:</p>
 <pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"wordbankr"</span><span class="op">)</span></span></code></pre>
 <p>To install the latest development version:</p>
-<pre><code><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"langcog/wordbankr"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"langcog/wordbankr"</span><span class="op">)</span></span></code></pre>
+<p>wordbankr uses the <code>redivis</code> package to download data. It is not on CRAN, so install it from the langcog R-universe:</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"redivis"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://langcog.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
+</h2>
+<p>The Wordbank dataset is public, but Redivis requires a (free) <a href="https://redivis.com/" class="external-link">Redivis account</a> to download data. The first time you call a wordbankr function in an interactive session, a browser window opens asking you to authorize access; your credentials are then cached, so this happens once per machine.</p>
+<p>For scripts, servers, and continuous integration, create an API token in your Redivis workspace settings (see the <a href="https://apidocs.redivis.com/" class="external-link">Redivis API documentation</a>) and make it available as the <code>REDIVIS_API_TOKEN</code> environment variable, e.g. in your <code>.Renviron</code>.</p>
+<p>If Wordbank cannot be reached, wordbankr functions print a message and return <code>NULL</code> rather than raising an error.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <p>See what instruments (languages and forms) are available:</p>
-<pre><code><span><span class="va">instrument</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_instruments.html">get_instruments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="va">instruments</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_instruments.html">get_instruments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 <p>Get by-administration data:</p>
 <pre><code><span><span class="va">english_ws_admins</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="st">"English (American)"</span>, <span class="st">"WS"</span><span class="op">)</span></span>
 <span><span class="va">all_admins</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
@@ -75,6 +85,37 @@
 <p>Get administration-by-item data:</p>
 <pre><code><span><span class="va">english_ws_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_instrument_data.html">get_instrument_data</a></span><span class="op">(</span><span class="st">"English (American)"</span>, <span class="st">"WS"</span><span class="op">)</span></span></code></pre>
 <p>For more details, see <a href="https://langcog.github.io/wordbankr/articles/wordbankr.html">this vignette</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="data-versions-and-updates">Data versions and updates<a class="anchor" aria-label="anchor" href="#data-versions-and-updates"></a>
+</h2>
+<p>Wordbank grows: researchers contribute new datasets and errors get corrected. Each update is published as a new <strong>version</strong> of the Redivis dataset (<code>v1.5</code>, <code>v2.0</code>, …). Released versions are immutable and remain available permanently, so an analysis can always be re-run on exactly the data it originally used.</p>
+<p>Every data function takes a <code>version</code> argument. By default it is <code>"current"</code>, the most recent release, which means results can change when Wordbank is updated. To make an analysis reproducible, pin the version:</p>
+<pre><code><span><span class="va">admins</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_administration_data.html">get_administration_data</a></span><span class="op">(</span><span class="st">"English (American)"</span>, <span class="st">"WS"</span>, version <span class="op">=</span> <span class="st">"v2.0"</span><span class="op">)</span></span></code></pre>
+<p>Every result carries a <code>dataset_version</code> column recording the version it came from. With <code>version = "current"</code> this is resolved to the actual tag (e.g. <code>"v2.0"</code>), so you can always tell which release you were given:</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="reference/get_instruments.html">get_instruments</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">dataset_version</span><span class="op">)</span></span></code></pre>
+<p>To see which versions exist:</p>
+<pre><code><span><span class="va">versions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/wb_dataset.html">wb_dataset</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">list_versions</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">versions</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">$</span><span class="va">properties</span><span class="op">$</span><span class="va">tag</span><span class="op">)</span></span></code></pre>
+<p>Version numbers follow the data, not the package. A minor bump (<code>v1.4</code> to <code>v1.5</code>) adds or corrects data without changing the structure of what wordbankr returns. A major bump (<code>v1.x</code> to <code>v2.0</code>) changes the structure of the underlying tables; wordbankr absorbs these changes so that its output stays the same, and any differences that do reach users are listed in <a href="https://langcog.github.io/wordbankr/news/index.html">NEWS</a>.</p>
+<p>When you report an analysis, cite both the package version (<code>packageVersion("wordbankr")</code>) and the dataset version you used.</p>
+</div>
+<div class="section level2">
+<h2 id="upgrading-from-1x">Upgrading from 1.x<a class="anchor" aria-label="anchor" href="#upgrading-from-1x"></a>
+</h2>
+<ul>
+<li>No database connection is needed: the <code>db_args</code> argument is removed, and <code><a href="reference/check_db_args.html">connect_to_wordbank()</a></code> is deprecated and does nothing.</li>
+<li>
+<code>get_*</code> functions have the same names, arguments, and return values, plus the new <code>version</code> argument and <code>dataset_version</code> column.</li>
+<li>
+<code><a href="reference/get_aoa.html">get_aoa()</a></code> and <code><a href="reference/get_embeddings.html">get_embeddings()</a></code> are new: precomputed ages of acquisition and multilingual word embeddings for every word item.</li>
+<li>A few deliberate changes to returned columns are described in <a href="https://langcog.github.io/wordbankr/news/index.html">NEWS</a>.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>Frank, M. C., Braginsky, M., Yurovsky, D., &amp; Marchman, V. A. (2017). Wordbank: An open repository for developmental vocabulary data. <em>Journal of Child Language, 44</em>(3), 677-694. <a href="https://doi.org/10.1017/S0305000916000209" class="external-link">doi:10.1017/S0305000916000209</a></p>
 </div>
 </div>
 

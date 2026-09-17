@@ -1,24 +1,53 @@
 # wordbankr
 
-R package for accessing the Wordbank database.
+R package for accessing [Wordbank](https://wordbank.stanford.edu/), an
+open database of children’s vocabulary development built on the
+MacArthur-Bates Communicative Development Inventories (CDIs).
+
+As of version 2.0, wordbankr reads the [Wordbank dataset on
+Redivis](https://stanford.redivis.com/datasets/627v-9ewzpdvz0), a
+versioned, citable release of the full database, rather than connecting
+to a MySQL server. The functions and the data they return are the same
+as in 1.x.
 
 ## Installation
 
-To install the released version on
+To install the released version from
 [CRAN](https://cran.r-project.org/package=wordbankr):
 
     install.packages("wordbankr")
 
 To install the latest development version:
 
-    # install.packages("devtools")
-    devtools::install_github("langcog/wordbankr")
+    # install.packages("remotes")
+    remotes::install_github("langcog/wordbankr")
+
+wordbankr uses the `redivis` package to download data. It is not on
+CRAN, so install it from the langcog R-universe:
+
+    install.packages("redivis", repos = c("https://langcog.r-universe.dev", "https://cloud.r-project.org"))
+
+## Authentication
+
+The Wordbank dataset is public, but Redivis requires a (free) [Redivis
+account](https://redivis.com/) to download data. The first time you call
+a wordbankr function in an interactive session, a browser window opens
+asking you to authorize access; your credentials are then cached, so
+this happens once per machine.
+
+For scripts, servers, and continuous integration, create an API token in
+your Redivis workspace settings (see the [Redivis API
+documentation](https://apidocs.redivis.com/)) and make it available as
+the `REDIVIS_API_TOKEN` environment variable, e.g. in your `.Renviron`.
+
+If Wordbank cannot be reached, wordbankr functions print a message and
+return `NULL` rather than raising an error.
 
 ## Usage
 
 See what instruments (languages and forms) are available:
 
-    instrument <- get_instruments()
+    instruments <- get_instruments()
 
 Get by-administration data:
 
@@ -36,6 +65,65 @@ Get administration-by-item data:
 
 For more details, see [this
 vignette](https://langcog.github.io/wordbankr/articles/wordbankr.html).
+
+## Data versions and updates
+
+Wordbank grows: researchers contribute new datasets and errors get
+corrected. Each update is published as a new **version** of the Redivis
+dataset (`v1.5`, `v2.0`, …). Released versions are immutable and remain
+available permanently, so an analysis can always be re-run on exactly
+the data it originally used.
+
+Every data function takes a `version` argument. By default it is
+`"current"`, the most recent release, which means results can change
+when Wordbank is updated. To make an analysis reproducible, pin the
+version:
+
+    admins <- get_administration_data("English (American)", "WS", version = "v2.0")
+
+Every result carries a `dataset_version` column recording the version it
+came from. With `version = "current"` this is resolved to the actual tag
+(e.g. `"v2.0"`), so you can always tell which release you were given:
+
+    unique(get_instruments()$dataset_version)
+
+To see which versions exist:
+
+    versions <- wb_dataset()$list_versions()
+    sapply(versions, function(v) v$properties$tag)
+
+Version numbers follow the data, not the package. A minor bump (`v1.4`
+to `v1.5`) adds or corrects data without changing the structure of what
+wordbankr returns. A major bump (`v1.x` to `v2.0`) changes the structure
+of the underlying tables; wordbankr absorbs these changes so that its
+output stays the same, and any differences that do reach users are
+listed in [NEWS](https://langcog.github.io/wordbankr/news/index.html).
+
+When you report an analysis, cite both the package version
+(`packageVersion("wordbankr")`) and the dataset version you used.
+
+## Upgrading from 1.x
+
+- No database connection is needed: the `db_args` argument is removed,
+  and
+  [`connect_to_wordbank()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  is deprecated and does nothing.
+- `get_*` functions have the same names, arguments, and return values,
+  plus the new `version` argument and `dataset_version` column.
+- [`get_aoa()`](https://langcog.github.io/wordbankr/reference/get_aoa.md)
+  and
+  [`get_embeddings()`](https://langcog.github.io/wordbankr/reference/get_embeddings.md)
+  are new: precomputed ages of acquisition and multilingual word
+  embeddings for every word item.
+- A few deliberate changes to returned columns are described in
+  [NEWS](https://langcog.github.io/wordbankr/news/index.html).
+
+## Citation
+
+Frank, M. C., Braginsky, M., Yurovsky, D., & Marchman, V. A. (2017).
+Wordbank: An open repository for developmental vocabulary data. *Journal
+of Child Language, 44*(3), 677-694.
+[doi:10.1017/S0305000916000209](https://doi.org/10.1017/S0305000916000209)
 
 # Package index
 

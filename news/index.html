@@ -37,27 +37,23 @@
 <h2 class="pkg-version" data-toc-text="2.0.0" id="wordbankr-200">wordbankr 2.0.0<a class="anchor" aria-label="anchor" href="#wordbankr-200"></a></h2>
 <ul><li>
 <code><a href="../reference/get_crossling_items.html">get_crossling_items()</a></code> now fails gracefully (message + <code>NULL</code>) when the database is unreachable, like every other data-access function.</li>
-<li>All <code>get_*</code> functions (and <code><a href="../reference/summarise_items.html">summarise_items()</a></code>, <code><a href="../reference/wb_dataset.html">wb_dataset()</a></code>) gain a <code>version</code> argument for pinning a data release, replacing the <code>options(wordbankr.dataset_version = "v1.2")</code> global option.</li>
-<li>The <code>db_args</code> argument is removed from all <code>get_*</code> functions (it was already ignored as of 2.0.0).</li>
+<li>All <code>get_*</code> functions (and <code><a href="../reference/summarise_items.html">summarise_items()</a></code>, <code><a href="../reference/wb_dataset.html">wb_dataset()</a></code>) gain a <code>version</code> argument for pinning a data release (e.g. <code>version = "v2.0"</code>; the default <code>"current"</code> is the most recent release).</li>
+<li>The <code>db_args</code> argument is removed from all <code>get_*</code> functions.</li>
+<li>New functions <code><a href="../reference/get_aoa.html">get_aoa()</a></code> and <code><a href="../reference/get_embeddings.html">get_embeddings()</a></code> return precomputed ages of acquisition and multilingual word embeddings for every word item.</li>
 <li>All <code>get_*</code> functions now record the data’s <code>dataset_version</code> in a column of their output; when <code>version = "current"</code> (the default), this is resolved to the actual current version tag (e.g. <code>"v1.5"</code>) rather than the literal string <code>"current"</code>.</li>
 <li>Breaking (with dataset v2.0+): in <code><a href="../reference/get_administration_data.html">get_administration_data()</a></code>, <code>date_of_test</code> is now a <code>Date</code> (previously a string), and the nested <code>language_exposures</code> column <code>exposure_proportion</code> is renamed <code>exposure_percentage</code> (its values were always percentages, 0-100). ASL CDITwo item ids are normalized from <code>"Item_N"</code> to <code>"item_N"</code>.</li>
 <li>The Redivis dataset (v2.0+) uses a normalized schema — child-level variables live in the <code>children</code> table and instrument-level variables in <code>instruments</code> — but <code><a href="../reference/get_administration_data.html">get_administration_data()</a></code> joins these back together, so its flat output shape is unchanged.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.0" id="wordbankr-200-1">wordbankr 2.0.0<a class="anchor" aria-label="anchor" href="#wordbankr-200-1"></a></h2>
-<ul><li>Data now come from the versioned Wordbank dataset on Redivis (<a href="https://stanford.redivis.com/datasets/627v-9ewzpdvz0" class="external-link uri">https://stanford.redivis.com/datasets/627v-9ewzpdvz0</a>) instead of the MySQL database. All <code>get_*</code> functions keep their signatures and return the same data.</li>
-<li>New: pin analyses to a data release with <code>options(wordbankr.dataset_version = "v1.2")</code> for full reproducibility.</li>
+<li>Data now come from the versioned Wordbank dataset on Redivis (<a href="https://stanford.redivis.com/datasets/627v-9ewzpdvz0" class="external-link uri">https://stanford.redivis.com/datasets/627v-9ewzpdvz0</a>) instead of the MySQL database. All <code>get_*</code> functions keep their signatures and return the same data.</li>
 <li>
 <code>get_administration_data(filter_age = FALSE)</code> now returns administrations outside the instrument age range flagged by the source data (previously these were only reachable through the age filter’s absence).</li>
 <li>
-<code><a href="../reference/check_db_args.html">connect_to_wordbank()</a></code>, <code><a href="../reference/check_db_args.html">get_wordbank_args()</a></code>, and the <code>db_args</code> argument are deprecated and ignored.</li>
+<code><a href="../reference/check_db_args.html">connect_to_wordbank()</a></code> and <code><a href="../reference/check_db_args.html">get_wordbank_args()</a></code> are deprecated and ignored.</li>
 <li>
 <code><a href="../reference/get_crossling_items.html">get_crossling_items()</a></code> now returns a single <code>uni_lemma</code> column derived from item mappings; the internal database <code>id</code> column and uni-lemmas unattached to any item are no longer included.</li>
 <li>The <code>redivis</code> client is a suggested (not imported) dependency, installable from <code>https://langcog.r-universe.dev</code>; wordbankr prompts with the install command if it is missing.</li>
 <li>All network access retries transient failures and then fails gracefully (message + <code>NULL</code>), and no test or example requires network access on CRAN.</li>
 </ul></div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside></div>
+  </main></div>
 
 
     <footer><div class="pkgdown-footer-left">

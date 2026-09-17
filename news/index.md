@@ -8,10 +8,16 @@
 - All `get_*` functions (and
   [`summarise_items()`](https://langcog.github.io/wordbankr/reference/summarise_items.md),
   [`wb_dataset()`](https://langcog.github.io/wordbankr/reference/wb_dataset.md))
-  gain a `version` argument for pinning a data release, replacing the
-  `options(wordbankr.dataset_version = "v1.2")` global option.
-- The `db_args` argument is removed from all `get_*` functions (it was
-  already ignored as of 2.0.0).
+  gain a `version` argument for pinning a data release
+  (e.g. `version = "v2.0"`; the default `"current"` is the most recent
+  release).
+- The `db_args` argument is removed from all `get_*` functions.
+- New functions
+  [`get_aoa()`](https://langcog.github.io/wordbankr/reference/get_aoa.md)
+  and
+  [`get_embeddings()`](https://langcog.github.io/wordbankr/reference/get_embeddings.md)
+  return precomputed ages of acquisition and multilingual word
+  embeddings for every word item.
 - All `get_*` functions now record the data’s `dataset_version` in a
   column of their output; when `version = "current"` (the default), this
   is resolved to the actual current version tag (e.g. `"v1.5"`) rather
@@ -27,23 +33,18 @@
   in `instruments` — but
   [`get_administration_data()`](https://langcog.github.io/wordbankr/reference/get_administration_data.md)
   joins these back together, so its flat output shape is unchanged.
-
-## wordbankr 2.0.0
-
 - Data now come from the versioned Wordbank dataset on Redivis
   (<https://stanford.redivis.com/datasets/627v-9ewzpdvz0>) instead of
   the MySQL database. All `get_*` functions keep their signatures and
   return the same data.
-- New: pin analyses to a data release with
-  `options(wordbankr.dataset_version = "v1.2")` for full
-  reproducibility.
 - `get_administration_data(filter_age = FALSE)` now returns
   administrations outside the instrument age range flagged by the source
   data (previously these were only reachable through the age filter’s
   absence).
-- [`connect_to_wordbank()`](https://langcog.github.io/wordbankr/reference/check_db_args.md),
-  [`get_wordbank_args()`](https://langcog.github.io/wordbankr/reference/check_db_args.md),
-  and the `db_args` argument are deprecated and ignored.
+- [`connect_to_wordbank()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  and
+  [`get_wordbank_args()`](https://langcog.github.io/wordbankr/reference/check_db_args.md)
+  are deprecated and ignored.
 - [`get_crossling_items()`](https://langcog.github.io/wordbankr/reference/get_crossling_items.md)
   now returns a single `uni_lemma` column derived from item mappings;
   the internal database `id` column and uni-lemmas unattached to any

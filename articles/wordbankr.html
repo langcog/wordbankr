@@ -55,7 +55,7 @@
                         <h4 data-toc-skip class="author">Mika
 Braginsky</h4>
             
-            <h4 data-toc-skip class="date">2026-09-15</h4>
+            <h4 data-toc-skip class="date">2026-09-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/langcog/wordbankr/blob/main/vignettes/wordbankr.Rmd" class="external-link"><code>vignettes/wordbankr.Rmd</code></a></small>
       <div class="d-none name"><code>wordbankr.Rmd</code></div>
@@ -67,6 +67,16 @@ Braginsky</h4>
 <a href="https://wordbank.stanford.edu/" class="external-link">Wordbank database</a> from
 <code>R</code>. This vignette shows some examples of how to use the data
 loading functions and what the resulting data look like.</p>
+<p>The data are hosted as a versioned dataset on <a href="https://stanford.redivis.com/datasets/627v-9ewzpdvz0" class="external-link">Redivis</a>.
+The dataset is public, but downloading from Redivis requires a (free)
+account: the first time you call a <code>wordbankr</code> function in an
+interactive session, a browser window opens asking you to authorize
+access, and your credentials are cached after that. For scripts and
+servers, set the <code>REDIVIS_API_TOKEN</code> environment variable
+instead. If Wordbank cannot be reached, functions print a message and
+return <code>NULL</code> rather than raising an error. See <a href="#data-versions-and-reproducibility">Data versions and
+reproducibility</a> below for how to pin an analysis to a specific
+release of the data.</p>
 <p>There are three different data views that you can pull out of
 Wordbank: by-administration, by-item, and administration-by-item.
 Additionally, you can get metadata about the datasets and instruments
@@ -375,6 +385,43 @@ and item-level fields.</p>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">language</span>, <span class="va">uni_lemma</span>, <span class="va">item_definition</span>, <span class="va">age</span>, <span class="va">n_children</span>, <span class="va">comprehension</span>,</span>
 <span>         <span class="va">production</span>, <span class="va">comprehension_sd</span>, <span class="va">production_sd</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">uni_lemma</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="data-versions-and-reproducibility">Data versions and reproducibility<a class="anchor" aria-label="anchor" href="#data-versions-and-reproducibility"></a>
+</h2>
+<p>Wordbank is updated as researchers contribute new datasets and as
+errors are corrected. Each update is published as a new version of the
+Redivis dataset (<code>v1.5</code>, <code>v2.0</code>, …). Released
+versions are immutable and stay available permanently.</p>
+<p>Every data function takes a <code>version</code> argument. The
+default, <code>"current"</code>, is the most recent release, so results
+can change when Wordbank is updated. Pin the version to make an analysis
+reproducible:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">instruments_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_instruments.html">get_instruments</a></span><span class="op">(</span>version <span class="op">=</span> <span class="st">"v2.0"</span><span class="op">)</span></span></code></pre></div>
+<p>Every result has a <code>dataset_version</code> column recording the
+release it came from. With the default <code>version = "current"</code>,
+this is resolved to the actual version tag, so you can always tell which
+release you were given:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">instruments_v2</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">instruments_v2</span><span class="op">$</span><span class="va">dataset_version</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "v2.0"</span></span></code></pre>
+<p>The <code><a href="../reference/wb_dataset.html">wb_dataset()</a></code> function returns a reference to the
+Redivis dataset itself, which you can use to see which versions
+exist:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">versions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/wb_dataset.html">wb_dataset</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">list_versions</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">versions</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">$</span><span class="va">properties</span><span class="op">$</span><span class="va">tag</span><span class="op">)</span></span></code></pre></div>
+<p>Version numbers follow the data rather than the package. A minor bump
+(<code>v1.4</code> to <code>v1.5</code>) adds or corrects data without
+changing the structure of what <code>wordbankr</code> returns. A major
+bump (<code>v1.x</code> to <code>v2.0</code>) changes the structure of
+the underlying tables; <code>wordbankr</code> absorbs these changes so
+that its output stays the same, and any differences that do reach users
+are listed in the package’s NEWS.</p>
+<p>When you report an analysis, cite both the package version
+(<code>packageVersion("wordbankr")</code>) and the dataset version you
+used.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -5,6 +5,18 @@ database](https://wordbank.stanford.edu/) from `R`. This vignette shows
 some examples of how to use the data loading functions and what the
 resulting data look like.
 
+The data are hosted as a versioned dataset on
+[Redivis](https://stanford.redivis.com/datasets/627v-9ewzpdvz0). The
+dataset is public, but downloading from Redivis requires a (free)
+account: the first time you call a `wordbankr` function in an
+interactive session, a browser window opens asking you to authorize
+access, and your credentials are cached after that. For scripts and
+servers, set the `REDIVIS_API_TOKEN` environment variable instead. If
+Wordbank cannot be reached, functions print a message and return `NULL`
+rather than raising an error. See [Data versions and
+reproducibility](#data-versions-and-reproducibility) below for how to
+pin an analysis to a specific release of the data.
+
 There are three different data views that you can pull out of Wordbank:
 by-administration, by-item, and administration-by-item. Additionally,
 you can get metadata about the datasets and instruments underlying the
@@ -371,3 +383,52 @@ get_crossling_data(uni_lemmas = c("hat", "nose")) %>%
          production, comprehension_sd, production_sd) %>%
   arrange(uni_lemma)
 ```
+
+## Data versions and reproducibility
+
+Wordbank is updated as researchers contribute new datasets and as errors
+are corrected. Each update is published as a new version of the Redivis
+dataset (`v1.5`, `v2.0`, …). Released versions are immutable and stay
+available permanently.
+
+Every data function takes a `version` argument. The default,
+`"current"`, is the most recent release, so results can change when
+Wordbank is updated. Pin the version to make an analysis reproducible:
+
+``` r
+
+instruments_v2 <- get_instruments(version = "v2.0")
+```
+
+Every result has a `dataset_version` column recording the release it
+came from. With the default `version = "current"`, this is resolved to
+the actual version tag, so you can always tell which release you were
+given:
+
+``` r
+
+if (!is.null(instruments_v2)) unique(instruments_v2$dataset_version)
+```
+
+    ## [1] "v2.0"
+
+The
+[`wb_dataset()`](https://langcog.github.io/wordbankr/reference/wb_dataset.md)
+function returns a reference to the Redivis dataset itself, which you
+can use to see which versions exist:
+
+``` r
+
+versions <- wb_dataset()$list_versions()
+sapply(versions, function(v) v$properties$tag)
+```
+
+Version numbers follow the data rather than the package. A minor bump
+(`v1.4` to `v1.5`) adds or corrects data without changing the structure
+of what `wordbankr` returns. A major bump (`v1.x` to `v2.0`) changes the
+structure of the underlying tables; `wordbankr` absorbs these changes so
+that its output stays the same, and any differences that do reach users
+are listed in the package’s NEWS.
+
+When you report an analysis, cite both the package version
+(`packageVersion("wordbankr")`) and the dataset version you used.
