@@ -182,10 +182,11 @@ factor_demographics <- function(admins) {
       sex = factor(.data$sex, levels = c("Female", "Male", "Other")),
       ethnicity = factor(.data$ethnicity,
                          levels = c("Hispanic", "Non-Hispanic")),
-      race = factor(.data$race, levels = c("Asian", "Black", "Other", "White")),
+      race = factor(.data$race, levels = c("Asian", "Black", "Other/Mixed", "White")),
       birth_order = factor(.data$birth_order,
                            levels = c("First", "Second", "Third", "Fourth",
-                                      "Fifth", "Sixth", "Seventh", "Eighth")),
+                                      "Fifth", "Sixth", "Seventh", "Eighth",
+                                      "Ninth", "Tenth", "Eleventh", "Twelfth")),
       caregiver_education = factor(.data$caregiver_education,
                                    levels = caregiver_levels))
 }
