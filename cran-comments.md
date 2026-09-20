@@ -35,12 +35,21 @@ and is available (source and binaries) from the repository declared in
 ## Test environments
 
 - local macOS 15 (aarch64), R 4.5
-- GitHub Actions: ubuntu-latest (release), cran-simulation job with no
-  credentials and NOT_CRAN=false
+- GitHub Actions: macOS, Windows, and Ubuntu (R release), Ubuntu (R devel and
+  oldrel-1); plus a "cran-simulation" job with no credentials and
+  NOT_CRAN=false
 - win-builder (devel)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
-- New submission / package was archived on CRAN: addressed above.
+- New submission; package was archived on CRAN: addressed above.
+- Suggests not in mainstream repositories: redivis, available from the
+  declared Additional_repositories (the check reports "redivis yes
+  https://langcog.r-universe.dev").
+
+## Reverse dependencies
+
+One reverse dependency, cdiWG2WS, lists wordbankr in Suggests only and does
+not call any wordbankr function in its code, tests, or vignettes.
