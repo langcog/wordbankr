@@ -30,7 +30,7 @@ fit_vocab_quantiles <- function(vocab_data, measure, group,
 
   lifecycle::deprecate_warn(
     when = "1.0.0", what = "fit_vocab_quantiles()",
-    details = "Please use the vocabulary norms shiny app at http://wordbank.stanford.edu/analyses?name=vocab_norms")
+    details = "Please use the vocabulary norms tool at https://wordbank.stanford.edu/analyses?name=vocab_norms")
 
   quantile_opts <- list(
     standard = c(0.10, 0.25, 0.50, 0.75, 0.90),

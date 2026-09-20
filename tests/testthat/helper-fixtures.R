@@ -44,7 +44,18 @@ check_and_drop_dataset_version <- function(x, fixture_name) {
 #     production into comprehension (langcog/wordbank#333, dataset v1.5); the
 #     signature rule below preserves the few WS datasets that genuinely
 #     measured comprehension, exactly as the ETL does
+#   - race level "Other" is relabelled "Other/Mixed", and birth_order gains
+#     the levels Ninth-Twelfth (values are unchanged; dataset v2.1)
 apply_v2_deltas <- function(x) {
+  if ("race" %in% names(x) && is.factor(x$race)) {
+    levels(x$race)[levels(x$race) == "Other"] <- "Other/Mixed"
+  }
+  if ("birth_order" %in% names(x) && is.factor(x$birth_order)) {
+    x$birth_order <- factor(as.character(x$birth_order),
+                            levels = c("First", "Second", "Third", "Fourth",
+                                       "Fifth", "Sixth", "Seventh", "Eighth",
+                                       "Ninth", "Tenth", "Eleventh", "Twelfth"))
+  }
   if ("date_of_test" %in% names(x) && is.character(x$date_of_test)) {
     x$date_of_test <- as.Date(x$date_of_test)
   }

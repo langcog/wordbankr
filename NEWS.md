@@ -6,6 +6,9 @@
   `version` argument for pinning a data release (e.g. `version = "v2.0"`;
   the default `"current"` is the most recent release).
 * The `db_args` argument is removed from all `get_*` functions.
+* In `get_administration_data()`, the `race` level `"Other"` is now
+  `"Other/Mixed"` (for all dataset versions), and `birth_order` gains the
+  levels `"Ninth"` to `"Twelfth"`.
 * New functions `get_aoa()` and `get_embeddings()` return precomputed ages
   of acquisition and multilingual word embeddings for every word item.
 * All `get_*` functions now record the data's `dataset_version` in a column
