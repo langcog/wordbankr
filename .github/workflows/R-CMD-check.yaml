@@ -43,10 +43,6 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          # CRAN's R 4.6 macOS binaries are zstd-compressed, which released
-          # pak cannot extract yet ("unknown archive type"); drop this line
-          # once a pak release handles them
-          pak-version: devel
           extra-packages: |
             any::rcmdcheck
             github::redivis/redivis-r
