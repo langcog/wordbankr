@@ -35,20 +35,20 @@ language and/or form or for all instruments.
 get_administration_data(language = "English (American)", form = "WS")
 ```
 
-    ## # A tibble: 9,093 × 13
+    ## # A tibble: 10,173 × 13
     ##    data_id date_of_test   age comprehension production is_norming dataset_name
     ##      <int> <date>       <int>         <int>      <int> <lgl>      <chr>       
-    ##  1  402479 NA              24           166         99 FALSE      Armon-Lotem 
-    ##  2  402480 NA              26           310        141 FALSE      Armon-Lotem 
-    ##  3  402481 NA              24           653        357 FALSE      Armon-Lotem 
-    ##  4  402482 NA              24           680         72 FALSE      Armon-Lotem 
-    ##  5  402487 NA              29           680        313 FALSE      Armon-Lotem 
-    ##  6  402488 NA              26           441        381 FALSE      Armon-Lotem 
-    ##  7  402504 NA              30           334        273 FALSE      Armon-Lotem 
-    ##  8  402506 NA              28           678        663 FALSE      Armon-Lotem 
-    ##  9  398966 1989-09-14      20            NA        252 FALSE      Marchman    
-    ## 10  400314 2000-03-02      27            NA        548 FALSE      Marchman    
-    ## # ℹ 9,083 more rows
+    ##  1  396657 2010-08-19      16            NA         87 FALSE      Smith       
+    ##  2  397491 2013-02-02      26            NA        628 FALSE      Byers       
+    ##  3  508934 2012-07-25      16            NA        143 FALSE      Smith       
+    ##  4  508935 2012-08-06      16            NA         47 FALSE      Smith       
+    ##  5  508938 2012-08-21      16            NA         10 FALSE      Smith       
+    ##  6  509018 2012-07-31      16            NA         34 FALSE      Smith       
+    ##  7  509045 2012-10-29      16            NA         75 FALSE      Smith       
+    ##  8  509046 2012-10-29      16            NA         69 FALSE      Smith       
+    ##  9  509062 2011-05-21      16            NA          7 FALSE      Smith       
+    ## 10  509110 2012-08-03      16            NA         13 FALSE      Smith       
+    ## # ℹ 10,163 more rows
     ## # ℹ 6 more variables: dataset_origin_name <chr>, language <chr>, form <chr>,
     ## #   form_type <chr>, child_id <int>, dataset_version <chr>
 
@@ -57,20 +57,20 @@ get_administration_data(language = "English (American)", form = "WS")
 get_administration_data()
 ```
 
-    ## # A tibble: 100,527 × 13
+    ## # A tibble: 116,864 × 13
     ##    data_id date_of_test   age comprehension production is_norming dataset_name
     ##      <int> <date>       <int>         <int>      <int> <lgl>      <chr>       
-    ##  1  277770 NA              10            31         15 FALSE      Alroqi      
-    ##  2  277771 NA              13            28         14 FALSE      Alroqi      
-    ##  3  277772 NA              10            12          1 FALSE      Alroqi      
-    ##  4  277773 NA              12           162         10 FALSE      Alroqi      
-    ##  5  277774 NA              13            40         12 FALSE      Alroqi      
-    ##  6  277775 NA              11            13          2 FALSE      Alroqi      
-    ##  7  277776 NA               9             2          2 FALSE      Alroqi      
-    ##  8  277777 NA              14            71         16 FALSE      Alroqi      
-    ##  9  277778 NA              10            42          2 FALSE      Alroqi      
-    ## 10  277780 NA              11            19          3 FALSE      Alroqi      
-    ## # ℹ 100,517 more rows
+    ##  1  351367 NA              12            77         77 FALSE      Li          
+    ##  2  339541 2015-03-16      12           173          0 FALSE      VonHolzen   
+    ##  3  392331 2012-10-09       9           144          0 FALSE      Byers       
+    ##  4  351597 NA              17            NA         61 FALSE      Li          
+    ##  5  396657 2010-08-19      16            NA         87 FALSE      Smith       
+    ##  6  397491 2013-02-02      26            NA        628 FALSE      Byers       
+    ##  7  387500 2016-02-17      23            NA        144 FALSE      VonHolzen   
+    ##  8  462240 NA               7            81          0 FALSE      Caselli     
+    ##  9  462150 NA               7            50          0 FALSE      Caselli     
+    ## 10  462156 NA               7            23          0 FALSE      Caselli     
+    ## # ℹ 116,854 more rows
     ## # ℹ 6 more variables: dataset_origin_name <chr>, language <chr>, form <chr>,
     ## #   form_type <chr>, child_id <int>, dataset_version <chr>
 
@@ -96,9 +96,9 @@ get_item_data(language = "Italian", form = "WG")
     ##  5 item_5  Italian  WG    WG        phrases     NA       Hai sonno? Sei stanco  
     ##  6 item_6  Italian  WG    WG        phrases     NA       Vuoi bere?             
     ##  7 item_7  Italian  WG    WG        phrases     NA       Stai attento           
-    ##  8 item_8  Italian  WG    WG        phrases     NA       Stai buono             
-    ##  9 item_9  Italian  WG    WG        phrases     NA       Batti le manine        
-    ## 10 item_10 Italian  WG    WG        phrases     NA       Cambiamo il pannolino  
+    ##  8 item_9  Italian  WG    WG        phrases     NA       Batti le manine        
+    ##  9 item_10 Italian  WG    WG        phrases     NA       Cambiamo il pannolino  
+    ## 10 item_11 Italian  WG    WG        phrases     NA       Vieni qui              
     ## # ℹ 495 more rows
     ## # ℹ 5 more variables: english_gloss <chr>, uni_lemma <chr>,
     ## #   lexical_category <chr>, complexity_category <chr>, dataset_version <chr>
@@ -108,7 +108,7 @@ get_item_data(language = "Italian", form = "WG")
 get_item_data()
 ```
 
-    ## # A tibble: 46,746 × 12
+    ## # A tibble: 56,895 × 12
     ##    item_id language           form  form_type item_kind category item_definition
     ##    <chr>   <chr>              <chr> <chr>     <chr>     <chr>    <chr>          
     ##  1 item_1  British Sign Lang… WG    WG        phrases   NA       be careful     
@@ -121,7 +121,7 @@ get_item_data()
     ##  8 item_8  British Sign Lang… WG    WG        phrases   NA       get up         
     ##  9 item_9  British Sign Lang… WG    WG        phrases   NA       give me hug    
     ## 10 item_10 British Sign Lang… WG    WG        phrases   NA       give me kiss   
-    ## # ℹ 46,736 more rows
+    ## # ℹ 56,885 more rows
     ## # ℹ 5 more variables: english_gloss <chr>, uni_lemma <chr>,
     ## #   lexical_category <chr>, complexity_category <chr>, dataset_version <chr>
 
@@ -144,20 +144,20 @@ get_instrument_data(
 )
 ```
 
-    ## # A tibble: 20,296 × 6
+    ## # A tibble: 21,204 × 6
     ##    data_id item_id value    produces understands dataset_version
     ##      <dbl> <chr>   <chr>    <lgl>    <lgl>       <chr>          
-    ##  1  396587 item_26 produces TRUE     NA          v2.0           
-    ##  2  396587 item_46 produces TRUE     NA          v2.0           
-    ##  3  396588 item_26 produces TRUE     NA          v2.0           
-    ##  4  396588 item_46 produces TRUE     NA          v2.0           
-    ##  5  396589 item_26 produces TRUE     NA          v2.0           
-    ##  6  396589 item_46 produces TRUE     NA          v2.0           
-    ##  7  396590 item_26 produces TRUE     NA          v2.0           
-    ##  8  396590 item_46 produces TRUE     NA          v2.0           
-    ##  9  396591 item_26 produces TRUE     NA          v2.0           
-    ## 10  396591 item_46 produces TRUE     NA          v2.0           
-    ## # ℹ 20,286 more rows
+    ##  1  396657 item_26 produces TRUE     NA          v3.0           
+    ##  2  396657 item_46 NA       FALSE    NA          v3.0           
+    ##  3  397491 item_26 produces TRUE     NA          v3.0           
+    ##  4  397491 item_46 produces TRUE     NA          v3.0           
+    ##  5  431926 item_26 produces TRUE     NA          v3.0           
+    ##  6  431926 item_46 produces TRUE     NA          v3.0           
+    ##  7  431927 item_26 produces TRUE     NA          v3.0           
+    ##  8  431927 item_46 produces TRUE     NA          v3.0           
+    ##  9  431928 item_26 produces TRUE     NA          v3.0           
+    ## 10  431928 item_46 produces TRUE     NA          v3.0           
+    ## # ℹ 21,194 more rows
 
 By default `get_instrument_table()` returns a data frame with columns of
 the administration’s `data_id`, the item’s `num_item_id` (numerical
@@ -232,20 +232,20 @@ function gives information on all the CDI instruments in Wordbank.
 get_instruments()
 ```
 
-    ## # A tibble: 89 × 9
+    ## # A tibble: 108 × 9
     ##    instrument_id language            form  form_type age_min age_max has_grammar
-    ##            <int> <chr>               <chr> <chr>       <int>   <int>       <int>
-    ##  1             1 British Sign Langu… WG    WG              8      36           0
-    ##  2             2 Cantonese           WS    WS             16      30           0
-    ##  3             3 Croatian            WG    WG              8      16           0
-    ##  4             4 Croatian            WS    WS             16      30           0
-    ##  5             5 Danish              WG    WG              8      20           0
-    ##  6             6 Danish              WS    WS             16      36           1
-    ##  7             7 English (American)  WG    WG              8      18           0
-    ##  8             8 English (American)  WS    WS             16      30           1
-    ##  9             9 French (Quebecois)  WG    WG              8      16           0
-    ## 10            10 French (Quebecois)  WS    WS             16      30           1
-    ## # ℹ 79 more rows
+    ##            <int> <chr>               <chr> <chr>       <int>   <int> <lgl>      
+    ##  1             1 British Sign Langu… WG    WG              8      36 TRUE       
+    ##  2             2 Cantonese           WS    WS             16      30 TRUE       
+    ##  3             3 Croatian            WG    WG              8      16 FALSE      
+    ##  4             4 Croatian            WS    WS             16      30 FALSE      
+    ##  5             5 Danish              WG    WG              8      20 FALSE      
+    ##  6             6 Danish              WS    WS             16      36 TRUE       
+    ##  7             7 English (American)  WG    WG              8      18 TRUE       
+    ##  8             8 English (American)  WS    WS             16      36 TRUE       
+    ##  9             9 French (Quebecois)  WG    WG              8      16 TRUE       
+    ## 10            10 French (Quebecois)  WS    WS             16      30 TRUE       
+    ## # ℹ 98 more rows
     ## # ℹ 2 more variables: unilemma_coverage <dbl>, dataset_version <chr>
 
 ### Datasets
@@ -262,42 +262,39 @@ the number of administrations in the database from that dataset.
 get_datasets(form = "WG")
 ```
 
-    ## # A tibble: 44 × 16
+    ## # A tibble: 57 × 11
     ##    dataset_id dataset_name  dataset_origin_name     contributor citation license
     ##         <int> <chr>         <chr>                   <chr>       <chr>    <chr>  
-    ##  1          5 Marchman      Marchman_Norming_Engli… Larry Fens… "Fenson… CC-BY  
-    ##  2          6 Byers         Byers__English (Americ… Krista Bye… ""       CC-BY  
-    ##  3          7 Thal          Thal                    Donna Thal… "Thal, … CC-BY  
-    ##  4          9 Marchman      Marchman_Norming_Spani… Donna Jack… "Jackso… CC-BY  
-    ##  5         12 Kristoffersen Kristoffersen_longitud… Hanne Simo… "Simons… CC-BY  
-    ##  6         13 CLEX          CLEX__Croatian_WG       Melita Kov… "Kovace… CC-BY  
-    ##  7         17 CLEX          CLEX__Russian_WG        Stella Cey… "Е.А.Ве… CC-BY  
-    ##  8         19 CLEX          CLEX__Swedish_WG        Mårten Eri… "Erikss… CC-BY  
-    ##  9         21 CLEX          CLEX__Turkish_WG        Aylin Künt… "Acarla… CC-BY  
-    ## 10         23 Shalev        Shalev__Hebrew_WG       Hila Gendl… "Gendle… CC-BY  
-    ## # ℹ 34 more rows
-    ## # ℹ 10 more variables: longitudinal <lgl>, source <chr>, date_format <chr>,
-    ## #   file_location <chr>, norming <chr>, splitcol <chr>, language <chr>,
-    ## #   form <chr>, form_type <chr>, dataset_version <chr>
+    ##  1          5 Marchman      Marchman_Norming_Engli… Larry Fens… Fenson,… CC-BY  
+    ##  2          6 Byers         Byers__English (Americ… Krista Bye… NA       CC-BY  
+    ##  3          7 Thal          Thal                    Donna Thal… Thal, D… CC-BY  
+    ##  4          9 Marchman      Marchman_Norming_Spani… Donna Jack… Jackson… CC-BY  
+    ##  5         12 Kristoffersen Kristoffersen_longitud… Hanne Simo… Simonse… CC-BY  
+    ##  6         13 CLEX          CLEX__Croatian_WG       Melita Kov… Kovacev… CC-BY  
+    ##  7         17 CLEX          CLEX__Russian_WG        Stella Cey… Е.А.Вер… CC-BY  
+    ##  8         19 CLEX          CLEX__Swedish_WG        Mårten Eri… Eriksso… CC-BY  
+    ##  9         21 CLEX          CLEX__Turkish_WG        Aylin Künt… Acarlar… CC-BY  
+    ## 10         23 Shalev        Shalev__Hebrew_WG       Hila Gendl… Gendler… CC-BY  
+    ## # ℹ 47 more rows
+    ## # ℹ 5 more variables: longitudinal <lgl>, language <chr>, form <chr>,
+    ## #   form_type <chr>, dataset_version <chr>
 
 ``` r
 
 get_datasets(language = "Spanish (Mexican)", admin_data = TRUE)
 ```
 
-    ## # A tibble: 7 × 17
+    ## # A tibble: 6 × 12
     ##   dataset_id dataset_name dataset_origin_name       contributor citation license
     ##        <int> <chr>        <chr>                     <chr>       <chr>    <chr>  
     ## 1          8 Marchman     Marchman Dallas Bilingual Donna Jack… Marchma… CC-BY  
     ## 2          9 Marchman     Marchman_Norming_Spanish… Donna Jack… Jackson… CC-BY  
-    ## 3         55 Fernald      Fernald_Outreach_Spanish… Anne Ferna… ​Weisle…  CC-BY  
-    ## 4         56 Fernald      Fernald_Outreach_Spanish… Anne Ferna… ​Weisle…  CC-BY  
+    ## 3         55 Fernald      Fernald_Outreach_Spanish… Anne Ferna… Weisled… CC-BY  
+    ## 4         56 Fernald      Fernald_Outreach_Spanish… Anne Ferna… Weisled… CC-BY  
     ## 5         76 Marchman     Marchman_Norming_Spanish… Donna Jack… Jackson… CC-BY  
     ## 6         87 Hoff         Hoff_English_Mexican_Bil… Erika Hoff… Hoff, E… CC-BY  
-    ## 7        135 Hoff         Hoff_English_Mexican_Bil… Erika Hoff… Hoff, E… CC-BY  
-    ## # ℹ 11 more variables: longitudinal <lgl>, source <chr>, date_format <chr>,
-    ## #   file_location <chr>, norming <chr>, splitcol <chr>, language <chr>,
-    ## #   form <chr>, form_type <chr>, n_admins <int>, dataset_version <chr>
+    ## # ℹ 6 more variables: longitudinal <lgl>, language <chr>, form <chr>,
+    ## #   form_type <chr>, n_admins <int>, dataset_version <chr>
 
 ## Advanced functionality: Age of acquisition
 
@@ -328,9 +325,9 @@ if (!is.null(animal_data)) {
     ##    <dbl> <chr>   <chr>     <chr>           <chr>    <chr>            <chr>    
     ##  1    24 item_13 word      alligator       animals  nouns            alligator
     ##  2    23 item_14 word      animal          animals  nouns            animal   
-    ##  3    23 item_15 word      ant             animals  nouns            ant      
-    ##  4    18 item_16 word      bear            animals  nouns            bear     
-    ##  5    20 item_17 word      bee             animals  nouns            bee      
+    ##  3    24 item_15 word      ant             animals  nouns            ant      
+    ##  4    17 item_16 word      bear            animals  nouns            bear     
+    ##  5    19 item_17 word      bee             animals  nouns            bee      
     ##  6    NA item_18 word      bird            animals  nouns            bird     
     ##  7    21 item_19 word      bug             animals  nouns            bug      
     ##  8    19 item_20 word      bunny           animals  nouns            bunny    
@@ -352,20 +349,20 @@ simply gives all the available `uni_lemma` values.
 get_crossling_items()
 ```
 
-    ## # A tibble: 2,125 × 2
+    ## # A tibble: 2,187 × 2
     ##    uni_lemma dataset_version
     ##    <chr>     <chr>          
-    ##  1 1PL       v2.0           
-    ##  2 1PL.POSS  v2.0           
-    ##  3 1PL.REFL  v2.0           
-    ##  4 1SG       v2.0           
-    ##  5 1SG.POSS  v2.0           
-    ##  6 1SG.REFL  v2.0           
-    ##  7 2PL       v2.0           
-    ##  8 2PL.POSS  v2.0           
-    ##  9 2PL.REFL  v2.0           
-    ## 10 2SG       v2.0           
-    ## # ℹ 2,115 more rows
+    ##  1 #N/A      v3.0           
+    ##  2 0         v3.0           
+    ##  3 1PL       v3.0           
+    ##  4 1PL.POSS  v3.0           
+    ##  5 1PL.REFL  v3.0           
+    ##  6 1SG       v3.0           
+    ##  7 1SG.POSS  v3.0           
+    ##  8 1SG.REFL  v3.0           
+    ##  9 2PL       v3.0           
+    ## 10 2PL.POSS  v3.0           
+    ## # ℹ 2,177 more rows
 
 The function
 [`get_crossling_data()`](https://langcog.github.io/wordbankr/reference/get_crossling_data.md)
