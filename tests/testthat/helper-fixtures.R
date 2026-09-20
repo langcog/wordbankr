@@ -45,7 +45,7 @@ check_and_drop_dataset_version <- function(x, fixture_name) {
 #     signature rule below preserves the few WS datasets that genuinely
 #     measured comprehension, exactly as the ETL does
 #   - race level "Other" is relabelled "Other/Mixed", and birth_order gains
-#     the levels Ninth-Twelfth (values are unchanged; dataset v2.1)
+#     the levels Ninth-Twelfth (values are unchanged; dataset v3.0)
 apply_v2_deltas <- function(x) {
   if ("race" %in% names(x) && is.factor(x$race)) {
     levels(x$race)[levels(x$race) == "Other"] <- "Other/Mixed"

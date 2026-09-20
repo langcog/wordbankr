@@ -182,7 +182,7 @@ factor_demographics <- function(admins) {
       sex = factor(.data$sex, levels = c("Female", "Male", "Other")),
       ethnicity = factor(.data$ethnicity,
                          levels = c("Hispanic", "Non-Hispanic")),
-      # dataset versions before v2.1 label this level "Other"
+      # dataset versions before v3.0 label this level "Other"
       race = factor(dplyr::if_else(.data$race == "Other", "Other/Mixed",
                                    .data$race),
                     levels = c("Asian", "Black", "Other/Mixed", "White")),
