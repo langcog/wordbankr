@@ -12,6 +12,11 @@
   (e.g. `version = "v2.0"`; the default `"current"` is the most recent
   release).
 - The `db_args` argument is removed from all `get_*` functions.
+- In
+  [`get_administration_data()`](https://langcog.github.io/wordbankr/reference/get_administration_data.md),
+  the `race` level `"Other"` is now `"Other/Mixed"` (for all dataset
+  versions), and `birth_order` gains the levels `"Ninth"` to
+  `"Twelfth"`.
 - New functions
   [`get_aoa()`](https://langcog.github.io/wordbankr/reference/get_aoa.md)
   and
