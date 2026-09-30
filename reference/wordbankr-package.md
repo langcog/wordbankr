@@ -19,7 +19,7 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Mika Braginsky <mika.br@gmail.com>
+**Maintainer**: Mika Braginsky <mika.br@gmail.com> \[copyright holder\]
 
 Other contributors:
 

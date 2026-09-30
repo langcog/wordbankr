@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Mika Braginsky**. Author, maintainer.
+- **Mika Braginsky**. Author, maintainer, copyright holder.
 
 - **Daniel Yurovsky**. Contributor.
 
