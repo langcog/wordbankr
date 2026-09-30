@@ -55,7 +55,7 @@
                         <h4 data-toc-skip class="author">Mika
 Braginsky</h4>
             
-            <h4 data-toc-skip class="date">2026-09-20</h4>
+            <h4 data-toc-skip class="date">2026-09-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/langcog/wordbankr/blob/main/vignettes/wordbankr.Rmd" class="external-link"><code>vignettes/wordbankr.Rmd</code></a></small>
       <div class="d-none name"><code>wordbankr.Rmd</code></div>
@@ -150,7 +150,7 @@ either for a specific language and/or form or for all instruments.</p>
 <span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_item_data.html">get_item_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 56,895 × 12</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 56,893 × 12</span></span></span>
 <span><span class="co">##    item_id language           form  form_type item_kind category item_definition</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 1</span> item_1  British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       be careful     </span></span>
@@ -163,7 +163,7 @@ either for a specific language and/or form or for all instruments.</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span> item_8  British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       get up         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span> item_9  British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       give me hug    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> item_10 British Sign Lang… WG    WG        phrases   <span style="color: #BB0000;">NA</span>       give me kiss   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 56,885 more rows</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 56,883 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: english_gloss &lt;chr&gt;, uni_lemma &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   lexical_category &lt;chr&gt;, complexity_category &lt;chr&gt;, dataset_version &lt;chr&gt;</span></span></span></code></pre>
 </div>
@@ -186,16 +186,16 @@ language and form, along with a list of items you want to extract (by
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 21,204 × 6</span></span></span>
 <span><span class="co">##    data_id item_id value    produces understands dataset_version</span></span>
 <span><span class="co">##      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">396</span>657 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">396</span>657 item_46 <span style="color: #BB0000;">NA</span>       FALSE    <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">397</span>491 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">397</span>491 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">431</span>926 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">431</span>926 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">431</span>927 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">431</span>927 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">431</span>928 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">431</span>928 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.0           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">396</span>657 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">396</span>657 item_46 <span style="color: #BB0000;">NA</span>       FALSE    <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">397</span>491 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">397</span>491 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">431</span>926 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">431</span>926 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">431</span>927 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">431</span>927 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">431</span>928 item_26 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">431</span>928 item_46 produces TRUE     <span style="color: #BB0000;">NA</span>          v3.3           </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 21,194 more rows</span></span></span></code></pre>
 <p>By default <code>get_instrument_table()</code> returns a data frame
 with columns of the administration’s <code>data_id</code>, the item’s
@@ -355,20 +355,20 @@ words across the languages in Wordbank. The function
 <code>uni_lemma</code> values.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_crossling_items.html">get_crossling_items</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2,187 × 2</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2,161 × 2</span></span></span>
 <span><span class="co">##    uni_lemma dataset_version</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> #N/A      v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 0         v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 1PL       v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 1PL.POSS  v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 1PL.REFL  v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 1SG       v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 1SG.POSS  v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 1SG.REFL  v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 2PL       v3.0           </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> 2PL.POSS  v3.0           </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 2,177 more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> #N/A      v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 0         v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 1PL       v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 1PL.POSS  v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 1PL.REFL  v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 1SG       v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 1SG.POSS  v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 1SG.REFL  v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 2PL       v3.3           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> 2PL.POSS  v3.3           </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 2,151 more rows</span></span></span></code></pre>
 <p>The function <code><a href="../reference/get_crossling_data.html">get_crossling_data()</a></code> takes a vector of
 <code>uni_lemmas</code> and returns a data frame of summary statistics
 for each item mapped to that uni_lemma in any language (on

@@ -33,11 +33,12 @@ from `lang_items` (`item_id`, `item_definition`, `uni_lemma`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 italian_items <- get_item_data(language = "Italian", form = "WG")
 if (!is.null(italian_items)) {
   italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")
   italian_dog_summary <- summarise_items(italian_dog)
 }
-} # }
+#> Getting data for Italian WG
+# }
 ```

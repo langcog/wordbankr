@@ -35,7 +35,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.0" id="wordbankr-200">wordbankr 2.0.0<a class="anchor" aria-label="anchor" href="#wordbankr-200"></a></h2>
-<ul><li>
+<ul><li>In a non-interactive session with no Redivis credentials (no <code>REDIVIS_API_TOKEN</code>, no cached sign-in), data functions now return <code>NULL</code> with a message immediately instead of waiting for a browser sign-in.</li>
+<li>
 <code><a href="../reference/get_crossling_items.html">get_crossling_items()</a></code> now fails gracefully (message + <code>NULL</code>) when the database is unreachable, like every other data-access function.</li>
 <li>All <code>get_*</code> functions (and <code><a href="../reference/summarise_items.html">summarise_items()</a></code>, <code><a href="../reference/wb_dataset.html">wb_dataset()</a></code>) gain a <code>version</code> argument for pinning a data release (e.g. <code>version = "v2.0"</code>; the default <code>"current"</code> is the most recent release).</li>
 <li>The <code>db_args</code> argument is removed from all <code>get_*</code> functions.</li>

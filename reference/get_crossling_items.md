@@ -23,7 +23,7 @@ A data frame with the columns `uni_lemma` and `dataset_version`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 uni_lemmas <- get_crossling_items()
-} # }
+# }
 ```

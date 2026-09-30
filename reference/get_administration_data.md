@@ -79,7 +79,7 @@ which `dataset_version` it came from.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 english_ws_admins <- get_administration_data("English (American)", "WS")
-} # }
+# }
 ```

@@ -42,7 +42,7 @@ A data frame with one row per instrument item and measure: `language`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 danish_aoa <- get_aoa(language = "Danish", form = "WS")
-} # }
+# }
 ```

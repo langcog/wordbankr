@@ -33,6 +33,7 @@ variables (`item_id`, `definition`, `uni_lemma`, `lexical_category`,
 
 ``` r
 if (FALSE) { # \dontrun{
+# downloads item-level data from every instrument, which takes minutes
 crossling_data <- get_crossling_data(uni_lemmas = "dog")
 } # }
 ```

@@ -32,7 +32,7 @@ A data frame with one row per unique item definition: `language`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 danish_embeddings <- get_embeddings(language = "Danish")
-} # }
+# }
 ```

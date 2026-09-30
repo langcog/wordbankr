@@ -1,8 +1,11 @@
-# wordbankr: Accessing the Wordbank Database
+# wordbankr: Accessing the 'Wordbank' Database
 
-Connecting to Wordbank, an open repository for developmental vocabulary
-data. For more information on the underlying data, see
-<https://wordbank.stanford.edu>.
+Connecting to 'Wordbank' <https://wordbank.stanford.edu>, an open
+repository for developmental vocabulary data from the MacArthur-Bates
+Communicative Development Inventories (Frank et al. 2017
+[doi:10.1017/S0305000916000209](https://doi.org/10.1017/S0305000916000209)
+). Data are read from a versioned dataset hosted on 'Redivis', so
+analyses can be pinned to a specific release.
 
 ## See also
 

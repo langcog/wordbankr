@@ -19,3 +19,12 @@ get_wordbank_args()
 - db_args:
 
   Deprecated, ignored.
+
+## Value
+
+`check_db_args()`: no return value, called for its side effect (a
+warning if `db_args` is supplied). `connect_to_wordbank()`: the Wordbank
+dataset reference, as returned by
+[`wb_dataset()`](https://langcog.github.io/wordbankr/reference/wb_dataset.md).
+`get_wordbank_args()`: a list with elements `organization`, `dataset`,
+and `version` identifying the Redivis dataset.

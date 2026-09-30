@@ -108,7 +108,7 @@ get_item_data(language = "Italian", form = "WG")
 get_item_data()
 ```
 
-    ## # A tibble: 56,895 × 12
+    ## # A tibble: 56,893 × 12
     ##    item_id language           form  form_type item_kind category item_definition
     ##    <chr>   <chr>              <chr> <chr>     <chr>     <chr>    <chr>          
     ##  1 item_1  British Sign Lang… WG    WG        phrases   NA       be careful     
@@ -121,7 +121,7 @@ get_item_data()
     ##  8 item_8  British Sign Lang… WG    WG        phrases   NA       get up         
     ##  9 item_9  British Sign Lang… WG    WG        phrases   NA       give me hug    
     ## 10 item_10 British Sign Lang… WG    WG        phrases   NA       give me kiss   
-    ## # ℹ 56,885 more rows
+    ## # ℹ 56,883 more rows
     ## # ℹ 5 more variables: english_gloss <chr>, uni_lemma <chr>,
     ## #   lexical_category <chr>, complexity_category <chr>, dataset_version <chr>
 
@@ -147,16 +147,16 @@ get_instrument_data(
     ## # A tibble: 21,204 × 6
     ##    data_id item_id value    produces understands dataset_version
     ##      <dbl> <chr>   <chr>    <lgl>    <lgl>       <chr>          
-    ##  1  396657 item_26 produces TRUE     NA          v3.0           
-    ##  2  396657 item_46 NA       FALSE    NA          v3.0           
-    ##  3  397491 item_26 produces TRUE     NA          v3.0           
-    ##  4  397491 item_46 produces TRUE     NA          v3.0           
-    ##  5  431926 item_26 produces TRUE     NA          v3.0           
-    ##  6  431926 item_46 produces TRUE     NA          v3.0           
-    ##  7  431927 item_26 produces TRUE     NA          v3.0           
-    ##  8  431927 item_46 produces TRUE     NA          v3.0           
-    ##  9  431928 item_26 produces TRUE     NA          v3.0           
-    ## 10  431928 item_46 produces TRUE     NA          v3.0           
+    ##  1  396657 item_26 produces TRUE     NA          v3.3           
+    ##  2  396657 item_46 NA       FALSE    NA          v3.3           
+    ##  3  397491 item_26 produces TRUE     NA          v3.3           
+    ##  4  397491 item_46 produces TRUE     NA          v3.3           
+    ##  5  431926 item_26 produces TRUE     NA          v3.3           
+    ##  6  431926 item_46 produces TRUE     NA          v3.3           
+    ##  7  431927 item_26 produces TRUE     NA          v3.3           
+    ##  8  431927 item_46 produces TRUE     NA          v3.3           
+    ##  9  431928 item_26 produces TRUE     NA          v3.3           
+    ## 10  431928 item_46 produces TRUE     NA          v3.3           
     ## # ℹ 21,194 more rows
 
 By default `get_instrument_table()` returns a data frame with columns of
@@ -349,20 +349,20 @@ simply gives all the available `uni_lemma` values.
 get_crossling_items()
 ```
 
-    ## # A tibble: 2,187 × 2
+    ## # A tibble: 2,161 × 2
     ##    uni_lemma dataset_version
     ##    <chr>     <chr>          
-    ##  1 #N/A      v3.0           
-    ##  2 0         v3.0           
-    ##  3 1PL       v3.0           
-    ##  4 1PL.POSS  v3.0           
-    ##  5 1PL.REFL  v3.0           
-    ##  6 1SG       v3.0           
-    ##  7 1SG.POSS  v3.0           
-    ##  8 1SG.REFL  v3.0           
-    ##  9 2PL       v3.0           
-    ## 10 2PL.POSS  v3.0           
-    ## # ℹ 2,177 more rows
+    ##  1 #N/A      v3.3           
+    ##  2 0         v3.3           
+    ##  3 1PL       v3.3           
+    ##  4 1PL.POSS  v3.3           
+    ##  5 1PL.REFL  v3.3           
+    ##  6 1SG       v3.3           
+    ##  7 1SG.POSS  v3.3           
+    ##  8 1SG.REFL  v3.3           
+    ##  9 2PL       v3.3           
+    ## 10 2PL.POSS  v3.3           
+    ## # ℹ 2,151 more rows
 
 The function
 [`get_crossling_data()`](https://langcog.github.io/wordbankr/reference/get_crossling_data.md)

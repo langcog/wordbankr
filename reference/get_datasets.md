@@ -42,7 +42,7 @@ characteristics, including which `dataset_version` it came from.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 english_ws_datasets <- get_datasets("English (American)", "WS")
-} # }
+# }
 ```

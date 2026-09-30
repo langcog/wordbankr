@@ -26,7 +26,7 @@ variable about the instrument (`instrument_id`, `language`, `form`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 instruments <- get_instruments()
-} # }
+# }
 ```

@@ -34,7 +34,7 @@ about it: `item_id`, `item_kind`, `item_definition`, `english_gloss`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 english_ws_items <- get_item_data("English (American)", "WS")
-} # }
+# }
 ```

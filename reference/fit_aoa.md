@@ -58,11 +58,12 @@ acquisition estimates.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"),
                                    administration_info = TRUE)
+#> Warning: No reference id was provided for the table, which may cause your code to break if the name changes. Consider using the qualified reference "item_responses:e3b4"
 if (!is.null(eng_ws_data)) eng_ws_aoa <- fit_aoa(eng_ws_data)
-} # }
+# }
 ```
