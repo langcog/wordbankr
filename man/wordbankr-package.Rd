@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Mika Braginsky \email{mika.br@gmail.com}
+\strong{Maintainer}: Mika Braginsky \email{mika.br@gmail.com} [copyright holder]
 
 Other contributors:
 \itemize{

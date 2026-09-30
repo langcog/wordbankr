@@ -8,7 +8,7 @@ Description: Connecting to 'Wordbank' <https://wordbank.stanford.edu>, an open
     hosted on 'Redivis', so analyses can be pinned to a specific release.
 Version: 2.0.0
 Authors@R: c(
-    person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre")),
+    person("Mika", "Braginsky", email = "mika.br@gmail.com", role = c("aut", "cre", "cph")),
     person("Daniel", "Yurovsky", email = "yurovsky@stanford.edu", role = "ctb"),
     person("Michael", "Frank", email = "mcfrank@stanford.edu", role = "ctb"),
     person("Danielle", "Kellier", email = "dkellier@stanford.edu", role = "ctb"),
