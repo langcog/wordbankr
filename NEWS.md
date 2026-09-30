@@ -1,5 +1,8 @@
 # wordbankr 2.0.0
 
+* In a non-interactive session with no Redivis credentials (no
+  `REDIVIS_API_TOKEN`, no cached sign-in), data functions now return `NULL`
+  with a message immediately instead of waiting for a browser sign-in.
 * `get_crossling_items()` now fails gracefully (message + `NULL`) when the
   database is unreachable, like every other data-access function.
 * All `get_*` functions (and `summarise_items()`, `wb_dataset()`) gain a

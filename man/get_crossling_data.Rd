@@ -26,6 +26,7 @@ Get item-by-age summary statistics for items across languages
 }
 \examples{
 \dontrun{
+# downloads item-level data from every instrument, which takes minutes
 crossling_data <- get_crossling_data(uni_lemmas = "dog")
 }
 }

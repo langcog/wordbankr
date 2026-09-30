@@ -24,7 +24,7 @@
 #'   acquisition estimates.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"),

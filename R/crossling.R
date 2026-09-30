@@ -5,7 +5,7 @@
 #'   \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' uni_lemmas <- get_crossling_items()
 #' }
 #' @export
@@ -32,7 +32,7 @@ get_crossling_items <- function(version = "current") {
 #'   \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' italian_items <- get_item_data(language = "Italian", form = "WG")
 #' if (!is.null(italian_items)) {
 #'   italian_dog <- dplyr::filter(italian_items, uni_lemma == "dog")
@@ -84,6 +84,7 @@ summarise_items <- function(item_data, version = "current") {
 
 #' @examples
 #' \dontrun{
+#' # downloads item-level data from every instrument, which takes minutes
 #' crossling_data <- get_crossling_data(uni_lemmas = "dog")
 #' }
 #' @export

@@ -18,7 +18,7 @@
 #'   \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' danish_aoa <- get_aoa(language = "Danish", form = "WS")
 #' }
 #' @export
@@ -48,7 +48,7 @@ get_aoa <- function(language = NULL, form = NULL, measure = NULL,
 #'   list-column of numeric vectors), and \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' danish_embeddings <- get_embeddings(language = "Danish")
 #' }
 #' @export

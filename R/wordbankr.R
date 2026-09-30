@@ -7,6 +7,12 @@
 #' `connect_to_wordbank()` are deprecated and ignored.
 #'
 #' @param db_args Deprecated, ignored.
+#' @return \code{check_db_args()}: no return value, called for its side
+#'   effect (a warning if \code{db_args} is supplied).
+#'   \code{connect_to_wordbank()}: the Wordbank dataset reference, as
+#'   returned by \code{\link{wb_dataset}()}.
+#'   \code{get_wordbank_args()}: a list with elements \code{organization},
+#'   \code{dataset}, and \code{version} identifying the Redivis dataset.
 #' @keywords internal
 check_db_args <- function(db_args) {
   if (!is.null(db_args)) {
@@ -53,10 +59,39 @@ wb_dataset <- function(version = "current") {
                                                      version = version)
 }
 
+# Redivis needs credentials to download data: an API token, a cached login
+# (written by the client to ~/.redivis after a one-time browser sign-in), or
+# a Redivis notebook. Without them the client starts the browser sign-in,
+# which in a non-interactive session (scripts, CI, CRAN checks) would wait
+# forever -- so check first and fail gracefully instead.
+wb_credentials_available <- function() {
+  nzchar(Sys.getenv("REDIVIS_API_TOKEN")) ||
+    nzchar(Sys.getenv("REDIVIS_DEFAULT_NOTEBOOK")) ||
+    file.exists(file.path(Sys.getenv("HOME"), ".redivis", "r_credentials"))
+}
+
+wb_ready <- function() {
+  if (!requireNamespace("redivis", quietly = TRUE)) {
+    message("wordbankr needs the 'redivis' package to access Wordbank data. ",
+            "Install it with:\n",
+            '  install.packages("redivis", repos = c("https://langcog.r-universe.dev", "https://cloud.r-project.org"))')
+    return(FALSE)
+  }
+  if (!interactive() && !wb_credentials_available()) {
+    message("No Redivis credentials found, so Wordbank data cannot be ",
+            "downloaded in this non-interactive session. Set the ",
+            "REDIVIS_API_TOKEN environment variable, or run wordbankr once ",
+            "in an interactive session to sign in to Redivis.")
+    return(FALSE)
+  }
+  TRUE
+}
+
 # CRAN policy requires graceful failure on unavailable internet resources:
 # transient errors are retried with backoff, then produce a message and
 # NULL -- never an error
 wb_try <- function(expr, tries = 3) {
+  if (!wb_ready()) return(NULL)
   expr <- substitute(expr)
   env <- parent.frame()
   for (i in seq_len(tries)) {
@@ -135,7 +170,7 @@ filter_language_form <- function(tbl, language = NULL, form = NULL) {
 #'   \code{has_grammar}, \code{unilemma_coverage}, \code{dataset_version}).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' instruments <- get_instruments()
 #' }
 #' @export
@@ -158,7 +193,7 @@ get_instruments <- function(version = "current") {
 #'   characteristics, including which \code{dataset_version} it came from.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_datasets <- get_datasets("English (American)", "WS")
 #' }
 #' @export
@@ -224,7 +259,7 @@ factor_demographics <- function(admins) {
 #'   including which \code{dataset_version} it came from.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_admins <- get_administration_data("English (American)", "WS")
 #' }
 #' @export
@@ -324,7 +359,7 @@ get_administration_data <- function(language = NULL, form = NULL,
 #'   \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' english_ws_items <- get_item_data("English (American)", "WS")
 #' }
 #' @export
@@ -354,7 +389,7 @@ get_item_data <- function(language = NULL, form = NULL, version = "current") {
 #'   \code{dataset_version}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eng_ws_data <- get_instrument_data(language = "English (American)",
 #'                                    form = "WS",
 #'                                    items = c("item_1", "item_42"))

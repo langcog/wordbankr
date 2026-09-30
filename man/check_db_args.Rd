@@ -15,6 +15,14 @@ get_wordbank_args()
 \arguments{
 \item{db_args}{Deprecated, ignored.}
 }
+\value{
+\code{check_db_args()}: no return value, called for its side
+  effect (a warning if \code{db_args} is supplied).
+  \code{connect_to_wordbank()}: the Wordbank dataset reference, as
+  returned by \code{\link{wb_dataset}()}.
+  \code{get_wordbank_args()}: a list with elements \code{organization},
+  \code{dataset}, and \code{version} identifying the Redivis dataset.
+}
 \description{
 As of wordbankr 2.0, data are retrieved from the versioned Wordbank dataset
 on Redivis rather than a MySQL database; `db_args` and

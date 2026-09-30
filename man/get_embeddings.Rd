@@ -26,7 +26,7 @@ All languages share one embedding space, so cosine similarities are
 meaningful both within and across languages.
 }
 \examples{
-\dontrun{
+\donttest{
 danish_embeddings <- get_embeddings(language = "Danish")
 }
 }

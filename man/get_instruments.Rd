@@ -21,7 +21,7 @@ A data frame where each row is a CDI instrument and each column is
 Get the Wordbank instruments
 }
 \examples{
-\dontrun{
+\donttest{
 instruments <- get_instruments()
 }
 }

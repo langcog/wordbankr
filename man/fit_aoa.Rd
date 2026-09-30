@@ -45,7 +45,7 @@ understand/produce the item is greater than some threshold. The proportions
 used can be empirical or first smoothed by a model.
 }
 \examples{
-\dontrun{
+\donttest{
 eng_ws_data <- get_instrument_data(language = "English (American)",
                                    form = "WS",
                                    items = c("item_1", "item_42"),

@@ -4,9 +4,9 @@
 \name{wordbankr-package}
 \alias{wordbankr}
 \alias{wordbankr-package}
-\title{wordbankr: Accessing the Wordbank Database}
+\title{wordbankr: Accessing the 'Wordbank' Database}
 \description{
-Connecting to Wordbank, an open repository for developmental vocabulary data. For more information on the underlying data, see \url{https://wordbank.stanford.edu}.
+Connecting to 'Wordbank' \url{https://wordbank.stanford.edu}, an open repository for developmental vocabulary data from the MacArthur-Bates Communicative Development Inventories (Frank et al. 2017 \doi{10.1017/S0305000916000209}). Data are read from a versioned dataset hosted on 'Redivis', so analyses can be pinned to a specific release.
 }
 \seealso{
 Useful links:

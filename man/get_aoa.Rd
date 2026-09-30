@@ -33,7 +33,7 @@ data release. \code{aoa} is \code{NA} for items that do not reach the
 threshold within the instrument's age range.
 }
 \examples{
-\dontrun{
+\donttest{
 danish_aoa <- get_aoa(language = "Danish", form = "WS")
 }
 }

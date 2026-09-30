@@ -1,40 +1,49 @@
-# wordbankr 2.0.0
+# wordbankr 2.0.0 (resubmission)
 
-This is a resubmission of a package that was archived on 2024-04-04
-("for repeated policy violation ... On Internet access"). Version 2.0.0 is
-a major rewrite that directly addresses the reason for archival.
+Thank you for the review. Changes in response:
 
-## What changed regarding internet access
+* Added `\value` to `check_db_args.Rd` (the deprecated `connect_to_wordbank()`
+  / `get_wordbank_args()` page); every exported function now documents the
+  structure and meaning of its return value.
+* Replaced `\dontrun{}` with `\donttest{}` in all examples, except
+  `get_crossling_data()`, whose example downloads item-level data from every
+  instrument in the database (over five minutes) and remains `\dontrun{}` with
+  a comment saying so. No example can be unwrapped: every function downloads
+  data from Redivis, which requires a (free) Redivis account, so none can run
+  on a machine without credentials.
+* To make the `\donttest{}` examples safe to execute anywhere, data functions
+  now check for Redivis credentials before contacting the server: in a
+  non-interactive session with none available they return `NULL` with a
+  message in well under a second, instead of starting the Redivis client's
+  browser-based sign-in (which would otherwise wait indefinitely). Verified by
+  running `R CMD check --as-cran` (which executes `\donttest{}` examples) with
+  no credentials, a clean home directory, and no browser: every example
+  completes in under 0.2 s, nothing is written outside the session's
+  temporary directory, and the package installs nothing.
 
-The package accesses Wordbank, an open database of children's vocabulary
-development, now hosted as a versioned dataset on Redivis. The 2.0.0
-design ensures that CRAN checks perform **zero network access**:
+## Background: archival, and internet access
 
-- All examples for functions that access the database are wrapped in
-  `\dontrun{}` (they are long-running network operations against a remote
-  database).
-- The vignette gates all chunk evaluation on `NOT_CRAN`, so it builds
-  without evaluation on CRAN machines.
-- All tests that touch the network use `skip_on_cran()` via a shared
-  helper; fixture-based tests of pure computation still run on CRAN.
-- Per CRAN policy on internet resources, every user-facing function fails
-  gracefully when the resource is unavailable: transient failures are
-  retried with backoff, then the function returns `invisible(NULL)` with
-  an informative `message()`, never an error.
-
-We run a continuous "cran-simulation" CI job (R CMD check with no
-credentials and `NOT_CRAN=false`) to guarantee these properties hold.
+This is a resubmission of a package archived on 2024-04-04 ("On Internet
+access"). Version 2.0.0 is a rewrite designed so that CRAN checks perform
+zero network access: `\donttest{}` examples and all network tests fail
+gracefully without credentials (tests additionally use `skip_on_cran()`), the
+vignette gates its data chunks on `NOT_CRAN`, transient failures are retried
+with backoff and then produce a message and `NULL`, never an error. Acronyms
+in the Description: CDI = MacArthur-Bates Communicative Development
+Inventories (spelled out there).
 
 ## Suggests package from Additional_repositories
 
-The database client `redivis` is not on CRAN. It is declared in
-`Suggests` with a runtime guard that prints installation instructions,
-and is available (source and binaries) from the repository declared in
-`Additional_repositories: https://langcog.r-universe.dev`.
+The database client `redivis` is not on CRAN. It is in `Suggests`, available
+from `Additional_repositories: https://langcog.r-universe.dev` (the check
+reports it resolvable), and guarded at runtime: without it, data functions
+return `NULL` with installation instructions. `R CMD check --as-cran` with
+`redivis` not installed and `_R_CHECK_FORCE_SUGGESTS_=false` passes.
 
 ## Test environments
 
-- local macOS 15 (aarch64), R 4.5
+- local macOS 15 (aarch64), R 4.5 — with credentials, without credentials,
+  and without the `redivis` package installed
 - GitHub Actions: macOS, Windows, and Ubuntu (R release), Ubuntu (R devel and
   oldrel-1); plus a "cran-simulation" job with no credentials and
   NOT_CRAN=false
@@ -46,8 +55,7 @@ and is available (source and binaries) from the repository declared in
 
 - New submission; package was archived on CRAN: addressed above.
 - Suggests not in mainstream repositories: redivis, available from the
-  declared Additional_repositories (the check reports "redivis yes
-  https://langcog.r-universe.dev").
+  declared Additional_repositories.
 
 ## Reverse dependencies
 
